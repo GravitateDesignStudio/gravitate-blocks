@@ -18,9 +18,9 @@ add_action('init', array( 'GRAVITATE_CONTENT_BLOCKS', 'init' ));
 class GRAVITATE_CONTENT_BLOCKS {
 
 	private static $version = '1.0.0';
-	private static $page = 'options-general.php?page=gravitate_redirects';
+	private static $page = 'options-general.php?page=gravitate_blocks';
 	private static $settings = array();
-	private static $option_key = 'gravitate_redirects_settings';
+	private static $option_key = 'gravitate_blocks_settings';
 
 	public static function init()
 	{
@@ -134,8 +134,27 @@ class GRAVITATE_CONTENT_BLOCKS {
 
 	private static function get_settings_fields()
 	{
+		$posts_to_exclude = array('attachment', 'revision', 'nav_menu_item');
+		// TODO add filter here for $posts_to_exclude
+
+		$posts = get_post_types();
+		$templates = get_page_templates();
+
+		$post_types = array();
+		foreach($posts as $post_type){
+			if(!in_array($post_type, $posts_to_exclude)){
+				$post_types[$post_type] = ucwords(str_replace('_', ' ', $post_type));
+			}
+		}
+
+		$template_options = array('default' => 'Default');
+		foreach($templates as $key => $template){
+			$template_options[$template] = ucwords(str_replace('_', ' ', $key));
+		}
+
 		$fields = array();
-		$fields['gravitate_support_email'] = array('type' => 'text', 'label' => 'Support Email', 'value' => 'gg', 'description' => 'Email address that will be shown when the user clicks on the Gravitate Support Button.');
+		$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
+		$fields['templates'] = array('type' => 'checkbox', 'label' => 'Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
 
 		self::get_settings();
 
@@ -169,6 +188,7 @@ class GRAVITATE_CONTENT_BLOCKS {
 			$_POST['settings']['updated_at'] = time();
 
 			$settings = $_POST['settings'];
+			grav_dump($settings);
 
 			if(!empty(self::$settings))
 			{
@@ -196,17 +216,14 @@ class GRAVITATE_CONTENT_BLOCKS {
 		?>
 
 		<div class="wrap">
-		<h2>Gravitate Redirects</h2>
+		<h2>Gravitate Blocks</h2>
 		<h4 style="margin: 6px 0;">Version <?php echo self::$version;?></h4>
 		<?php if(!empty($error)){?><div class="error"><p><?php echo $error; ?></p></div><?php } ?>
 		</div>
 
 		<br>
 		<div class="gravitate-redirects-page-links">
-			<a href="<?php echo self::$page;?>&section=settings">Settings</a> |
-			<a href="<?php echo self::$page;?>&section=add">Add Redirects</a> |
-			<a href="<?php echo self::$page;?>&section=top">Top Redirects</a> |
-			<a href="<?php echo self::$page;?>&section=top">Import/Export</a>
+			<a href="<?php echo self::$page;?>&section=advanced">Advanced</a>
 		</div>
 
 		<br>
@@ -258,6 +275,8 @@ class GRAVITATE_CONTENT_BLOCKS {
 					<th><label for="<?php echo $meta_key;?>"><?php echo $field['label'];?></label></th>
 					<td>
 					<?php
+					if(isset($field['description']))
+					{ ?><span class="description"><?php echo $field['description'];?></span><br><?php }
 
 					if($field['type'] == 'text')
 					{
@@ -281,7 +300,17 @@ class GRAVITATE_CONTENT_BLOCKS {
 						</select>
 						<?php
 					}
-					if(isset($field['description'])){ ?><span class="description"><?php echo $field['description'];?></span><?php } ?>
+					else if($field['type'] == 'checkbox')
+					{
+						foreach($field['options'] as $option_value => $option_label){
+							$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+							$checked = (in_array($real_value, $fields[$meta_key]['value'])) ? 'checked' : '';
+							?>
+							<input type="checkbox" name="settings[<?php echo $meta_key;?>][]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?><br>
+							<?php
+						}
+					}
+					 ?>
 					</td>
 				</tr>
 				<?php
