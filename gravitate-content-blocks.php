@@ -15,6 +15,7 @@ add_action('admin_init', array( 'GRAVITATE_CONTENT_BLOCKS', 'admin_init' ));
 add_action('init', array( 'GRAVITATE_CONTENT_BLOCKS', 'init' ));
 
 
+
 class GRAVITATE_CONTENT_BLOCKS {
 
 	private static $version = '1.0.0';
@@ -25,6 +26,8 @@ class GRAVITATE_CONTENT_BLOCKS {
 	public static function init()
 	{
 		// Nothing for now
+		// self::get_settings();
+		// grav_dump(self::$settings);
 	}
 
 	public static function activate()
@@ -134,7 +137,7 @@ class GRAVITATE_CONTENT_BLOCKS {
 
 	private static function get_settings_fields()
 	{
-		$posts_to_exclude = array('attachment', 'revision', 'nav_menu_item');
+		$posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
 		// TODO add filter here for $posts_to_exclude
 
 		$posts = get_post_types();
@@ -143,18 +146,45 @@ class GRAVITATE_CONTENT_BLOCKS {
 		$post_types = array();
 		foreach($posts as $post_type){
 			if(!in_array($post_type, $posts_to_exclude)){
-				$post_types[$post_type] = ucwords(str_replace('_', ' ', $post_type));
+				$post_types[$post_type] = self::unsanitize_title($post_type);
 			}
 		}
 
 		$template_options = array('default' => 'Default');
 		foreach($templates as $key => $template){
-			$template_options[$template] = ucwords(str_replace('_', ' ', $key));
+			$template_options[$template] = self::unsanitize_title($key);
 		}
 
 		$fields = array();
 		$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 		$fields['templates'] = array('type' => 'checkbox', 'label' => 'Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
+
+		self::get_settings();
+
+		// Update Values in Form
+		if(!empty(self::$settings))
+		{
+			foreach (self::$settings as $key => $value)
+			{
+				if(isset($fields[$key]))
+				{
+					$fields[$key]['value'] = $value;
+				}
+			}
+		}
+
+		return $fields;
+	}
+
+	private static function get_advanced_settings_fields()
+	{
+		$advanced_options = array(
+			'foundation' => 'Use Foundation 5 CSS.',
+			'content' => 'Add content blocks to the end of your content.'
+		);
+
+		$fields = array();
+		$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => 'Change Advanced Settings.');
 
 		self::get_settings();
 
@@ -188,7 +218,6 @@ class GRAVITATE_CONTENT_BLOCKS {
 			$_POST['settings']['updated_at'] = time();
 
 			$settings = $_POST['settings'];
-			grav_dump($settings);
 
 			if(!empty(self::$settings))
 			{
@@ -223,6 +252,7 @@ class GRAVITATE_CONTENT_BLOCKS {
 
 		<br>
 		<div class="gravitate-redirects-page-links">
+			<a href="<?php echo self::$page;?>&section=General">General</a>
 			<a href="<?php echo self::$page;?>&section=advanced">Advanced</a>
 		</div>
 
@@ -239,6 +269,9 @@ class GRAVITATE_CONTENT_BLOCKS {
 			case 'settings':
 				self::settings();
 			break;
+
+			case 'advanced':
+				self::settings('advanced');
 
 			case 'add':
 				self::add();
@@ -258,71 +291,85 @@ class GRAVITATE_CONTENT_BLOCKS {
 		<?php
 	}
 
-	private static function settings()
+	private static function settings($type = 'general')
 	{
 		// Get Form Fields
-		$fields = self::get_settings_fields();
+		switch ($type){
+			default;
+			case 'general':
+				$fields = self::get_settings_fields();
+				break;
+
+			case 'advanced':
+				$fields = self::get_advanced_settings_fields();
+				break;
+		}
+
 
 		?>
-		<form method="post">
-			<input type="hidden" name="save_settings" value="1">
-			<table class="form-table">
-			<?php
-			foreach($fields as $meta_key => $field)
-			{
-				?>
-				<tr>
-					<th><label for="<?php echo $meta_key;?>"><?php echo $field['label'];?></label></th>
-					<td>
-					<?php
-					if(isset($field['description']))
-					{ ?><span class="description"><?php echo $field['description'];?></span><br><?php }
+			<form method="post">
+				<input type="hidden" name="save_settings" value="1">
+				<table class="form-table">
+				<?php
+				foreach($fields as $meta_key => $field)
+				{
+					?>
+					<tr>
+						<th><label for="<?php echo $meta_key;?>"><?php echo $field['label'];?></label></th>
+						<td>
+						<?php
+						if(isset($field['description']))
+						{ ?><span class="description"><?php echo $field['description'];?></span><br><?php }
 
-					if($field['type'] == 'text')
-					{
-						?><input type="text" name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
-					}
-					else if($field['type'] == 'textarea')
-					{
-						?><textarea rows="6" cols="38" name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>"><?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?></textarea><br /><?php
-					}
-					else if($field['type'] == 'select')
-					{
-						?>
-						<select name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>">
-						<?php
-						foreach($field['options'] as $option_value => $option_label){
-							$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+						if($field['type'] == 'text')
+						{
+							?><input type="text" name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
+						}
+						else if($field['type'] == 'textarea')
+						{
+							?><textarea rows="6" cols="38" name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>"><?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?></textarea><br /><?php
+						}
+						else if($field['type'] == 'select')
+						{
 							?>
-							<option<?php echo ($real_value !== $option_label ? ' value="'.$real_value.'"' : '');?> <?php selected( ($real_value !== $option_label ? $real_value : $option_label), esc_attr( (isset($field['value']) ? $field['value'] : '') ));?>><?php echo $option_label;?></option>
+							<select name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>">
 							<?php
-						} ?>
-						</select>
-						<?php
-					}
-					else if($field['type'] == 'checkbox')
-					{
-						foreach($field['options'] as $option_value => $option_label){
-							$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
-							$checked = (in_array($real_value, $fields[$meta_key]['value'])) ? 'checked' : '';
-							?>
-							<input type="checkbox" name="settings[<?php echo $meta_key;?>][]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?><br>
+							foreach($field['options'] as $option_value => $option_label){
+								$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+								?>
+								<option<?php echo ($real_value !== $option_label ? ' value="'.$real_value.'"' : '');?> <?php selected( ($real_value !== $option_label ? $real_value : $option_label), esc_attr( (isset($field['value']) ? $field['value'] : '') ));?>><?php echo $option_label;?></option>
+								<?php
+							} ?>
+							</select>
 							<?php
 						}
-					}
-					 ?>
-					</td>
-				</tr>
-				<?php
-			}
-			?>
-			</table>
-			<p><input type="submit" value="Save Settings" class="button button-primary" id="submit" name="submit"></p>
-		</form>
+						else if($field['type'] == 'checkbox')
+						{
+							foreach($field['options'] as $option_value => $option_label){
+								$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+								if($fields[$meta_key]['value']){
+									$checked = (in_array($real_value, $fields[$meta_key]['value'])) ? 'checked' : '';
+								} else { $checked = ''; }
+								?>
+								<input type="checkbox" name="settings[<?php echo $meta_key;?>][]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?><br>
+								<?php
+							}
+						}
+						 ?>
+						</td>
+					</tr>
+					<?php
+				}
+				?>
+				</table>
+				<p><input type="submit" value="Save Settings" class="button button-primary" id="submit" name="submit"></p>
+			</form>
 		<?php
 
 	}
+
+	public static function unsanitize_title($title)
+	{
+		return ucwords(str_replace(array('_', '-'), ' ', $title));
+	}
 }
-
-
-
