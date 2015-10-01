@@ -83,7 +83,6 @@ foreach($files as $file){
 
 
 
-
 /*
 *
 * Block Function to build Admin for ACF
@@ -91,6 +90,8 @@ foreach($files as $file){
 */
 if(function_exists("register_field_group"))
 {
+
+
 	register_field_group(array (
 		'id' => 'acf_content-blocks',
 		'title' => 'Content Blocks',

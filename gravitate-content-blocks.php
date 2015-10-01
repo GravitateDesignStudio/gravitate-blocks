@@ -7,21 +7,27 @@ Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
 
-register_activation_hook( __FILE__, array( 'GRAVITATE_CONTENT_BLOCKS', 'activate' ));
-register_deactivation_hook( __FILE__, array( 'GRAVITATE_CONTENT_BLOCKS', 'deactivate' ));
+register_activation_hook( __FILE__, array( 'GRAV_BLOCKS', 'activate' ));
+register_deactivation_hook( __FILE__, array( 'GRAV_BLOCKS', 'deactivate' ));
 
-add_action('admin_menu', array( 'GRAVITATE_CONTENT_BLOCKS', 'admin_menu' ));
-add_action('admin_init', array( 'GRAVITATE_CONTENT_BLOCKS', 'admin_init' ));
-add_action('init', array( 'GRAVITATE_CONTENT_BLOCKS', 'init' ));
+add_action('admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
+add_action('admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
+add_action('init', array( 'GRAV_BLOCKS', 'init' ));
 
 
 
-class GRAVITATE_CONTENT_BLOCKS {
+class GRAV_BLOCKS {
 
 	private static $version = '1.0.0';
 	private static $page = 'options-general.php?page=gravitate_blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
+
+	public static function dump($var){
+		echo '<pre>';
+		var_dump($var);
+		echo '</pre>';
+	}
 
 	public static function init()
 	{
@@ -81,7 +87,7 @@ class GRAVITATE_CONTENT_BLOCKS {
 
 					<?php
 						$layout = strtolower(str_replace('_', '-', get_row_layout()));
-						GRAVITATE_CONTENT_BLOCKS::get_block($layout);
+						GRAV_BLOCKS::get_block($layout);
 					?>
 
 				</section>
@@ -104,6 +110,11 @@ class GRAVITATE_CONTENT_BLOCKS {
 		}
 	}
 
+	public static function get_blocks($block='')
+	{
+		// Does what the config file does, add filter to array of blocks/paths
+	}
+
 	public static function get_block_path($block='')
 	{
 		if($block && is_dir(get_template_directory().'/grav-blocks/'.$block.'/'))
@@ -115,6 +126,25 @@ class GRAVITATE_CONTENT_BLOCKS {
 			if(is_dir(plugin_dir_path( __FILE__ ).'grav-blocks/'.$block.'/'))
 			{
 				return plugin_dir_path( __FILE__ ).'grav-blocks/'.$block;
+			}
+		}
+	}
+
+	public static function get_file_path($file='')
+	{
+		// check if they have it in their theme, then grab from plugin
+		// add to config file to check for user specified file before plugin file
+		// key base value is full path to file
+
+		if($file && file_exists(get_template_directory().'/grav-blocks/'.$file))
+		{
+			return get_template_directory().'/grav-blocks/'.$file;
+		}
+		else
+		{
+			if(file_exists(plugin_dir_path( __FILE__ ).'grav-blocks/'.$file))
+			{
+				return plugin_dir_path( __FILE__ ).'grav-blocks/'.$file;
 			}
 		}
 	}
@@ -135,56 +165,48 @@ class GRAVITATE_CONTENT_BLOCKS {
         return $_SERVER['REMOTE_ADDR'];
     }
 
-	private static function get_settings_fields()
+	private static function get_settings_fields($location = 'general')
 	{
-		$posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
-		// TODO add filter here for $posts_to_exclude
-
-		$posts = get_post_types();
-		$templates = get_page_templates();
-
-		$post_types = array();
-		foreach($posts as $post_type){
-			if(!in_array($post_type, $posts_to_exclude)){
-				$post_types[$post_type] = self::unsanitize_title($post_type);
-			}
-		}
-
-		$template_options = array('default' => 'Default');
-		foreach($templates as $key => $template){
-			$template_options[$template] = self::unsanitize_title($key);
-		}
-
-		$fields = array();
-		$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
-		$fields['templates'] = array('type' => 'checkbox', 'label' => 'Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
-
-		self::get_settings();
-
-		// Update Values in Form
-		if(!empty(self::$settings))
+		switch ($location)
 		{
-			foreach (self::$settings as $key => $value)
-			{
-				if(isset($fields[$key]))
-				{
-					$fields[$key]['value'] = $value;
+			default:
+			case 'general':
+				$posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
+				// TODO add filter here for $posts_to_exclude
+
+				$posts = get_post_types();
+				$templates = get_page_templates();
+
+				$post_types = array();
+				foreach($posts as $post_type){
+					if(!in_array($post_type, $posts_to_exclude)){
+						$post_types[$post_type] = self::unsanitize_title($post_type);
+					}
 				}
-			}
+
+				$template_options = array('default' => 'Default');
+				foreach($templates as $key => $template){
+					$template_options[$template] = self::unsanitize_title($key);
+				}
+
+				$fields = array();
+				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
+				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
+
+				break;
+
+			case 'advanced':
+				$advanced_options = array(
+					'foundation' => 'Use Foundation 5 CSS.',
+					'content' => 'Add content blocks to the end of your content.'
+				);
+
+				$fields = array();
+				$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => 'Change Advanced Settings.');
+
+				break;
+
 		}
-
-		return $fields;
-	}
-
-	private static function get_advanced_settings_fields()
-	{
-		$advanced_options = array(
-			'foundation' => 'Use Foundation 5 CSS.',
-			'content' => 'Add content blocks to the end of your content.'
-		);
-
-		$fields = array();
-		$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => 'Change Advanced Settings.');
 
 		self::get_settings();
 
@@ -301,10 +323,9 @@ class GRAVITATE_CONTENT_BLOCKS {
 				break;
 
 			case 'advanced':
-				$fields = self::get_advanced_settings_fields();
+				$fields = self::get_settings_fields('advanced');
 				break;
 		}
-
 
 		?>
 			<form method="post">
