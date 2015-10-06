@@ -106,6 +106,48 @@ class GRAV_BLOCKS {
 		}
 	}
 
+	public static function get_locations()
+	{
+		self::get_settings(true);
+		$locations = array();
+		$locations_formatted = array();
+
+		if(!empty(self::$settings['post_types']))
+		{
+			foreach (self::$settings['post_types'] as $location)
+			{
+				$locations[] = array('key' => 'post_type', 'value' => $location);
+			}
+		}
+
+		if(!empty(self::$settings['templates']))
+		{
+			foreach (self::$settings['templates'] as $location)
+			{
+				$locations[] = array('key' => 'page_template', 'value' => $location);
+			}
+		}
+
+		$group = 0;
+
+		foreach ($locations as $location)
+		{
+			$locations_formatted[] = array (
+					array (
+						'param' => $location['key'],
+						'operator' => '==',
+						'value' => $location['value'],
+						'order_no' => 0,
+						'group_no' => $group++,
+					),
+				);
+		}
+
+		$locations_formatted = apply_filters( 'grav_block_locations', $locations_formatted );
+
+		return $locations_formatted;
+	}
+
 	public static function get_block($block='')
 	{
 		if($path = self::get_path($block))
@@ -249,21 +291,36 @@ class GRAV_BLOCKS {
 
 				$posts = get_post_types();
 				$templates = get_page_templates();
-
 				$post_types = array();
-				foreach($posts as $post_type){
-					if(!in_array($post_type, $posts_to_exclude)){
+				$template_options = array();
+
+				foreach($posts as $post_type)
+				{
+					if(!in_array($post_type, $posts_to_exclude))
+					{
 						$post_types[$post_type] = self::unsanitize_title($post_type);
 					}
 				}
 
-				$template_options = array('default' => 'Default');
-				foreach($templates as $key => $template){
+				if(!in_array('default', array_map('strtolower', $templates)) && !in_array('page.php', array_map('strtolower', $templates)) && file_exists(get_template_directory().'/page.php'))
+				{
+					$templates = array_merge(array('Default' => 'default'), $templates);
+				}
+
+				foreach($templates as $key => $template)
+				{
 					$template_options[$template] = self::unsanitize_title($key);
 				}
 
+				$background_colors_repeater = array(
+					'name' => array('type' => 'text', 'label' => 'Name', 'description' => ''),
+					'value' => array('type' => 'checkbox', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)', 'options' => array('blue' => 'Blue', 'red' => 'Red'))
+				);
+
+
 				$fields = array();
 				$fields['blocks_enabled'] = array('type' => 'checkbox', 'label' => 'Blocks Enabled', 'options' => implode(',', array_keys(self::get_available_blocks())), 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
+				$fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
 
@@ -291,7 +348,24 @@ class GRAV_BLOCKS {
 			{
 				if(isset($fields[$key]))
 				{
-					$fields[$key]['value'] = $value;
+					if($fields[$key]['type'] == 'repeater' && is_array($value))
+					{
+						$rep_original_fields = $fields[$key]['fields'];
+
+						foreach ($value as $rep_i => $rep_values)
+						{
+							$fields[$key]['fields'][$rep_i] = $rep_original_fields;
+
+							foreach ($rep_original_fields as $rep_key => $rep_value)
+							{
+								$fields[$key]['fields'][$rep_i][$rep_key]['value'] = $rep_values[$rep_key];
+							}
+						}
+					}
+					else
+					{
+						$fields[$key]['value'] = $value;
+					}
 				}
 			}
 		}
@@ -401,6 +475,10 @@ class GRAV_BLOCKS {
 				break;
 		}
 
+		//echo '<pre>';print_r(self::$settings);echo '</pre>';
+
+		//echo '<pre>';print_r($fields);echo '</pre>';
+
 		?>
 			<form method="post">
 				<input type="hidden" name="save_settings" value="1">
@@ -413,61 +491,54 @@ class GRAV_BLOCKS {
 						<th><label for="<?php echo $meta_key;?>"><?php echo $field['label'];?></label></th>
 						<td>
 						<?php
-						if(isset($field['description']))
-						{ ?><span class="description"><?php echo $field['description'];?></span><br><?php }
-
-						if($field['type'] == 'text')
+						if($field['type'] != 'repeater')
 						{
-							?><input type="text" name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
+							self::settings_field($meta_key, $field);
 						}
-						else if($field['type'] == 'textarea')
+						else // If Repeater
 						{
-							?><textarea rows="6" cols="38" name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>"><?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?></textarea><br /><?php
-						}
-						else if($field['type'] == 'select')
-						{
-							?>
-							<select name="settings[<?php echo $meta_key;?>]" id="<?php echo $meta_key;?>">
-							<?php
-							foreach($field['options'] as $option_value => $option_label){
-								$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
-								?>
-								<option<?php echo ($real_value !== $option_label ? ' value="'.$real_value.'"' : '');?> <?php selected( ($real_value !== $option_label ? $real_value : $option_label), esc_attr( (isset($field['value']) ? $field['value'] : '') ));?>><?php echo $option_label;?></option>
-								<?php
-							} ?>
-							</select>
-							<?php
-						}
-						else if($field['type'] == 'checkbox')
-						{
-							if(is_string($field['options']))
+							if(!empty($field['fields']))
 							{
-								$field['options'] = explode(',', $field['options']);
-								$field['options'] = array_combine($field['options'], $field['options']);
-							}
-
-							?>
-							<input type="hidden" name="settings[<?php echo $meta_key;?>]" value="">
-							<?php
-
-							foreach($field['options'] as $option_value => $option_label)
-							{
-								$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
-
-								if($fields[$meta_key]['value'])
-								{
-									$checked = (in_array($real_value, $fields[$meta_key]['value'])) ? 'checked' : '';
-								}
-								else
-								{
-									$checked = '';
-								}
 								?>
-								<label><input type="checkbox" name="settings[<?php echo $meta_key;?>][]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?></label><br>
+								<table class="form-table repeater-table">
+									<?php
+									foreach ($field['fields'] as $rep_i => $rep_fields)
+									{
+										if(is_numeric($rep_i))
+										{
+											?>
+											<tr class="repeater-item" style="border: 1px solid #999;">
+												<?php
+
+												foreach ($rep_fields as $rep_key => $rep_field)
+												{
+													?>
+													<td>
+														<?php self::settings_field($rep_key, $rep_field, $meta_key, $rep_i); ?>
+													</td>
+													<?php
+
+												}
+												$rep_i++;
+												?>
+												<td>
+													<button class="repeater-remove" type="input">X</button>
+												</td>
+											</tr>
+										<?php
+										}
+									}
+									?>
+									<tfoot>
+										<tr>
+											<td colspan="10"><button class="repeater-add" style="float:right;" type="input">Add</button></td>
+										</tr>
+									</tfoot>
+								</table>
 								<?php
 							}
 						}
-						 ?>
+						?>
 						</td>
 					</tr>
 					<?php
@@ -476,8 +547,115 @@ class GRAV_BLOCKS {
 				</table>
 				<p><input type="submit" value="Save Settings" class="button button-primary" id="submit" name="submit"></p>
 			</form>
+
+			<script>
+
+			jQuery(function($)
+			{
+
+				$('.repeater-add').on('click', function(e)
+				{
+					e.preventDefault();
+					var clone = $('.repeater-table .repeater-item:first-child').clone();
+					clone.html(clone.html().replace(new RegExp(/\[0\]/, 'g'), '['+$(this).closest('.repeater-table').find('.repeater-item').length+']'));
+					clone.find('input[type="text"], textarea').val('');
+					clone.find('input[type="checkbox"]').removeAttr('checked');
+					clone.appendTo('.repeater-table');
+					addRemoveListeners();
+					return false;
+				});
+
+				function addRemoveListeners()
+				{
+					$('.repeater-remove').off('click');
+					$('.repeater-remove').on('click', function(e)
+					{
+						e.preventDefault();
+						if($(this).closest('.repeater-table').find('.repeater-item').length > 1)
+						{
+							$(this).closest('.repeater-item').remove();
+						}
+						else
+						{
+							alert('You need to keep at least one Item');
+						}
+						return false;
+					});
+				}
+
+				addRemoveListeners();
+			});
+
+			</script>
 		<?php
 
+	}
+
+	private static function settings_field($meta_key, $field, $repeater_key='', $rep_i=0)
+	{
+		$settings_attribute = 'settings['.$meta_key.']';
+
+		if($repeater_key && $field['label'])
+		{
+			$settings_attribute = 'settings['.$repeater_key.']['.$rep_i.']['.$meta_key.']';
+
+			?><label for="<?php echo $meta_key;?>"><strong><?php echo $field['label'];?></strong></label><br><?php
+		}
+
+		if(!empty($field['description']))
+		{ ?><span class="description"><?php echo $field['description'];?></span><br><?php }
+
+		if($field['type'] == 'text')
+		{
+			?><input type="text" name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
+		}
+		else if($field['type'] == 'textarea')
+		{
+			?><textarea rows="6" cols="38" name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>"><?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?></textarea><br /><?php
+		}
+		else if($field['type'] == 'select')
+		{
+			?>
+			<select name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>">
+			<?php
+			foreach($field['options'] as $option_value => $option_label){
+				$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+				?>
+				<option<?php echo ($real_value !== $option_label ? ' value="'.$real_value.'"' : '');?> <?php selected( ($real_value !== $option_label ? $real_value : $option_label), esc_attr( (isset($field['value']) ? $field['value'] : '') ));?>><?php echo $option_label;?></option>
+				<?php
+			} ?>
+			</select>
+			<?php
+		}
+		else if($field['type'] == 'checkbox')
+		{
+			if(is_string($field['options']))
+			{
+				$field['options'] = explode(',', $field['options']);
+				$field['options'] = array_combine($field['options'], $field['options']);
+			}
+
+			?>
+			<input type="hidden" name="<?php echo $settings_attribute;?>" value="">
+			<?php
+
+			foreach($field['options'] as $option_value => $option_label)
+			{
+				$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+
+				if(is_array($field['value']))
+				{
+					$checked = (in_array($real_value, $field['value'])) ? 'checked' : '';
+				}
+				else
+				{
+					$checked = '';
+				}
+				?>
+				<label><input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?></label><br>
+				<?php
+			}
+		}
 	}
 
 	public static function unsanitize_title($title)

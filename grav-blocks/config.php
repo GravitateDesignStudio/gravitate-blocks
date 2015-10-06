@@ -79,17 +79,7 @@ if(function_exists("register_field_group"))
 				'max' => '',
 			),
 		),
-		'location' => array (
-			array (
-				array (
-					'param' => 'post_type',
-					'operator' => '==',
-					'value' => 'page',
-					'order_no' => 0,
-					'group_no' => 1,
-				),
-			),
-		),
+		'location' => GRAV_BLOCKS::get_locations(),
 		'options' => array (
 			'position' => 'normal',
 			'layout' => 'no_box',
@@ -99,3 +89,4 @@ if(function_exists("register_field_group"))
 		'menu_order' => 100,
 	));
 }
+
