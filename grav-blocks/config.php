@@ -1,10 +1,9 @@
 <?php
 
-
 /*
 * Global variables to use across multiple blocks
 */
-$acf_block_background_colors = array (
+$block_background_colors = array (
 	'white' => 'White',
 	'dark' => 'Blue',
 	'darker' => 'Dark Blue',
@@ -13,50 +12,26 @@ $acf_block_background_colors = array (
 	'image' => 'Image'
 );
 
-
-
-
-/*
-*
-* Build out blocks from sub-directories
-* You will need a "block.php" file for the block layout
-* and a "block_acf.php" file for the acf for the block
-*
-*/
-$files = array();
+// Variable for Including Blocks in Flexible Content
 $layouts = array();
-$directory = get_stylesheet_directory().'/parts/blocks';
 
-if (! is_dir($directory)) {
-    exit('Invalid directory path');
-}
-
-$dirs = array_filter(glob($directory.'/*'), 'is_dir');
-foreach($dirs as $dir){
-	foreach (scandir($dir) as $file) {
-	    if ('.' === $file) continue;
-	    if ('..' === $file) continue;
-	    if (fnmatch("*_acf.php", $file)) {
-			$files[] = $file;
-		}
-	}
-}
-
-foreach($files as $file){
-	$block = preg_replace('/_acf.php/', '', $file);
-	$acf_background = array (
-		'key' => 'field_'.$block.'_x000000000001',
+// Loop through all enabled blocks and set them up
+foreach(GRAV_BLOCKS::get_blocks() as $block => $block_path)
+{
+	$block_backgrounds = array (
+		'key' => 'field_'.$block.'_x01',
 		'label' => 'Background',
 		'name' => 'block_background',
 		'type' => 'select',
 		'column_width' => '',
-		'choices' => $acf_block_background_colors,
+		'choices' => $block_background_colors,
 		'default_value' => '',
 		'allow_null' => 0,
 		'multiple' => 0,
 	);
-	$acf_background_image = array (
-		'key' => 'field_'.$block.'_x000000000002',
+
+	$block_background_image = array (
+		'key' => 'field_'.$block.'_x02',
 		'label' => 'Background Image',
 		'name' => 'block_background_image',
 		'type' => 'image',
@@ -64,7 +39,7 @@ foreach($files as $file){
 			'status' => 1,
 			'rules' => array (
 				array (
-					'field' => 'field_'.$block.'_x000000000001',
+					'field' => 'field_'.$block.'_x01',
 					'operator' => '==',
 					'value' => 'image',
 				),
@@ -76,9 +51,8 @@ foreach($files as $file){
 		'preview_size' => 'medium',
 		'library' => 'all',
 	);
-	include($block.'/'.$file);
-	$layouts[$block] = $acf_layout;
-	$acf_layout = '';
+
+	$layouts[$block] = include($block_path.'/block_fields.php');
 }
 
 
@@ -90,15 +64,13 @@ foreach($files as $file){
 */
 if(function_exists("register_field_group"))
 {
-
-
 	register_field_group(array (
-		'id' => 'acf_content-blocks',
-		'title' => 'Content Blocks',
+		'id' => 'acf_grav_blocks',
+		'title' => 'Grav Blocks',
 		'fields' => array (
 			array (
-				'key' => 'field_1000000000001',
-				'label' => 'Content Blocks',
+				'key' => 'field_x1',
+				'label' => 'Grav Blocks',
 				'name' => 'blocks',
 				'type' => 'flexible_content',
 				'layouts' => $layouts,
@@ -114,7 +86,7 @@ if(function_exists("register_field_group"))
 					'operator' => '==',
 					'value' => 'page',
 					'order_no' => 0,
-					'group_no' => 2,
+					'group_no' => 1,
 				),
 			),
 		),

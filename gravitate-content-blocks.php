@@ -34,6 +34,15 @@ class GRAV_BLOCKS {
 		// Nothing for now
 		// self::get_settings();
 		// grav_dump(self::$settings);
+
+		if($config_path = self::get_path('config.php'))
+		{
+			include $config_path;
+		}
+		else
+		{
+			// Error
+		}
 	}
 
 	public static function activate()
@@ -99,10 +108,16 @@ class GRAV_BLOCKS {
 
 	public static function get_block($block='')
 	{
-		$path = self::get_block_path($block);
-		if($handler && file_exists($path.'/html.php'))
+		if($path = self::get_path($block))
 		{
-			include($path.'/html.php');
+			if(file_exists($path.'/block.php'))
+			{
+				include($path.'/block.php');
+			}
+			else
+			{
+				// Error
+			}
 		}
 		else
 		{
@@ -110,42 +125,100 @@ class GRAV_BLOCKS {
 		}
 	}
 
-	public static function get_blocks($block='')
+	public static function get_blocks()
 	{
-		// Does what the config file does, add filter to array of blocks/paths
+		self::get_settings(true);
+		$blocks = array();
+
+		if(empty(self::$settings['blocks_enabled']))
+		{
+			return array();
+		}
+
+		if($available_blocks = self::get_available_blocks())
+		{
+			$blocks = array_intersect_key($available_blocks, array_flip(self::$settings['blocks_enabled']));
+		}
+
+		return $blocks;
 	}
 
-	public static function get_block_path($block='')
+	public static function get_available_blocks()
 	{
-		if($block && is_dir(get_template_directory().'/grav-blocks/'.$block.'/'))
+		$blocks = array();
+		$plugin_blocks = array();
+		$theme_blocks = array();
+
+		// Get blocks from the Plugin
+		if($directory = self::get_path())
 		{
-			return get_template_directory().'/grav-blocks/'.$block;
+			$plugin_blocks = array_filter(glob($directory.'*'), 'is_dir');
+		}
+
+		// Get blocks from the Theme
+		if($directory = get_template_directory().'/grav-blocks/')
+		{
+			if(is_dir($directory))
+			{
+				$theme_blocks = array_filter(glob($directory.'*'), 'is_dir');
+			}
+		}
+
+		// Overwrite Plugin Blocks with Theme Blocks
+		$dirs = array_merge($plugin_blocks, $theme_blocks);
+
+		if($dirs)
+		{
+			foreach($dirs as $dir)
+			{
+				$block = basename($dir);
+
+			    if(file_exists($dir.'/block.php'))
+			    {
+					$blocks[$block] = $dir;
+				}
+			}
+		}
+
+		// Apply Filters to allow others to filter the blocks used.
+		$blocks = apply_filters( 'grav_blocks', $blocks );
+
+		return $blocks;
+	}
+
+	public static function get_path($path='')
+	{
+		if(!$path)
+		{
+			if(is_dir(plugin_dir_path( __FILE__ ).'grav-blocks/'))
+			{
+				return plugin_dir_path( __FILE__ ).'grav-blocks/';
+			}
+			else
+			{
+				// Error
+			}
 		}
 		else
 		{
-			if(is_dir(plugin_dir_path( __FILE__ ).'grav-blocks/'.$block.'/'))
+			if(is_dir(get_template_directory().'/grav-blocks/'.$path.'/'))
 			{
-				return plugin_dir_path( __FILE__ ).'grav-blocks/'.$block;
+				return get_template_directory().'/grav-blocks/'.$path;
 			}
-		}
-	}
-
-	public static function get_file_path($file='')
-	{
-		// check if they have it in their theme, then grab from plugin
-		// add to config file to check for user specified file before plugin file
-		// key base value is full path to file
-
-		if($file && file_exists(get_template_directory().'/grav-blocks/'.$file))
-		{
-			return get_template_directory().'/grav-blocks/'.$file;
-		}
-		else
-		{
-			if(file_exists(plugin_dir_path( __FILE__ ).'grav-blocks/'.$file))
+			else if(file_exists(get_template_directory().'/grav-blocks/'.$path))
 			{
-				return plugin_dir_path( __FILE__ ).'grav-blocks/'.$file;
+				return get_template_directory().'/grav-blocks/'.$path;
 			}
+			else if(is_dir(plugin_dir_path( __FILE__ ).'grav-blocks/'.$path.'/'))
+			{
+				return plugin_dir_path( __FILE__ ).'grav-blocks/'.$path;
+			}
+			else if(file_exists(plugin_dir_path( __FILE__ ).'grav-blocks/'.$path))
+			{
+				return plugin_dir_path( __FILE__ ).'grav-blocks/'.$path;
+			}
+
+			return false;
 		}
 	}
 
@@ -190,6 +263,7 @@ class GRAV_BLOCKS {
 				}
 
 				$fields = array();
+				$fields['blocks_enabled'] = array('type' => 'checkbox', 'label' => 'Blocks Enabled', 'options' => implode(',', array_keys(self::get_available_blocks())), 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
 
@@ -366,13 +440,30 @@ class GRAV_BLOCKS {
 						}
 						else if($field['type'] == 'checkbox')
 						{
-							foreach($field['options'] as $option_value => $option_label){
+							if(is_string($field['options']))
+							{
+								$field['options'] = explode(',', $field['options']);
+								$field['options'] = array_combine($field['options'], $field['options']);
+							}
+
+							?>
+							<input type="hidden" name="settings[<?php echo $meta_key;?>]" value="">
+							<?php
+
+							foreach($field['options'] as $option_value => $option_label)
+							{
 								$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
-								if($fields[$meta_key]['value']){
+
+								if($fields[$meta_key]['value'])
+								{
 									$checked = (in_array($real_value, $fields[$meta_key]['value'])) ? 'checked' : '';
-								} else { $checked = ''; }
+								}
+								else
+								{
+									$checked = '';
+								}
 								?>
-								<input type="checkbox" name="settings[<?php echo $meta_key;?>][]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?><br>
+								<label><input type="checkbox" name="settings[<?php echo $meta_key;?>][]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?></label><br>
 								<?php
 							}
 						}
