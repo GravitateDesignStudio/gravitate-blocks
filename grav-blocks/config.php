@@ -55,8 +55,6 @@ foreach(GRAV_BLOCKS::get_blocks() as $block => $block_path)
 	$layouts[$block] = include($block_path.'/block_fields.php');
 }
 
-
-
 /*
 *
 * Block Function to build Admin for ACF
@@ -71,7 +69,7 @@ if(function_exists("register_field_group"))
 			array (
 				'key' => 'field_x1',
 				'label' => 'Grav Blocks',
-				'name' => 'blocks',
+				'name' => 'grav_blocks',
 				'type' => 'flexible_content',
 				'layouts' => $layouts,
 				'button_label' => 'Add Content',

@@ -14,14 +14,19 @@ add_action('admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
 add_action('admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action('init', array( 'GRAV_BLOCKS', 'init' ));
 
-
-
+/**
+ *
+ * @author Gravitate
+ *
+ */
 class GRAV_BLOCKS {
+
 
 	private static $version = '1.0.0';
 	private static $page = 'options-general.php?page=gravitate_blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
+
 
 	public static function dump($var){
 		echo '<pre>';
@@ -29,11 +34,15 @@ class GRAV_BLOCKS {
 		echo '</pre>';
 	}
 
-	public static function init()
+	/**
+	 * This is the initial setup that connects the Settings and loads the Fields from ACF
+	 *
+	 * @return void
+	 */
+	private static function setup()
 	{
-		// Nothing for now
-		// self::get_settings();
-		// grav_dump(self::$settings);
+		include plugin_dir_path( __FILE__ ).'gravitate-plugin-settings.php';
+		new GRAV_BLOCKS_PLUGIN_SETTINGS(self::$option_key);
 
 		if($config_path = self::get_path('config.php'))
 		{
@@ -45,67 +54,103 @@ class GRAV_BLOCKS {
 		}
 	}
 
+	/**
+	 * Runs on WP init
+	 *
+	 * @return void
+	 */
+	public static function init()
+	{
+		self::setup();
+	}
+
+	/**
+	 * Grabs the settings from the Settings class
+	 *
+	 * @param boolean $force
+	 *
+	 * @return void
+	 */
+	private static function get_settings($force=false)
+	{
+		self::$settings = GRAV_BLOCKS_PLUGIN_SETTINGS::get_settings($force);
+	}
+
+	/**
+	 * Runs on WP Plugin Activation
+	 *
+	 * @return void
+	 */
 	public static function activate()
 	{
 		// Nothing for now
 	}
 
+	/**
+	 * Runs on WP Plugin Deactivation
+	 *
+	 * @return void
+	 */
 	public static function deactivate()
 	{
 		// Nothing for now
 	}
 
+	/**
+	 * Runs on WP Admin Initiate
+	 *
+	 * @return void
+	 */
 	public static function admin_init()
 	{
 		// Nothing for now
 	}
 
+	/**
+	 * Create the Admin Menu in that Admin Panel
+	 *
+	 * @return void
+	 */
 	public static function admin_menu()
 	{
 		add_submenu_page( 'options-general.php', 'Gravitate Blocks', 'Gravitate Blocks', 'manage_options', 'gravitate_blocks', array( __CLASS__, 'admin' ));
 	}
 
-	public static function get_handler_template()
+	/**
+	 * Outputs the Grav Blocks
+	 *
+	 * @param string $section - This is the Section of blocks to pull from.
+	 *                          For now there is just one.
+	 *
+	 * @return type
+	 */
+	public static function display($section='grav_blocks')
 	{
-		if($handler && file_exists(get_template_directory().'/grav-blocks/handler.php'))
-		{
-			return get_template_directory().'/grav-blocks/handler.php';
-		}
-		else if(file_exists(plugin_dir_path( __FILE__ ).'grav-blocks/handler.php'))
-		{
-			return plugin_dir_path( __FILE__ ).'grav-blocks/handler.php';
-		}
-	}
+		$handler_file = self::get_path('handler.php');
 
-	public static function get_handler_path($handler='')
-	{
-		$template = self::get_handler_template();
-
-		if(get_field($handler))
+		if($handler_file && get_field($section))
 		{
-			while(the_flexible_field($handler))
+			while(the_flexible_field($section))
 			{
 				$block_class_prefix = 'block';
 				$block_name = strtolower(str_replace('_', '-', get_row_layout()));
 				$block_background = get_sub_field('block_background');
 				$block_background_image = get_sub_field('block_background_image');
 				$block_background_style = (get_sub_field('block_background') == 'image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['large'].'\');" ' : '');
-				?>
 
-				<section class="<?php echo $block_class_prefix;?>-container <?php echo $block_class_prefix;?>-<?php echo $block_name;?> <?php echo $block_background;?>" <?php echo $block_background_style;?>>
-
-					<?php
-						$layout = strtolower(str_replace('_', '-', get_row_layout()));
-						GRAV_BLOCKS::get_block($layout);
-					?>
-
-				</section>
-
-				<?php
+				include $handler_file;
 			}
 		}
 	}
 
+	/**
+	 * Returns the Array of locations that the blocks are attached to.
+	 *
+	 * Has Filter:
+	 * Allows to be filtered with apply_filters( 'grav_block_locations', $locations_formatted )
+	 *
+	 * @return array
+	 */
 	public static function get_locations()
 	{
 		self::get_settings(true);
@@ -148,6 +193,13 @@ class GRAV_BLOCKS {
 		return $locations_formatted;
 	}
 
+	/**
+	 * Outputs the Markup for the Block
+	 *
+	 * @param string $block - This is the name of the block folder to retrieve and output
+	 *
+	 * @return void
+	 */
 	public static function get_block($block='')
 	{
 		if($path = self::get_path($block))
@@ -167,6 +219,11 @@ class GRAV_BLOCKS {
 		}
 	}
 
+	/**
+	 * Returns the Enabled Blocks
+	 *
+	 * @return array
+	 */
 	public static function get_blocks()
 	{
 		self::get_settings(true);
@@ -185,6 +242,14 @@ class GRAV_BLOCKS {
 		return $blocks;
 	}
 
+	/**
+	 * Returns all the available blocks
+	 *
+	 * Has Filter:
+	 * Allows to be filtered with apply_filters( 'grav_blocks', $blocks );
+	 *
+	 * @return array
+	 */
 	public static function get_available_blocks()
 	{
 		$blocks = array();
@@ -228,6 +293,14 @@ class GRAV_BLOCKS {
 		return $blocks;
 	}
 
+	/**
+	 * Gets the correct path of a file or directory for a Block asset.
+	 * Allows to be overwritten by the theme if the theme has a block asset in /grav-blocks/
+	 *
+	 * @param string $path
+	 *
+	 * @return string|false
+	 */
 	public static function get_path($path='')
 	{
 		if(!$path)
@@ -264,6 +337,11 @@ class GRAV_BLOCKS {
 		}
 	}
 
+	/**
+	 * Returns the Real IP from the user
+	 *
+	 * @return string
+	 */
 	public static function get_real_ip()
     {
         foreach (array('HTTP_X_FORWARDED_FOR', 'HTTP_X_REAL_IP', 'REMOTE_ADDR') as $server_ip)
@@ -280,6 +358,13 @@ class GRAV_BLOCKS {
         return $_SERVER['REMOTE_ADDR'];
     }
 
+    /**
+     * Returns the Settings Fields for specifc location.
+     *
+     * @param string $location
+     *
+     * @return array
+     */
 	private static function get_settings_fields($location = 'general')
 	{
 		switch ($location)
@@ -314,6 +399,7 @@ class GRAV_BLOCKS {
 
 				$background_colors_repeater = array(
 					'name' => array('type' => 'text', 'label' => 'Name', 'description' => ''),
+					'things' => array('type' => 'select', 'label' => 'Things', 'description' => 'asdfasf', 'options' => array('asdf','ggg')),
 					'value' => array('type' => 'checkbox', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)', 'options' => array('blue' => 'Blue', 'red' => 'Red'))
 				);
 
@@ -322,7 +408,7 @@ class GRAV_BLOCKS {
 				$fields['blocks_enabled'] = array('type' => 'checkbox', 'label' => 'Blocks Enabled', 'options' => implode(',', array_keys(self::get_available_blocks())), 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
-				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
+				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Page Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
 
 				break;
 
@@ -339,78 +425,21 @@ class GRAV_BLOCKS {
 
 		}
 
-		self::get_settings();
-
-		// Update Values in Form
-		if(!empty(self::$settings))
-		{
-			foreach (self::$settings as $key => $value)
-			{
-				if(isset($fields[$key]))
-				{
-					if($fields[$key]['type'] == 'repeater' && is_array($value))
-					{
-						$rep_original_fields = $fields[$key]['fields'];
-
-						foreach ($value as $rep_i => $rep_values)
-						{
-							$fields[$key]['fields'][$rep_i] = $rep_original_fields;
-
-							foreach ($rep_original_fields as $rep_key => $rep_value)
-							{
-								$fields[$key]['fields'][$rep_i][$rep_key]['value'] = $rep_values[$rep_key];
-							}
-						}
-					}
-					else
-					{
-						$fields[$key]['value'] = $value;
-					}
-				}
-			}
-		}
-
-		return $fields;
+		return GRAV_BLOCKS_PLUGIN_SETTINGS::format_fields($fields);
 	}
 
-	private static function get_settings($force=false)
-	{
-		if(empty(self::$settings) || $force)
-		{
-			self::$settings = get_option(self::$option_key);
-		}
-	}
-
-	private static function save_settings()
-	{
-		if(!empty($_POST['save_settings']) && !empty($_POST['settings']))
-		{
-			$_POST['settings']['updated_at'] = time();
-
-			$settings = $_POST['settings'];
-
-			if(!empty(self::$settings))
-			{
-				$settings = array_merge(self::$settings, $settings);
-			}
-
-			if(update_option( self::$option_key, $settings ))
-			{
-				self::get_settings(true);
-				return 'Settings Saved Successfully';
-			}
-		}
-
-		return false;
-	}
-
+	/**
+	 * Runs the Admin Page and outputs the HTML
+	 *
+	 * @return void
+	 */
 	public static function admin()
 	{
 		// Get Settings
 		self::get_settings(true);
 
 		// Save Settings if POST
-		self::save_settings();
+		GRAV_BLOCKS_PLUGIN_SETTINGS::save_settings();
 
 		?>
 
@@ -435,36 +464,30 @@ class GRAV_BLOCKS {
 
 		switch($section)
 		{
+			case 'advanced':
+				self::form('advanced');
+
+			break;
+
 			default:
 			case 'settings':
-				self::settings();
-			break;
-
-			case 'advanced':
-				self::settings('advanced');
-
-			case 'add':
-				self::add();
-			break;
-
-			case 'top':
-				self::top();
+				self::form();
 			break;
 		}
 	}
 
-	private static function add()
-	{
-		?>
-
-
-		<?php
-	}
-
-	private static function settings($type = 'general')
+	/**
+	 * Outputs the Form with the correct fields
+	 *
+	 * @param string $location
+	 *
+	 * @return type
+	 */
+	private static function form($location = 'general')
 	{
 		// Get Form Fields
-		switch ($type){
+		switch ($type)
+		{
 			default;
 			case 'general':
 				$fields = self::get_settings_fields();
@@ -475,189 +498,16 @@ class GRAV_BLOCKS {
 				break;
 		}
 
-		//echo '<pre>';print_r(self::$settings);echo '</pre>';
-
-		//echo '<pre>';print_r($fields);echo '</pre>';
-
-		?>
-			<form method="post">
-				<input type="hidden" name="save_settings" value="1">
-				<table class="form-table">
-				<?php
-				foreach($fields as $meta_key => $field)
-				{
-					?>
-					<tr>
-						<th><label for="<?php echo $meta_key;?>"><?php echo $field['label'];?></label></th>
-						<td>
-						<?php
-						if($field['type'] != 'repeater')
-						{
-							self::settings_field($meta_key, $field);
-						}
-						else // If Repeater
-						{
-							if(!empty($field['fields']))
-							{
-								?>
-								<table class="form-table repeater-table">
-									<?php
-									foreach ($field['fields'] as $rep_i => $rep_fields)
-									{
-										if(is_numeric($rep_i))
-										{
-											?>
-											<tr class="repeater-item" style="border: 1px solid #999;">
-												<?php
-
-												foreach ($rep_fields as $rep_key => $rep_field)
-												{
-													?>
-													<td>
-														<?php self::settings_field($rep_key, $rep_field, $meta_key, $rep_i); ?>
-													</td>
-													<?php
-
-												}
-												$rep_i++;
-												?>
-												<td>
-													<button class="repeater-remove" type="input">X</button>
-												</td>
-											</tr>
-										<?php
-										}
-									}
-									?>
-									<tfoot>
-										<tr>
-											<td colspan="10"><button class="repeater-add" style="float:right;" type="input">Add</button></td>
-										</tr>
-									</tfoot>
-								</table>
-								<?php
-							}
-						}
-						?>
-						</td>
-					</tr>
-					<?php
-				}
-				?>
-				</table>
-				<p><input type="submit" value="Save Settings" class="button button-primary" id="submit" name="submit"></p>
-			</form>
-
-			<script>
-
-			jQuery(function($)
-			{
-
-				$('.repeater-add').on('click', function(e)
-				{
-					e.preventDefault();
-					var clone = $('.repeater-table .repeater-item:first-child').clone();
-					clone.html(clone.html().replace(new RegExp(/\[0\]/, 'g'), '['+$(this).closest('.repeater-table').find('.repeater-item').length+']'));
-					clone.find('input[type="text"], textarea').val('');
-					clone.find('input[type="checkbox"]').removeAttr('checked');
-					clone.appendTo('.repeater-table');
-					addRemoveListeners();
-					return false;
-				});
-
-				function addRemoveListeners()
-				{
-					$('.repeater-remove').off('click');
-					$('.repeater-remove').on('click', function(e)
-					{
-						e.preventDefault();
-						if($(this).closest('.repeater-table').find('.repeater-item').length > 1)
-						{
-							$(this).closest('.repeater-item').remove();
-						}
-						else
-						{
-							alert('You need to keep at least one Item');
-						}
-						return false;
-					});
-				}
-
-				addRemoveListeners();
-			});
-
-			</script>
-		<?php
-
+		GRAV_BLOCKS_PLUGIN_SETTINGS::get_form($fields);
 	}
 
-	private static function settings_field($meta_key, $field, $repeater_key='', $rep_i=0)
-	{
-		$settings_attribute = 'settings['.$meta_key.']';
-
-		if($repeater_key && $field['label'])
-		{
-			$settings_attribute = 'settings['.$repeater_key.']['.$rep_i.']['.$meta_key.']';
-
-			?><label for="<?php echo $meta_key;?>"><strong><?php echo $field['label'];?></strong></label><br><?php
-		}
-
-		if(!empty($field['description']))
-		{ ?><span class="description"><?php echo $field['description'];?></span><br><?php }
-
-		if($field['type'] == 'text')
-		{
-			?><input type="text" name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
-		}
-		else if($field['type'] == 'textarea')
-		{
-			?><textarea rows="6" cols="38" name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>"><?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?></textarea><br /><?php
-		}
-		else if($field['type'] == 'select')
-		{
-			?>
-			<select name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>">
-			<?php
-			foreach($field['options'] as $option_value => $option_label){
-				$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
-				?>
-				<option<?php echo ($real_value !== $option_label ? ' value="'.$real_value.'"' : '');?> <?php selected( ($real_value !== $option_label ? $real_value : $option_label), esc_attr( (isset($field['value']) ? $field['value'] : '') ));?>><?php echo $option_label;?></option>
-				<?php
-			} ?>
-			</select>
-			<?php
-		}
-		else if($field['type'] == 'checkbox')
-		{
-			if(is_string($field['options']))
-			{
-				$field['options'] = explode(',', $field['options']);
-				$field['options'] = array_combine($field['options'], $field['options']);
-			}
-
-			?>
-			<input type="hidden" name="<?php echo $settings_attribute;?>" value="">
-			<?php
-
-			foreach($field['options'] as $option_value => $option_label)
-			{
-				$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
-
-				if(is_array($field['value']))
-				{
-					$checked = (in_array($real_value, $field['value'])) ? 'checked' : '';
-				}
-				else
-				{
-					$checked = '';
-				}
-				?>
-				<label><input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?></label><br>
-				<?php
-			}
-		}
-	}
-
+	/**
+	 * Filters a string to be in a title format
+	 *
+	 * @param string $title
+	 *
+	 * @return string
+	 */
 	public static function unsanitize_title($title)
 	{
 		return ucwords(str_replace(array('_', '-'), ' ', $title));
