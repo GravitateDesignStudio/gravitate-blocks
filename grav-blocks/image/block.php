@@ -1,5 +1,5 @@
-<?php 
-$padding = get_sub_field('without_padding');
+<?php
+$padding = get_sub_field('full_width');
 $image = get_sub_field('full_width_image');
 ?>
 

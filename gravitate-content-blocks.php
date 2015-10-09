@@ -369,6 +369,18 @@ class GRAV_BLOCKS {
 	{
 		switch ($location)
 		{
+
+			case 'advanced':
+				$advanced_options = array(
+					'use_foundation' => 'Use Foundation 5 CSS.',
+					'filter_content' => 'Add content blocks to the end of your content.'
+				);
+
+				$fields = array();
+				$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => 'Change Advanced Settings.');
+
+			break;
+
 			default:
 			case 'general':
 				$posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
@@ -410,18 +422,7 @@ class GRAV_BLOCKS {
 				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Page Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
 
-				break;
-
-			case 'advanced':
-				$advanced_options = array(
-					'foundation' => 'Use Foundation 5 CSS.',
-					'content' => 'Add content blocks to the end of your content.'
-				);
-
-				$fields = array();
-				$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => 'Change Advanced Settings.');
-
-				break;
+			break;
 
 		}
 
@@ -497,7 +498,7 @@ class GRAV_BLOCKS {
 	private static function form($location = 'general')
 	{
 		// Get Form Fields
-		switch ($type)
+		switch ($location)
 		{
 			default;
 			case 'general':

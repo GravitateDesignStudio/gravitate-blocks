@@ -15,7 +15,7 @@
 
 return array (
 	'label' => 'HTML',
-	'name' => 'html',
+	'name' => $block,
 	'display' => 'row',
 	'min' => '',
 	'max' => '',
