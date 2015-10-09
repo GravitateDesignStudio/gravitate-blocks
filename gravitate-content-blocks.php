@@ -425,7 +425,7 @@ class GRAV_BLOCKS {
 
 		}
 
-		return GRAV_BLOCKS_PLUGIN_SETTINGS::format_fields($fields);
+		return $fields;
 	}
 
 	/**
@@ -439,14 +439,25 @@ class GRAV_BLOCKS {
 		self::get_settings(true);
 
 		// Save Settings if POST
-		GRAV_BLOCKS_PLUGIN_SETTINGS::save_settings();
+		$response = GRAV_BLOCKS_PLUGIN_SETTINGS::save_settings();
+		if($response['error'])
+		{
+			$error = 'Error saving Settings. Please try again.';
+		}
+		else if($response['success'])
+		{
+			$success = 'Settings saved successfully.';
+		}
 
 		?>
 
 		<div class="wrap">
-		<h2>Gravitate Blocks</h2>
-		<h4 style="margin: 6px 0;">Version <?php echo self::$version;?></h4>
-		<?php if(!empty($error)){?><div class="error"><p><?php echo $error; ?></p></div><?php } ?>
+			<h2>Gravitate Blocks</h2>
+			<h4 style="margin: 6px 0;">Version <?php echo self::$version;?></h4>
+
+			<?php if(!empty($error)){?><div class="error"><p><?php echo $error; ?></p></div><?php } ?>
+			<?php if(!empty($success)){?><div class="updated"><p><?php echo $success; ?></p></div><?php } ?>
+
 		</div>
 
 		<br>

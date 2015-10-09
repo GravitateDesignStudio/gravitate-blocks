@@ -85,7 +85,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	/**
 	 * Saved the Settings to the Database when the form was seubmitted
 	 *
-	 * @return boolean
+	 * @return array
 	 */
 	public static function save_settings()
 	{
@@ -100,15 +100,20 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 				$settings = array_merge(self::$settings, $settings);
 			}
 
-			if(update_option( self::$option_key, $settings ))
+			$settings['grav_settings_last_updated'] = time();
+
+			if(update_option( self::$option_key, $settings))
 			{
 				self::get_settings(true);
-				return true;
+				return array('error' => null, 'success' => true);
 			}
-			return true;
+			else
+			{
+				array('error' => true, 'success' => null);
+			}
 		}
 
-		return false;
+		return array('error' => null, 'success' => null);
 	}
 
 	/**
@@ -120,6 +125,9 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	 */
 	public static function get_form($fields)
 	{
+
+		$fields = self::format_fields($fields);
+
 		?>
 			<form method="post">
 				<input type="hidden" name="save_grav_settings" value="1">
