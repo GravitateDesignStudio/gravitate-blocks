@@ -1,0 +1,47 @@
+####### WP Files #######
+*/wp-content/uploads
+*/wp-content/uploads/
+*/wp-content/blogs.dir/
+*/wp-content/upgrade/
+*/wp-content/backup-db/
+*/wp-content/cache/
+*/wp-content/backups/
+*/wp-content/db.php
+*/wp-content/object-cache.php
+sitemap.xml.gz
+sitemap.xml
+
+####### Local Config Files #######
+local-config.php
+local_config.php
+/public/
+###/sandbox/
+/tmp/
+/log
+/public/
+
+####### Asset Files #######
+*.psd
+*.ai
+*.ae
+*.zip
+
+####### Misc Files #######
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+*[Tt]humbs.db
+*.Trashes
+*.lock
+*.DS_Store
+*.swp
+*.out
+*.log
+error_log
+access_log
+.sass-cache
+node_modules
+advanced-cache.php
