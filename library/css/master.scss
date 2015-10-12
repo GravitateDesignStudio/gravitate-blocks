@@ -1,5 +1,7 @@
 @import 'compass';
+@import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900,300,200';
 
+$source-sans : 'Source Sans Pro', sans-serif;
 $white : #ffffff;
 $magenta : #d61b51;
 
@@ -9,12 +11,13 @@ $magenta : #d61b51;
 		h1 {
 			background-color: $magenta;
 			color: $white;
-			padding: 10px 20px;
+			padding: 16px 20px;
 			text-transform: uppercase;
 		    font-weight: 700;
-		    font-size: 17px;
+		    font-size: 22px;
+		    font-family: $source-sans;
 			img {
-				max-width: 84px;
+				max-width: 96px;
 				display: inline-block;
 				vertical-align: middle;
 				margin-right: 5px;
