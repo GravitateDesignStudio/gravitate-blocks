@@ -13,6 +13,7 @@ register_deactivation_hook( __FILE__, array( 'GRAV_BLOCKS', 'deactivate' ));
 add_action('admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
 add_action('admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action('init', array( 'GRAV_BLOCKS', 'init' ));
+add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
 
 /**
  *
@@ -452,9 +453,9 @@ class GRAV_BLOCKS {
 
 		?>
 
-		<div class="wrap">
-			<h2>Gravitate Blocks</h2>
-			<h4 style="margin: 6px 0;">Version <?php echo self::$version;?></h4>
+		<div class="wrap grav-blocks">
+			<h1><img itemprop="logo" src="http://www.gravitatedesign.com/wp-content/themes/gravtheme/library/images/grav_logo.png" alt="Gravitate"> Blocks</h1>
+			<h4>Version <?php echo self::$version;?></h4>
 
 			<?php if(!empty($error)){?><div class="error"><p><?php echo $error; ?></p></div><?php } ?>
 			<?php if(!empty($success)){?><div class="updated"><p><?php echo $success; ?></p></div><?php } ?>
@@ -523,5 +524,15 @@ class GRAV_BLOCKS {
 	public static function unsanitize_title($title)
 	{
 		return ucwords(str_replace(array('_', '-'), ' ', $title));
+	}
+
+	public static function enqueue_admin_files($hook){
+
+		 if ( 'settings_page_gravitate_blocks' != $hook ) {
+	        return;
+	    }
+    	wp_register_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
+    	wp_enqueue_style( 'grav_blocks_admin_css' );
+    	//wp_enqueue_script( 'my_custom_script', plugin_dir_url( __FILE__ ) . 'myscript.js' );
 	}
 }

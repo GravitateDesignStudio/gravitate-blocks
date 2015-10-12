@@ -1,0 +1,27 @@
+@import 'compass';
+
+$white : #ffffff;
+$magenta : #d61b51;
+
+.wrap {
+	&.grav-blocks {
+		margin: 0 -20px;
+		h1 {
+			background-color: $magenta;
+			color: $white;
+			padding: 10px 20px;
+			text-transform: uppercase;
+		    font-weight: 700;
+		    font-size: 17px;
+			img {
+				max-width: 84px;
+				display: inline-block;
+				vertical-align: middle;
+				margin-right: 5px;
+			}
+			+ h4 {
+				margin-left: 20px;
+			}
+		}
+	}
+}
