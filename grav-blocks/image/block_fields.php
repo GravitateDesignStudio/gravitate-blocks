@@ -24,8 +24,8 @@ return array (
 		$block_background_image,
 		array (
 			'key' => 'field_'.$block.'_01',
-			'label' => 'Full Width',
-			'name' => 'full_width',
+			'label' => 'Add Padding',
+			'name' => 'padding',
 			'type' => 'true_false',
 			'column_width' => '',
 			'message' => '',

@@ -42,6 +42,8 @@ class GRAV_BLOCKS {
 	 */
 	private static function setup()
 	{
+		include_once plugin_dir_path( __FILE__ ).'gravitate-content-blocks-css.php';
+
 		include plugin_dir_path( __FILE__ ).'gravitate-plugin-settings.php';
 		new GRAV_BLOCKS_PLUGIN_SETTINGS(self::$option_key);
 
@@ -53,6 +55,11 @@ class GRAV_BLOCKS {
 		{
 			// Error
 		}
+	}
+
+	public static function css()
+	{
+		return new GRAV_BLOCKS_CSS();
 	}
 
 	/**

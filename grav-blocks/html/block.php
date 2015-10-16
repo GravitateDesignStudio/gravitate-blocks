@@ -2,11 +2,14 @@
 
 if(get_sub_field('html_column'))
 {
-	$columns = get_sub_field('html_column');
+	$cols = get_sub_field('html_column');
+	$cols_count = count($cols);
+	$cols_span = (12/$cols_count);
+
 	?>
 
 	<div class="block-inner">
-		<div class="row">
+		<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 			<?php
 				if(have_rows('html_column'))
 				{
@@ -15,10 +18,8 @@ if(get_sub_field('html_column'))
 				    	the_row();
 
 				    	?>
-						<div class="col-md-<?php echo 12/count($columns); ?> large-<?php echo 12/count($columns); ?> columns">
-							<?php
-						        the_sub_field('column');
-						    ?>
+						<div class="<?php echo GRAV_BLOCKS::css()->col(12, ($cols_count < 3 ? $cols_span : 12), ($cols_count >= 3 ? $cols_span : 12))->get();?>">
+							<?php the_sub_field('column'); ?>
 						</div>
 						<?php
 					}
