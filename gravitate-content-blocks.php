@@ -15,6 +15,8 @@ add_action('admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action('init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
 
+add_filter( 'the_content', array('GRAV_BLOCKS', 'filter_content'), 23);
+
 /**
  *
  * @author Gravitate
@@ -134,19 +136,22 @@ class GRAV_BLOCKS {
 	 */
 	public static function display($section='grav_blocks')
 	{
-		$handler_file = self::get_path('handler.php');
-
-		if($handler_file && get_field($section))
+		if(self::is_viewable())
 		{
-			while(the_flexible_field($section))
-			{
-				$block_class_prefix = 'block';
-				$block_name = strtolower(str_replace('_', '-', get_row_layout()));
-				$block_background = get_sub_field('block_background');
-				$block_background_image = get_sub_field('block_background_image');
-				$block_background_style = (get_sub_field('block_background') == 'image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['large'].'\');" ' : '');
+			$handler_file = self::get_path('handler.php');
 
-				include $handler_file;
+			if($handler_file && get_field($section))
+			{
+				while(the_flexible_field($section))
+				{
+					$block_class_prefix = 'block';
+					$block_name = strtolower(str_replace('_', '-', get_row_layout()));
+					$block_background = get_sub_field('block_background');
+					$block_background_image = get_sub_field('block_background_image');
+					$block_background_style = (get_sub_field('block_background') == 'image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['large'].'\');" ' : '');
+
+					include $handler_file;
+				}
 			}
 		}
 	}
@@ -159,11 +164,20 @@ class GRAV_BLOCKS {
 	 *
 	 * @return array
 	 */
-	public static function get_locations()
+	public static function get_locations($format = 'acf')
 	{
 		self::get_settings(true);
 		$locations = array();
 		$locations_formatted = array();
+
+
+		if($format == 'viewable')
+		{
+			$locations['post_types'] = self::$settings['post_types'];
+			$locations['templates'] = self::$settings['templates'];
+			return $locations;
+		}
+
 
 		if(!empty(self::$settings['post_types']))
 		{
@@ -182,6 +196,7 @@ class GRAV_BLOCKS {
 		}
 
 		$group = 0;
+
 
 		foreach ($locations as $location)
 		{
@@ -533,6 +548,15 @@ class GRAV_BLOCKS {
 		return ucwords(str_replace(array('_', '-'), ' ', $title));
 	}
 
+
+
+	/**
+	 * Enqueue Admin Scripts
+	 *
+	 * @param
+	 *
+	 * @return
+	 */
 	public static function enqueue_admin_files($hook){
 
 		 if ( 'settings_page_gravitate_blocks' != $hook ) {
@@ -540,6 +564,58 @@ class GRAV_BLOCKS {
 	    }
     	wp_register_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
     	wp_enqueue_style( 'grav_blocks_admin_css' );
-    	//wp_enqueue_script( 'my_custom_script', plugin_dir_url( __FILE__ ) . 'myscript.js' );
 	}
+
+
+	/**
+	 * Check if blocks are viewable on the front end
+	 *
+	 * @param
+	 *
+	 * @return
+	 */
+	public static function is_viewable(){
+
+		if($id = get_the_ID())
+		{
+			$locations = self::get_locations('viewable');
+
+			if(!empty($locations['post_types']))
+			{
+				if(in_array(get_post_type(), $locations['post_types'])){
+					return true;
+				}
+			}
+			if(!empty($locations['templates']))
+			{
+				$is_default = (get_page_template_slug($id) == '' && in_array('default', $locations['templates']));
+				if($is_default || in_array(get_page_template_slug($id), $locations['templates'])){
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+
+	/**
+	 * Filters the content and adds content blocks to the end of the content
+	 *
+	 * @param string $content
+	 *
+	 * @return
+	 */
+	public static function filter_content($content){
+
+		ob_start();
+
+		self::display();
+
+		$blocks = ob_get_contents();
+		ob_end_clean();
+
+		return $content . $blocks;
+	}
+
+
 }
