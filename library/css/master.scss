@@ -28,8 +28,11 @@ $magenta : #d61b51;
 				}
 			}
 			header {
-				margin: 0 -20px;
+				margin: 0 0 0 -20px;
 			}
 		}
 	}
+}
+.gravitate-redirects-page-links {
+	border-bottom: 1px solid $white;
 }

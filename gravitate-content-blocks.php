@@ -508,7 +508,7 @@ class GRAV_BLOCKS {
 			<?php if(!empty($error)){?><div class="error"><p><?php echo $error; ?></p></div><?php } ?>
 			<?php if(!empty($success)){?><div class="updated"><p><?php echo $success; ?></p></div><?php } ?>
 			</main>
-		</div>
+
 
 		<br>
 		<div class="gravitate-redirects-page-links">
@@ -535,6 +535,9 @@ class GRAV_BLOCKS {
 				self::form();
 			break;
 		}
+		?>
+		</div>
+		<?php
 	}
 
 	/**
