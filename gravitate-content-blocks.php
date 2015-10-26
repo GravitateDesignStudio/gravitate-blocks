@@ -499,12 +499,15 @@ class GRAV_BLOCKS {
 		?>
 
 		<div class="wrap grav-blocks">
-			<h1><img itemprop="logo" src="http://www.gravitatedesign.com/wp-content/themes/gravtheme/library/images/grav_logo.png" alt="Gravitate"> Blocks</h1>
-			<h4>Version <?php echo self::$version;?></h4>
+			<header>
+				<h1><img itemprop="logo" src="http://www.gravitatedesign.com/wp-content/themes/gravtheme/library/images/grav_logo.png" alt="Gravitate"> Blocks</h1>
+			</header>
+			<main>
+			<h4 class="blocks-version">Version <?php echo self::$version;?></h4>
 
 			<?php if(!empty($error)){?><div class="error"><p><?php echo $error; ?></p></div><?php } ?>
 			<?php if(!empty($success)){?><div class="updated"><p><?php echo $success; ?></p></div><?php } ?>
-
+			</main>
 		</div>
 
 		<br>
