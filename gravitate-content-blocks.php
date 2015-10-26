@@ -15,9 +15,6 @@ add_action('admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action('init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
 
-add_filter( 'the_content', array('GRAV_BLOCKS', 'filter_content'), 23);
-
-
 
 /**
  *
@@ -74,6 +71,30 @@ class GRAV_BLOCKS {
 	public static function init()
 	{
 		self::setup();
+		self::add_filters();
+	}
+
+	/**
+	 * Runs on WP init
+	 *
+	 * @return void
+	 */
+	public static function add_filters()
+	{
+		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'filter_content') && !is_admin())
+		{
+			self::add_filter('the_content', 'filter_content');
+		}
+	}
+
+	/**
+	 * Runs on WP init
+	 *
+	 * @return void
+	 */
+	public static function add_filter($filter, $filter_function)
+	{
+		add_filter( $filter , array('GRAV_BLOCKS', $filter_function), 23);
 	}
 
 	/**
@@ -550,14 +571,26 @@ class GRAV_BLOCKS {
 		return ucwords(str_replace(array('_', '-'), ' ', $title));
 	}
 
+	/**
+	 * Filters a string to be in a title format
+	 *
+	 * @param string $title
+	 *
+	 * @return string
+	 */
+	public static function to_be_named($title)
+	{
+		return ucwords(str_replace(array('_', '-'), ' ', $title));
+	}
+
 
 
 	/**
 	 * Enqueue Admin Scripts
 	 *
-	 * @param
+	 * @param $hook
 	 *
-	 * @return
+	 * @return runs enqueue for admin
 	 */
 	public static function enqueue_admin_files($hook){
 
@@ -572,9 +605,9 @@ class GRAV_BLOCKS {
 	/**
 	 * Check if blocks are viewable on the front end
 	 *
-	 * @param
+	 * @param none
 	 *
-	 * @return
+	 * @return boolean
 	 */
 	public static function is_viewable(){
 
@@ -607,18 +640,16 @@ class GRAV_BLOCKS {
 	 * @return
 	 */
 	public static function filter_content($content){
-		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'filter_content'))
-		{
-			ob_start();
 
-			self::display();
+		ob_start();
 
-			$blocks = ob_get_contents();
-			ob_end_clean();
+		self::display();
 
-			return $content . $blocks;
-		}
-		return $content;
+		$blocks = ob_get_contents();
+		ob_end_clean();
+
+		return $content . $blocks;
+
 	}
 
 
