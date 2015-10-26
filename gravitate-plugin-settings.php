@@ -83,6 +83,23 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	}
 
 	/**
+	 * Returns true if a specific setting is set
+	 *
+	 * @param string $setting_type - The type of setting you want to check such as 'advanced_options'
+	 * @param string $setting - The specific setting you want to check
+	 *
+	 * @return boolean
+	 */
+	public static function is_setting_checked($setting_type = '', $setting = ''){
+		self::get_settings(true);
+		if(isset(self::$settings[$setting_type]) && is_array(self::$settings[$setting_type]) && in_array($setting, self::$settings[$setting_type]))
+		{
+			return true;
+		}
+		return false;
+	}
+
+	/**
 	 * Saved the Settings to the Database when the form was seubmitted
 	 *
 	 * @return array

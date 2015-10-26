@@ -17,6 +17,8 @@ add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' 
 
 add_filter( 'the_content', array('GRAV_BLOCKS', 'filter_content'), 23);
 
+
+
 /**
  *
  * @author Gravitate
@@ -597,7 +599,6 @@ class GRAV_BLOCKS {
 		return false;
 	}
 
-
 	/**
 	 * Filters the content and adds content blocks to the end of the content
 	 *
@@ -606,15 +607,18 @@ class GRAV_BLOCKS {
 	 * @return
 	 */
 	public static function filter_content($content){
+		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'filter_content'))
+		{
+			ob_start();
 
-		ob_start();
+			self::display();
 
-		self::display();
+			$blocks = ob_get_contents();
+			ob_end_clean();
 
-		$blocks = ob_get_contents();
-		ob_end_clean();
-
-		return $content . $blocks;
+			return $content . $blocks;
+		}
+		return $content;
 	}
 
 
