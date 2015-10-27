@@ -4,9 +4,14 @@
 $source-sans : 'Source Sans Pro', sans-serif;
 $white : #ffffff;
 $magenta : #d61b51;
+$gray-dark : #333333;
+$gray-light : #999999;
 
 .settings_page_gravitate_blocks {
 	.wrap {
+		* {
+			-webkit-font-smoothing: antialiased;
+		}
 		&.grav-blocks {
 			margin: 0;
 			h1 {
@@ -30,9 +35,66 @@ $magenta : #d61b51;
 			header {
 				margin: 0 0 0 -20px;
 			}
+			.description {
+				margin-top: .5rem;
+			}
+			th {
+				padding-top: .75rem;
+				label {
+					cursor: default;
+				}
+			}
+			td {
+				label {
+					display: inline-block;
+				    float: left;
+				    clear: both;
+					+ label {
+						margin-top: .25rem;
+					}
+					+ .description {
+						margin-top: .5rem;
+						display: block;
+						float: left;
+						clear: both;
+					}
+				}
+			}
 		}
 	}
 }
 .gravitate-redirects-page-links {
-	border-bottom: 1px solid $white;
+	border-bottom: 2px solid $magenta;
+	padding-bottom: 1px;
+	a {
+		@include transition(all .3s ease-in-out);
+		font-family: $source-sans;
+		letter-spacing: .025rem;
+		display: inline-block;
+		padding: .5rem 1rem;
+		color: $white;
+		background: $gray-light;
+		text-decoration: none;
+		font-weight: 700;
+		position: relative;
+		&:hover,
+		&.active {
+			background: $magenta;
+		}
+		&:focus {
+			box-shadow: 0 0 0 1px $magenta,0 0 2px 1px rgba($magenta,.8);
+		}
+		&.active {
+			&:after {
+				content: '';
+				display: block;
+				width: 100%;
+				position: absolute;
+				height: 1px;
+				left: 0;
+				background: $magenta;
+				bottom: -1px;
+			}
+		}
+	}
 }

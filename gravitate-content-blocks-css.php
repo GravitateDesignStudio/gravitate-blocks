@@ -82,6 +82,32 @@ class GRAV_BLOCKS_CSS {
 		return $this;
 	}
 
+	public function grid($small=1, $med=2, $large=3, $xlarge=4)
+	{
+
+		if($small && $small <= 4)
+		{
+			$this->class[] = 'small-block-grid-'.$small;
+		}
+
+		if($med && $med <= 4)
+		{
+			$this->class[] = 'medium-block-grid-'.$med;
+		}
+
+		if($large && $large <= 4)
+		{
+			$this->class[] = 'large-block-grid-'.$large;
+		}
+
+		// if($xlarge && $xlarge <= 4)
+		// {
+		// 	$this->class[] = 'xlarge-block-grid-'.$xlarge;
+		// }
+
+		return $this;
+	}
+
 
 	public function row()
 	{

@@ -15,10 +15,14 @@
 	}
 ?>
 <div class="block-inner">
-	<div class="row">
+	<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 		<div class="medium-<?php echo $col_width; ?> columns <?php echo $top_classes; ?>">
-			
-			<div class="cycle-slideshow" data-cycle-fx="fade" data-cycle-timeout="8000" data-cycle-speed="1200" data-cycle-log="false">
+
+			<div class="cycle-slideshow"
+				data-cycle-fx="fade"
+				data-cycle-timeout="8000"
+				data-cycle-speed="1200"
+				data-cycle-log="false">
 
 				<?php foreach($images as $image){ ?>
 					<img src="<?php echo esc_attr($image['image']['sizes']['large']); ?>" alt="<?php echo esc_attr($image['image']['alt']); ?>" />

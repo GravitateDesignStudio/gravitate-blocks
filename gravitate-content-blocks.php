@@ -418,8 +418,8 @@ class GRAV_BLOCKS {
 
 			case 'advanced':
 				$advanced_options = array(
-					'use_foundation' => 'Use Foundation 5 CSS.',
-					'filter_content' => 'Add content blocks to the end of your content.'
+					//'use_foundation' => 'Use Foundation 5 CSS.',
+					'filter_content' => 'Add content blocks to the end of your content.',
 				);
 
 				$fields = array();
@@ -512,8 +512,8 @@ class GRAV_BLOCKS {
 
 		<br>
 		<div class="gravitate-redirects-page-links">
-			<a href="<?php echo self::$page;?>&section=General">General</a>
-			<a href="<?php echo self::$page;?>&section=advanced">Advanced</a>
+			<a href="<?php echo self::$page;?>&section=general" class="<?php echo self::get_current_tab($_GET['section'], 'general'); ?>">General</a>
+			<a href="<?php echo self::$page;?>&section=advanced" class="<?php echo self::get_current_tab($_GET['section'], 'advanced'); ?>">Advanced</a>
 		</div>
 
 		<br>
@@ -576,20 +576,6 @@ class GRAV_BLOCKS {
 	{
 		return ucwords(str_replace(array('_', '-'), ' ', $title));
 	}
-
-	/**
-	 * Filters a string to be in a title format
-	 *
-	 * @param string $title
-	 *
-	 * @return string
-	 */
-	public static function to_be_named($title)
-	{
-		return ucwords(str_replace(array('_', '-'), ' ', $title));
-	}
-
-
 
 	/**
 	 * Enqueue Admin Scripts
@@ -655,6 +641,23 @@ class GRAV_BLOCKS {
 		ob_end_clean();
 
 		return $content . $blocks;
+
+	}
+
+	/**
+	 * Gets current tab and sets active state
+	 *
+	 * @param string $current
+	 * @param string $section
+	 *
+	 * @return
+	 */
+	public static function get_current_tab($current = '' , $section = ''){
+
+		if($current == $section || ($current == '' && $section == 'general'))
+		{
+			return 'active';
+		}
 
 	}
 

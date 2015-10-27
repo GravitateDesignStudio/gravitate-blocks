@@ -282,11 +282,6 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 			?><label for="<?php echo $meta_key;?>"><strong><?php echo $field['label'];?></strong></label><br><?php
 		}
 
-		if(!empty($field['description']))
-		{
-			?><span class="description"><?php echo $field['description'];?></span><br><?php
-		}
-
 		if($field['type'] == 'text')
 		{
 			?><input type="text" name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
@@ -342,9 +337,14 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 					$checked = '';
 				}
 				?>
-				<label><input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo $option_label; ?></label><br>
+				<label><input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo ucfirst($option_label); ?></label>
 				<?php
 			}
+		}
+
+		if(!empty($field['description']))
+		{
+			?><span class="description"><?php echo $field['description'];?></span><br><?php
 		}
 	}
 }
