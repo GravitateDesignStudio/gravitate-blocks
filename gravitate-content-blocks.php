@@ -10,10 +10,11 @@ Author: Gravitate
 register_activation_hook( __FILE__, array( 'GRAV_BLOCKS', 'activate' ));
 register_deactivation_hook( __FILE__, array( 'GRAV_BLOCKS', 'deactivate' ));
 
-add_action('admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
-add_action('admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
-add_action('init', array( 'GRAV_BLOCKS', 'init' ));
+add_action( 'admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
+add_action( 'admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
+add_action( 'init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
+add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
 
 
 /**
@@ -117,6 +118,9 @@ class GRAV_BLOCKS {
 	public static function activate()
 	{
 		// Nothing for now
+		$active_settings = get_option('gravitate_blocks_settings');
+		self::dump($active_settings);
+		exit;
 	}
 
 	/**
@@ -419,11 +423,12 @@ class GRAV_BLOCKS {
 			case 'advanced':
 				$advanced_options = array(
 					//'use_foundation' => 'Use Foundation 5 CSS.',
-					'filter_content' => 'Add content blocks to the end of your content.',
+					'filter_content' => 'Add content blocks to the end of your content. <span class="extra-info">( using "the_content" filter )</span>',
+					'enqueue_cycle' => 'Add Cycle2 <span class="extra-info">( required for Imageside and Testimonials blocks</span> )',
 				);
 
 				$fields = array();
-				$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => 'Change Advanced Settings.');
+				$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => '');
 
 			break;
 
@@ -586,11 +591,25 @@ class GRAV_BLOCKS {
 	 */
 	public static function enqueue_admin_files($hook){
 
-		 if ( 'settings_page_gravitate_blocks' != $hook ) {
+		if ( 'settings_page_gravitate_blocks' != $hook ) {
 	        return;
 	    }
-    	wp_register_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
-    	wp_enqueue_style( 'grav_blocks_admin_css' );
+    	wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
+	}
+
+	/**
+	 * Enqueue Front End Scripts
+	 *
+	 * @param $hook
+	 *
+	 * @return runs enqueue for front end where required
+	 */
+	public static function enqueue_files($hook){
+		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_cycle') && self::is_viewable())
+		{
+			wp_enqueue_script( 'cycle2_js', plugin_dir_url( __FILE__ ) . 'library/js/cycle2.min.js', array('jquery'), '2.1.6', true );
+		}
+
 	}
 
 
