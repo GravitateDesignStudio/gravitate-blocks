@@ -3,6 +3,7 @@
 /*
 * Global variables to use across multiple blocks
 */
+
 $block_background_colors = array (
 	'white' => 'White',
 	'dark' => 'Blue',

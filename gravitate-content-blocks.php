@@ -17,6 +17,23 @@ add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' 
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
 
 
+
+add_action( 'admin_enqueue_scripts', 'wptuts_add_color_picker' );
+function wptuts_add_color_picker( $hook ) {
+
+    if( is_admin() ) {
+
+        // Add the color picker css file
+        wp_enqueue_style( 'wp-color-picker' );
+
+        // Include our custom jQuery file with WordPress Color Picker dependency
+        wp_enqueue_script( 'grav-blocks-admin',  plugin_dir_url( __FILE__ ) . 'library/js/grav-blocks-admin.js', array( 'wp-color-picker' ), false, true );
+    }
+}
+
+
+
+
 /**
  *
  * @author Gravitate
@@ -29,6 +46,7 @@ class GRAV_BLOCKS {
 	private static $page = 'options-general.php?page=gravitate_blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
+	private static $posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
 
 
 	public static function dump($var){
@@ -117,10 +135,16 @@ class GRAV_BLOCKS {
 	 */
 	public static function activate()
 	{
-		// Nothing for now
 		$active_settings = get_option('gravitate_blocks_settings');
-		self::dump($active_settings);
-		exit;
+		if(!$active_settings){
+			$current_settings = array(
+				'blocks_enabled' => array_values(array_flip(self::get_available_blocks())),
+				'post_types' => array_values(array_flip(self::get_usable_post_types())),
+				'templates' => '',
+				'advanced_options' => array('filter_content', 'enqueue_cycle'),
+			);
+			update_option(self::$option_key, $current_settings);
+		}
 	}
 
 	/**
@@ -434,36 +458,12 @@ class GRAV_BLOCKS {
 
 			default:
 			case 'general':
-				$posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
-				// TODO add filter here for $posts_to_exclude
-
-				$posts = get_post_types();
-				$templates = get_page_templates();
-				$post_types = array();
-				$template_options = array();
-
-				foreach($posts as $post_type)
-				{
-					if(!in_array($post_type, $posts_to_exclude))
-					{
-						$post_types[$post_type] = self::unsanitize_title($post_type);
-					}
-				}
-
-				if(!in_array('default', array_map('strtolower', $templates)) && !in_array('page.php', array_map('strtolower', $templates)) && file_exists(get_template_directory().'/page.php'))
-				{
-					$templates = array_merge(array('Default' => 'default'), $templates);
-				}
-
-				foreach($templates as $key => $template)
-				{
-					$template_options[$template] = self::unsanitize_title($key);
-				}
+				$post_types = self::get_usable_post_types();
+				$template_options = self::get_template_options();
 
 				$background_colors_repeater = array(
-					'name' => array('type' => 'text', 'label' => 'Name', 'description' => ''),
-					'things' => array('type' => 'select', 'label' => 'Things', 'description' => 'asdfasf', 'options' => array('asdf','ggg')),
-					'value' => array('type' => 'checkbox', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)', 'options' => array('blue' => 'Blue', 'red' => 'Red'))
+					'name' => array('type' => 'text', 'label' => 'Name', 'description' => 'Name of color'),
+					'value' => array('type' => 'colorpicker', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)')
 				);
 
 
@@ -650,7 +650,8 @@ class GRAV_BLOCKS {
 	 *
 	 * @return
 	 */
-	public static function filter_content($content){
+	public static function filter_content($content)
+	{
 
 		ob_start();
 
@@ -660,6 +661,62 @@ class GRAV_BLOCKS {
 		ob_end_clean();
 
 		return $content . $blocks;
+
+	}
+
+	/**
+	 * Gets usable post types
+	 *
+	 * @param
+	 *
+	 * @return
+	 */
+	public static function get_usable_post_types()
+	{
+
+		// TODO add filter here for $posts_to_exclude
+
+		$posts = get_post_types();
+		$post_types = array();
+
+		foreach($posts as $post_type)
+		{
+			if(!in_array($post_type, self::$posts_to_exclude))
+			{
+				$post_types[$post_type] = self::unsanitize_title($post_type);
+			}
+		}
+
+		return $post_types;
+
+	}
+
+	/**
+	 * Gets template options
+	 *
+	 * @param
+	 *
+	 * @return
+	 */
+	public static function get_template_options()
+	{
+
+		// TODO add filter here for $posts_to_exclude
+
+		$templates = get_page_templates();
+		$template_options = array();
+
+		if(!in_array('default', array_map('strtolower', $templates)) && !in_array('page.php', array_map('strtolower', $templates)) && file_exists(get_template_directory().'/page.php'))
+		{
+			$templates = array_merge(array('Default' => 'default'), $templates);
+		}
+
+		foreach($templates as $key => $template)
+		{
+			$template_options[$template] = self::unsanitize_title($key);
+		}
+
+		return $template_options;
 
 	}
 

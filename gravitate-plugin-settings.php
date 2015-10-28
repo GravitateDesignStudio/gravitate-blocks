@@ -222,6 +222,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 			jQuery(function($)
 			{
 
+
 				$('.repeater-add').on('click', function(e)
 				{
 					e.preventDefault();
@@ -340,6 +341,10 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 				<label><input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo ucfirst($option_label); ?></label>
 				<?php
 			}
+		}
+		else if($field['type'] == 'colorpicker')
+		{
+			?><input type="text" class="grav-blocks-colorpicker" name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
 		}
 
 		if(!empty($field['description']))

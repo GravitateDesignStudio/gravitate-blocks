@@ -6,17 +6,16 @@
 
 	$col_content_width = 12-$col_width;
 
+	$bottom_classes = '';
+	$top_classes = '';
 	if($placement == 'right'){
-		$top_classes = 'medium-push-'.$col_content_width;
-		$bottom_classes = 'medium-pull-'.$col_width;
-	} else {
-		$bottom_classes = '';
-		$top_classes = '';
+		$top_classes = GRAV_BLOCKS::css()->col_push(0, $col_content_width)->get();
+		$bottom_classes = GRAV_BLOCKS::css()->col_pull(0, $col_width)->get();
 	}
 ?>
 <div class="block-inner">
 	<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
-		<div class="medium-<?php echo $col_width; ?> columns <?php echo $top_classes; ?>">
+		<div class="<?php echo GRAV_BLOCKS::css()->col(0, $col_width)->get(); ?> <?php echo $top_classes; ?>">
 
 			<div class="cycle-slideshow"
 				data-cycle-fx="fade"
@@ -24,16 +23,18 @@
 				data-cycle-speed="1200"
 				data-cycle-log="false">
 
-				<?php foreach($images as $image){ ?>
+				<?php if($images){
+					foreach($images as $image){ ?>
 					<img src="<?php echo esc_attr($image['image']['sizes']['large']); ?>" alt="<?php echo esc_attr($image['image']['alt']); ?>" />
-				<?php } ?>
+				<?php }
+				}?>
 
 				<?php if(count($images) > 1){ ?> <div class="cycle-pager"></div> <?php } ?>
 
 			</div>
 
 		</div>
-		<div class="medium-<?php echo $col_content_width; ?> columns <?php echo $bottom_classes; ?>">
+		<div class="<?php echo GRAV_BLOCKS::css()->col(0, $col_content_width)->get(); ?> <?php echo $bottom_classes; ?>">
 			<?php echo $content; ?>
 		</div>
 	</div>

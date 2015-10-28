@@ -82,6 +82,56 @@ class GRAV_BLOCKS_CSS {
 		return $this;
 	}
 
+	public function col_push($small=12, $med=12, $large=12, $xlarge=12)
+	{
+		if($small && $small < 12)
+		{
+			$this->class[] = 'col-xs-push-'.$small.' small-push-'.$small;
+		}
+
+		if($med && $med < 12)
+		{
+			$this->class[] = 'col-sm-push-'.$med.' medium-push-'.$med;
+		}
+
+		if($large && $large < 12)
+		{
+			$this->class[] = 'col-md-push-'.$large.' large-push-'.$large;
+		}
+
+		if($xlarge && $xlarge < 12)
+		{
+			$this->class[] = 'col-lg-push-'.$xlarge.' xlarge-push-'.$xlarge;
+		}
+
+		return $this;
+	}
+
+	public function col_pull($small=12, $med=12, $large=12, $xlarge=12)
+	{
+		if($small && $small < 12)
+		{
+			$this->class[] = 'col-xs-pull-'.$small.' small-pull-'.$small;
+		}
+
+		if($med && $med < 12)
+		{
+			$this->class[] = 'col-sm-pull-'.$med.' medium-pull-'.$med;
+		}
+
+		if($large && $large < 12)
+		{
+			$this->class[] = 'col-md-pull-'.$large.' large-pull-'.$large;
+		}
+
+		if($xlarge && $xlarge < 12)
+		{
+			$this->class[] = 'col-lg-pull-'.$xlarge.' xlarge-pull-'.$xlarge;
+		}
+
+		return $this;
+	}
+
 	public function grid($small=1, $med=2, $large=3, $xlarge=4)
 	{
 
