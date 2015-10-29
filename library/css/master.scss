@@ -1,4 +1,5 @@
 @import 'compass';
+@import 'sass-includes/mixins';
 @import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900,300,200';
 
 $source-sans : 'Source Sans Pro', sans-serif;
@@ -6,6 +7,10 @@ $white : #ffffff;
 $magenta : #d61b51;
 $gray-dark : #333333;
 $gray-light : #999999;
+$gray-lighter : #E8E8E8;
+$gray-lightest : #F9F9F9;
+$wp-media-query : 783px;
+
 
 .settings_page_gravitate_blocks {
 	.wrap {
@@ -159,19 +164,26 @@ $gray-light : #999999;
 		> td {
 			padding: 0;
 		}
+		.form-table {
+			width: 95%;
+			tbody {
+				display: table;
+				width: 100%;
+			}
+		}
 		.repeater-table tbody {
 			border: 0;
 		}
 		.repeater-item {
 			border: 0;
 			border-left: 4px solid $magenta;
-			background-color: rgba($white,0.6);
+			background-color: $gray-lightest;
 			td {
 				border: 0;
 				background-color: transparent;
 			}
 			&:nth-child(odd){
-				background-color: rgba($gray-light, .1);
+				background-color: $gray-lighter;
 			}
 		}
 	}
@@ -180,6 +192,24 @@ $gray-light : #999999;
 	&.grav-plugin-settings-type-checkbox {
 		td label {
 		    margin-bottom: .5rem;
+		}
+	}
+}
+.form-table {
+	@include media-max($wp-media-query){
+		th {
+			padding-bottom: .5rem;
+			overflow: hidden;
+		}
+	}
+}
+.grav-plugin-settings-type-repeater {
+	@include media-max($wp-media-query){
+		.repeater-table tr.repeater-item {
+			border-left: 0;
+		}
+		td {
+			padding: .5rem 1rem;
 		}
 	}
 }
