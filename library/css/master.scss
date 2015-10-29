@@ -37,6 +37,8 @@ $gray-light : #999999;
 			}
 			.description {
 				margin-top: .5rem;
+				clear: both;
+				float: left;
 			}
 			th {
 				padding-top: .75rem;
@@ -44,14 +46,11 @@ $gray-light : #999999;
 					cursor: default;
 				}
 			}
-			td {
+			tr:not([class^="grav-plugin-settings-blocks_enabled_"]) {
 				label {
 					display: inline-block;
 				    float: left;
 				    clear: both;
-					+ label {
-						margin-top: .25rem;
-					}
 					+ .description {
 						margin-top: .5rem;
 						display: block;
@@ -67,14 +66,16 @@ $gray-light : #999999;
     	font-style: italic;
 	}
 }
-tr[class^="grav-plugin-settings-blocks_enabled_"] {
+.settings_page_gravitate_blocks tr[class^="grav-plugin-settings-blocks_enabled_"] {
  	td {
- 		border-bottom: 1px solid #ccc;
+ 		//border-bottom: 1px solid #ccc;
 		max-width: 780px;
 		display: block;
 		label {
-			clear: none !important;
+			display: inline-block;
+		    float: left;
 			width: 200px;
+			margin-top: .25rem;
 		}
 		&:after {
 			content: '';

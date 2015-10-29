@@ -18,20 +18,6 @@ add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
 
 
 
-add_action( 'admin_enqueue_scripts', 'wptuts_add_color_picker' );
-function wptuts_add_color_picker( $hook ) {
-
-    if( is_admin() ) {
-
-        // Add the color picker css file
-        wp_enqueue_style( 'wp-color-picker' );
-
-        // Include our custom jQuery file with WordPress Color Picker dependency
-        wp_enqueue_script( 'grav-blocks-admin',  plugin_dir_url( __FILE__ ) . 'library/js/grav-blocks-admin.js', array( 'wp-color-picker' ), false, true );
-    }
-}
-
-
 
 
 /**
@@ -146,8 +132,8 @@ class GRAV_BLOCKS {
 				'background_colors' => array(
 											array('name' => 'White', 'value' => '#ffffff'),
 											array('name' => 'Light Gray', 'value' => '#eeeeee'),
-											array('name' => 'Dark Gray', 'value' => '#555')
-										)
+											array('name' => 'Dark Gray', 'value' => '#555555')
+										),
 			);
 
 			update_option(self::$option_key, $current_settings);
@@ -502,14 +488,12 @@ class GRAV_BLOCKS {
 					$block_groups[str_replace(' ', '_', strtolower($block_params['group']))][$block] = $block_params['label'];
 				}
 
-				//echo '<pre>';print_r($block_groups);echo '</pre>';
-
-
 				$fields = array();
 
 				foreach ($block_groups as $group => $blocks)
 				{
-					$fields['blocks_enabled_'.$group] = array('type' => 'checkbox', 'label' => ucwords(str_replace('_', ' ', $group)).' Blocks', 'options' => $blocks);
+					$description = ($group == 'default') ? 'Choose what default blocks will be available.' : '';
+					$fields['blocks_enabled_'.$group] = array('type' => 'checkbox', 'label' => ucwords(str_replace('_', ' ', $group)).' Blocks', 'options' => $blocks, 'description' => $description);
 				}
 
 				$fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what Background Colors you want to have the Gravitate Blocks.');
@@ -796,6 +780,8 @@ function your_function($fields)
 	        return;
 	    }
     	wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
+	    wp_enqueue_style( 'wp-color-picker' );
+		wp_enqueue_script( 'wp-color-picker' );
 	}
 
 	/**
