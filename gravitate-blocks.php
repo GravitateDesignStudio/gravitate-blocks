@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Gravitate Content Blocks
+Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
 Version: 1.0.0
 Plugin URI: http://www.gravitatedesign.com
@@ -15,9 +15,7 @@ add_action( 'admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action( 'init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
-
-
-
+add_filter('plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link'));
 
 
 /**
@@ -48,7 +46,7 @@ class GRAV_BLOCKS {
 	 */
 	private static function setup()
 	{
-		include_once plugin_dir_path( __FILE__ ).'gravitate-content-blocks-css.php';
+		include_once plugin_dir_path( __FILE__ ).'gravitate-blocks-css.php';
 
 		include plugin_dir_path( __FILE__ ).'gravitate-plugin-settings.php';
 		new GRAV_BLOCKS_PLUGIN_SETTINGS(self::$option_key);
@@ -181,6 +179,13 @@ class GRAV_BLOCKS {
 	public static function admin_menu()
 	{
 		add_submenu_page( 'options-general.php', 'Gravitate Blocks', 'Gravitate Blocks', 'manage_options', 'gravitate_blocks', array( __CLASS__, 'admin' ));
+	}
+
+	public static function plugin_settings_link($links)
+	{
+	  $settings_link = '<a href="options-general.php?page=gravitate_blocks">Settings</a>';
+	  array_unshift($links, $settings_link);
+	  return $links;
 	}
 
 	/**
