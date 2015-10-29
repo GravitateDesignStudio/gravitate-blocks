@@ -1,6 +1,6 @@
 <?php
 /*
-Plugin Name: Gravitate Content Blocks
+Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
 Version: 1.0.0
 Plugin URI: http://www.gravitatedesign.com
@@ -15,9 +15,7 @@ add_action( 'admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action( 'init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
-
-
-
+add_filter('plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link'));
 
 
 /**
@@ -48,18 +46,19 @@ class GRAV_BLOCKS {
 	 */
 	private static function setup()
 	{
-		include_once plugin_dir_path( __FILE__ ).'gravitate-content-blocks-css.php';
+		include_once plugin_dir_path( __FILE__ ).'gravitate-blocks-css.php';
 
 		include plugin_dir_path( __FILE__ ).'gravitate-plugin-settings.php';
 		new GRAV_BLOCKS_PLUGIN_SETTINGS(self::$option_key);
 
 		if($config_path = self::get_path('config.php'))
 		{
+			self::get_settings(true);
 			include $config_path;
 		}
 		else
 		{
-			// Error
+			// TODO Error
 		}
 	}
 
@@ -76,7 +75,7 @@ class GRAV_BLOCKS {
 	public static function init()
 	{
 		self::setup();
-		self::add_filters();
+		self::add_hooks();
 	}
 
 	/**
@@ -84,11 +83,16 @@ class GRAV_BLOCKS {
 	 *
 	 * @return void
 	 */
-	public static function add_filters()
+	public static function add_hooks()
 	{
 		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'filter_content') && !is_admin())
 		{
-			self::add_filter('the_content', 'filter_content');
+			self::add_hook('filter', 'the_content', 'filter_content', 23);
+		}
+
+		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_css') && !is_admin())
+		{
+			self::add_hook('action', 'wp_head', 'add_head_css');
 		}
 	}
 
@@ -97,9 +101,16 @@ class GRAV_BLOCKS {
 	 *
 	 * @return void
 	 */
-	public static function add_filter($filter, $filter_function)
+	public static function add_hook($type='', $filter='', $filter_function='', $param='')
 	{
-		add_filter( $filter , array('GRAV_BLOCKS', $filter_function), 23);
+		if($type === 'action')
+		{
+			add_action( $filter , array('GRAV_BLOCKS', $filter_function), $param);
+		}
+		else
+		{
+			add_filter( $filter , array('GRAV_BLOCKS', $filter_function));
+		}
 	}
 
 	/**
@@ -170,6 +181,41 @@ class GRAV_BLOCKS {
 		add_submenu_page( 'options-general.php', 'Gravitate Blocks', 'Gravitate Blocks', 'manage_options', 'gravitate_blocks', array( __CLASS__, 'admin' ));
 	}
 
+	public static function plugin_settings_link($links)
+	{
+	  $settings_link = '<a href="options-general.php?page=gravitate_blocks">Settings</a>';
+	  array_unshift($links, $settings_link);
+	  return $links;
+	}
+
+	/**
+	 * Outputs the Grav CSS to the Front End Head
+	 *
+	 * @return type
+	 */
+	public static function add_head_css()
+	{
+		self::get_settings(true);
+
+		?>
+
+		<style>
+		/* Gravitate Blocks CSS */ <?php /* Sublime Color Issue Fix </style> */ ?>
+		<?php if(!empty(GRAV_BLOCKS::$settings['background_colors']))
+		{
+			foreach (GRAV_BLOCKS::$settings['background_colors'] as $color_key => $color_params)
+			{
+				?>
+			.block-container.<?php echo (!empty($color_params['class']) ? $color_params['class'] : 'block-bg-'.sanitize_title($color_params['name']));?> { background-color: <?php echo $color_params['value'];?>}
+				<?php
+			}
+		}
+		?>
+		</style>
+
+		<?php
+	}
+
 	/**
 	 * Outputs the Grav Blocks
 	 *
@@ -192,7 +238,7 @@ class GRAV_BLOCKS {
 					$block_name = strtolower(str_replace('_', '-', get_row_layout()));
 					$block_background = get_sub_field('block_background');
 					$block_background_image = get_sub_field('block_background_image');
-					$block_background_style = (get_sub_field('block_background') == 'image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['large'].'\');" ' : '');
+					$block_background_style = (get_sub_field('block_background') == 'block-bg-image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['sizes']['large'].'\');" ' : '');
 
 					include $handler_file;
 				}
@@ -465,6 +511,8 @@ class GRAV_BLOCKS {
 					//'use_foundation' => 'Use Foundation 5 CSS.',
 					'filter_content' => 'Add content blocks to the end of your content. <span class="extra-info">( using "the_content" filter )</span>',
 					'enqueue_cycle' => 'Add Cycle2 <span class="extra-info">( required for Imageside and Testimonials blocks</span> )',
+					'add_custom_color_class' => 'Add the ability to customize the Background Color option css Class names',
+					'enqueue_css' => 'Add Grav Blocks CSS to the Front End Head (Needed for Custom Background Images, etc)',
 				);
 
 				$fields = array();
@@ -477,10 +525,15 @@ class GRAV_BLOCKS {
 				$post_types = self::get_usable_post_types();
 				$template_options = self::get_template_options();
 
-				$background_colors_repeater = array(
-					'name' => array('type' => 'text', 'label' => 'Name', 'description' => 'Name of color'),
-					'value' => array('type' => 'colorpicker', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)')
-				);
+				$background_colors_repeater = array();
+				$background_colors_repeater['name'] = array('type' => 'text', 'label' => 'Name', 'description' => 'Name of color');
+
+				if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_custom_color_class') )
+				{
+					$background_colors_repeater['class'] = array('type' => 'text', 'label' => 'CSS Class Name', 'description' => '( Optional )');
+				}
+
+				$background_colors_repeater['value'] = array('type' => 'colorpicker', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)');
 
 				$block_groups = array();
 				foreach (self::get_available_blocks() as $block => $block_params)
@@ -745,6 +798,7 @@ function your_function($fields)
 	return $fields;
 }
 </textarea>
+<br>* Keep in mind you will still need to update the markup to accept the new settings
 				</blockquote>
 			</li>
 			</ul>
