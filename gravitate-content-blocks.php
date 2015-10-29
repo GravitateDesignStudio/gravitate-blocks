@@ -654,8 +654,7 @@ function your_function($blocks)
 </textarea>
 				</blockquote>
 			</li>
-			<li><br>
-				<h3>grav_block_locations</h3>
+			<li><h3>grav_block_locations</h3>
 				This filters through the Locations to allow Grav Blocks.
 				<blockquote>
 				<label>Example 1: Adding a Location to Events where the ID is not 14</label>
@@ -699,8 +698,7 @@ function your_function($locations)
 </textarea>
 				</blockquote>
 			</li>
-			<li><br>
-				<h3>grav_block_fields</h3>
+			<li><h3>grav_block_fields</h3>
 				This filters through the fields for each block.
 				<blockquote>
 				<label>Example 1: Removing the Attribution option for the Quote Block </label>

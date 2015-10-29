@@ -75,7 +75,7 @@ $gray-light : #999999;
 			display: inline-block;
 		    float: left;
 			width: 200px;
-			margin-top: .25rem;
+			margin-bottom: .25rem;
 		}
 		&:after {
 			content: '';
@@ -130,9 +130,38 @@ $gray-light : #999999;
 		padding: 10px;
 	}
 	blockquote {
+		margin: 1rem 0 0 0;
 		label {
 			display: block;
 			margin-right: 4px;
+		}
+	}
+	ul {
+		margin-left: 20px;
+		li {
+			list-style: disc;
+		}
+	}
+}
+.grav-plugin-settings-form {
+	.grav-plugin-settings-background_colors {
+		> td {
+			padding: 0;
+		}
+		.repeater-table tbody {
+			border: 0;
+		}
+		.repeater-item {
+			border: 0;
+			border-left: 4px solid $magenta;
+			background-color: rgba($white,0.6);
+			td {
+				border: 0;
+				background-color: transparent;
+			}
+			&:nth-child(odd){
+				background-color: rgba($gray-light, .1);
+			}
 		}
 	}
 }
