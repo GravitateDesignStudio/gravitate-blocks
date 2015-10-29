@@ -35,3 +35,8 @@ Description: Easily manage Content Blocks on your website.
 == Todo ==
 
 * Add More Blocks
+* Add escape functions
+* Add Nonce to form save
+* Have Pete Review Copy
+* Add error message for needing ACF Pro
+
