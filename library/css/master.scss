@@ -67,6 +67,14 @@ $gray-light : #999999;
     	font-style: italic;
 	}
 }
+.grav-plugin-settings-blocks_enabled td {
+	max-width: 780px;
+	display: block;
+	label {
+		clear: none !important;
+		width: 200px;
+	}
+}
 .gravitate-redirects-page-links {
 	border-bottom: 2px solid $magenta;
 	padding-bottom: 1px;
@@ -99,6 +107,21 @@ $gray-light : #999999;
 				background: $magenta;
 				bottom: -1px;
 			}
+		}
+	}
+}
+.grav-blocks-developers {
+	textarea {
+		width: 100%;
+		max-width: 600px;
+		height: 160px;
+		background-color: #999;
+		color: #fff;
+	}
+	blockquote {
+		label {
+			display: block;
+			margin-right: 4px;
 		}
 	}
 }

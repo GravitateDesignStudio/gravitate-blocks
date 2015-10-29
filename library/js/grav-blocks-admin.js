@@ -2,7 +2,8 @@
 
 	$(function() {
 
-	    $('.grav-blocks-colorpicker').wpColorPicker();
+		// Remove this as it is now part of the Settings Controller
+	    //$('.grav-blocks-colorpicker').wpColorPicker();
 	});
 
 

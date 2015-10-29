@@ -61,10 +61,12 @@ foreach(GRAV_BLOCKS::get_blocks() as $block => $block_path)
 * Block Function to build Admin for ACF
 *
 */
-if(function_exists("register_field_group"))
+if(function_exists("acf_add_local_field_group") && !empty($layouts))
 {
-	register_field_group(array (
-		'id' => 'acf_grav_blocks',
+	$layouts = apply_filters( 'grav_block_fields', $layouts );
+
+	acf_add_local_field_group(array (
+		'key' => 'group_grav_blocks',
 		'title' => 'Grav Blocks',
 		'fields' => array (
 			array (
@@ -79,13 +81,14 @@ if(function_exists("register_field_group"))
 			),
 		),
 		'location' => GRAV_BLOCKS::get_locations(),
-		'options' => array (
-			'position' => 'normal',
-			'layout' => 'no_box',
-			'hide_on_screen' => array (
-			),
-		),
 		'menu_order' => 100,
+		'position' => 'normal',
+		'style' => 'no_box',
+		'label_placement' => 'top',
+		'instruction_placement' => 'label',
+		'hide_on_screen' => '',
+		'active' => 1,
+		'description' => '',
 	));
 }
 

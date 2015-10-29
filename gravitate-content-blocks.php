@@ -136,13 +136,20 @@ class GRAV_BLOCKS {
 	public static function activate()
 	{
 		$active_settings = get_option('gravitate_blocks_settings');
-		if(!$active_settings){
+		if(!$active_settings)
+		{
 			$current_settings = array(
 				'blocks_enabled' => array_values(array_flip(self::get_available_blocks())),
 				'post_types' => array_values(array_flip(self::get_usable_post_types())),
 				'templates' => '',
 				'advanced_options' => array('filter_content', 'enqueue_cycle'),
+				'background_colors' => array(
+											array('name' => 'White', 'value' => '#ffffff'),
+											array('name' => 'Light Gray', 'value' => '#eeeeee'),
+											array('name' => 'Dark Gray', 'value' => '#555')
+										)
 			);
+
 			update_option(self::$option_key, $current_settings);
 		}
 	}
@@ -519,6 +526,7 @@ class GRAV_BLOCKS {
 		<div class="gravitate-redirects-page-links">
 			<a href="<?php echo self::$page;?>&section=general" class="<?php echo self::get_current_tab($_GET['section'], 'general'); ?>">General</a>
 			<a href="<?php echo self::$page;?>&section=advanced" class="<?php echo self::get_current_tab($_GET['section'], 'advanced'); ?>">Advanced</a>
+			<a href="<?php echo self::$page;?>&section=developers" class="<?php echo self::get_current_tab($_GET['section'], 'developers'); ?>">Developers</a>
 		</div>
 
 		<br>
@@ -532,7 +540,10 @@ class GRAV_BLOCKS {
 		{
 			case 'advanced':
 				self::form('advanced');
+			break;
 
+			case 'developers':
+				self::developers();
 			break;
 
 			default:
@@ -568,6 +579,151 @@ class GRAV_BLOCKS {
 		}
 
 		GRAV_BLOCKS_PLUGIN_SETTINGS::get_form($fields);
+	}
+
+	private static function developers()
+	{
+		?>
+		<div class="grav-blocks-developers">
+			<h2>Modifying Blocks</h2>
+			<p>There are a few options for modify an existing block.</p>
+				<ul>
+					<li>You can copy the block from
+					<br>wp-content/plugins/gravitate-blocks/grav-blocks
+					<br>and paste it in
+					<br>wp-content/themes/your-theme-folder/grav-blocks
+					<br>* This is not ideal as updates will not be applied to those blocks
+					</li>
+					<li>You can Modify the Block by using the Hooks and Filters below (Recommended)</li>
+				</ul>
+
+			<h2>Hooks and Filters</h2>
+			<ul>
+			<li><br>
+				<h3>grav_blocks</h3>
+				This filters through the Available Blocks.
+				<blockquote>
+				<label>Example 1: Adding Your Own</label>
+				<textarea>
+add_filter( 'grav_blocks', 'your_function' );
+function your_function($blocks)
+{
+	$blocks['My Block'] = 'path/to/your/block/folder/my_block';
+	return $blocks;
+}
+</textarea>
+				</blockquote>
+				<blockquote>
+				<label>Example 2: Removing A Block</label>
+				<textarea>
+add_filter( 'grav_blocks', 'your_function' );
+function your_function($blocks)
+{
+	unset($blocks['html']);
+	return $blocks;
+}
+</textarea>
+				</blockquote>
+			</li>
+			<li><br>
+				<h3>grav_block_locations</h3>
+				This filters through the Locations to allow Grav Blocks.
+				<blockquote>
+				<label>Example 1: Adding a Location to Events where the ID is not 14</label>
+				<textarea>
+add_filter( 'grav_block_locations', 'your_function' );
+function your_function($locations)
+{
+	$locations[] = array(
+						array(
+							'param' => 'post_type',
+                    		'operator' => '==',
+                    		'value' => 'events'
+                    	),
+                    	array(
+							'param' => 'post',
+                    		'operator' => '!=',
+                    		'value' => '14'
+                    	)
+					);
+
+	return $locations;
+}
+</textarea>
+				</blockquote>
+				<blockquote>
+				<label>Example 2: Adding a Location to the Category Taxonomy</label>
+				<textarea>
+add_filter( 'grav_block_locations', 'your_function' );
+function your_function($locations)
+{
+	$locations[] = array(
+						array(
+							'param' => 'taxonomy',
+                    		'operator' => '==',
+                    		'value' => 'category'
+                    	)
+					);
+
+	return $locations;
+}
+</textarea>
+				</blockquote>
+			</li>
+			<li><br>
+				<h3>grav_block_fields</h3>
+				This filters through the fields for each block.
+				<blockquote>
+				<label>Example 1: Removing the Attribution option for the Quote Block </label>
+				<textarea>
+add_filter( 'grav_block_fields', 'your_function' );
+function your_function($fields)
+{
+	if(!empty($fields['quote']['sub_fields']))
+	{
+		foreach ($fields['quote']['sub_fields'] as $key => $field)
+		{
+			if($field['name'] === 'attribution')
+			{
+				unset($fields['quote']['sub_fields'][$key]);
+			}
+		}
+	}
+
+	return $fields;
+}
+</textarea>
+				</blockquote>
+				<blockquote>
+				<label>Example 2: Adding an Image to the Quote Block </label>
+				<textarea>
+add_filter( 'grav_block_fields', 'your_function' );
+function your_function($fields)
+{
+	if(!empty($fields['quote']['sub_fields']))
+	{
+		$fields['quote']['sub_fields'][] = array(
+			'key' => 'field_quote_image',
+			'label' => 'Image',
+			'name' => 'quote_image',
+			'instructions' => 'Image should be 120x120px',
+			'type' => 'image',
+			'column_width' => '',
+			'save_format' => 'object',		// url | object | id
+			'library' => 'all',				// all | uploadedTo
+			'preview_size' => 'medium',
+		);
+	}
+
+	return $fields;
+}
+</textarea>
+				</blockquote>
+			</li>
+			</ul>
+		</div>
+		<?php
+
 	}
 
 	/**
