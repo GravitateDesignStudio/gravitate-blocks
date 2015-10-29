@@ -139,7 +139,7 @@ class GRAV_BLOCKS {
 				'blocks_enabled' => array_values(array_flip(self::get_available_blocks())),
 				'post_types' => array_values(array_flip(self::get_usable_post_types())),
 				'templates' => '',
-				'advanced_options' => array('filter_content', 'enqueue_cycle'),
+				'advanced_options' => array('filter_content', 'enqueue_cycle', 'add_custom_color_class', 'enqueue_css'),
 				'background_colors' => array(
 											array('name' => 'White', 'value' => '#ffffff'),
 											array('name' => 'Light Gray', 'value' => '#eeeeee'),
@@ -513,7 +513,7 @@ class GRAV_BLOCKS {
 					'filter_content' => 'Add content blocks to the end of your content. <span class="extra-info">( using "the_content" filter )</span>',
 					'enqueue_cycle' => 'Add Cycle2 <span class="extra-info">( required for Imageside and Testimonials blocks</span> )',
 					'add_custom_color_class' => 'Add the ability to customize the Background Color option css Class names',
-					'enqueue_css' => 'Add Grav Blocks CSS to the Front End Head (Needed for Custom Background Images, etc)',
+					'enqueue_css' => 'Add Grav Blocks CSS to the Front End Head <span class="extra-info">( Needed for Custom Background Images, etc. )</span>',
 				);
 
 				$fields = array();
@@ -546,13 +546,13 @@ class GRAV_BLOCKS {
 
 				foreach ($block_groups as $group => $blocks)
 				{
-					$description = ($group == 'default') ? 'Choose what default blocks will be available.' : '';
+					$description = ($group == 'default') ? 'Determine what default blocks will be available.' : '';
 					$fields['blocks_enabled_'.$group] = array('type' => 'checkbox', 'label' => ucwords(str_replace('_', ' ', $group)).' Blocks', 'options' => $blocks, 'description' => $description);
 				}
 
 				$fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what Background Colors you want to have the Gravitate Blocks.');
-				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
-				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Page Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
+				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Determine the post types that Gravitate Blocks will appear on.');
+				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Page Templates', 'options' => $template_options, 'description' => 'Determine the page templates that Gravitate Blocks will appear on.');
 
 			break;
 
@@ -660,23 +660,24 @@ class GRAV_BLOCKS {
 		?>
 		<div class="grav-blocks-developers">
 			<h2>Modifying Blocks</h2>
-			<p>There are a few options for modify an existing block.</p>
+			<h4>There are a few options to modify an existing block.</h4>
 				<ul>
-					<li>You can copy the block from
-					<br>wp-content/plugins/gravitate-blocks/grav-blocks
-					<br>and paste it in
-					<br>wp-content/themes/your-theme-folder/grav-blocks
-					<br>* This is not ideal as updates will not be applied to those blocks
+					<li>You can copy the block from:
+						<br><span class="grav-code-block">wp-content/plugins/gravitate-blocks/grav-blocks</span>
+						<br>and paste it in:
+						<br><span class="grav-code-block">wp-content/themes/your-theme-folder/grav-blocks</span>
+						<br><em>* This is not ideal as updates will not be applied to those blocks</em>
 					</li>
 					<li>You can Modify the Block by using the Hooks and Filters below (Recommended)</li>
 				</ul>
 
-			<h2>Adding your own Blocks</h2>
-			<p>There are a few options for Adding your own blocks.</p>
+			<h2>Adding your own blocks</h2>
+			<h4>There are a few options for adding your own blocks.</h4>
 				<ul>
-					<li>You can create your own WP plugin that uses the "grav_blocks" filter below to include your own.</li>
-					<li>You can create a block folder in
-					<br>wp-content/themes/your-theme-folder/grav-blocks</li>
+					<li>You can create your own WP plugin to include your own blocks—this feature uses the "grav_blocks" filter below.</li>
+					<li>You can create a block folder in:
+						<br><span class="grav-code-block">wp-content/themes/your-theme-folder/grav-blocks</span>
+					</li>
 					<li>You can use the "grav_blocks" filter below in your functions.php file.</li>
 				</ul>
 
@@ -684,35 +685,35 @@ class GRAV_BLOCKS {
 			<ul>
 			<li>
 				<h3>grav_blocks</h3>
-				This filters through the Available Blocks.
+				This filters through the available blocks.
 				<blockquote>
 				<label>Example 1: Adding Your Own</label>
-				<textarea>
+				<textarea class="grav-code-block">
 add_filter( 'grav_blocks', 'your_function' );
 function your_function($blocks)
 {
 	$blocks['my_block'] = array('label' => 'My Block', 'path' => 'path/to/your/block/folder/my_block', 'group' => 'Custom');
 	return $blocks;
 }
-</textarea>
+				</textarea>
 				</blockquote>
 				<blockquote>
 				<label>Example 2: Removing A Block</label>
-				<textarea>
+				<textarea class="grav-code-block">
 add_filter( 'grav_blocks', 'your_function' );
 function your_function($blocks)
 {
 	unset($blocks['html']);
 	return $blocks;
 }
-</textarea>
+				</textarea>
 				</blockquote>
 			</li>
 			<li><h3>grav_block_locations</h3>
-				This filters through the Locations to allow Grav Blocks.
+				This filters through the locations to allow Gravitate Blocks.
 				<blockquote>
 				<label>Example 1: Adding a Location to Events where the ID is not 14</label>
-				<textarea>
+				<textarea class="grav-code-block">
 add_filter( 'grav_block_locations', 'your_function' );
 function your_function($locations)
 {
@@ -731,11 +732,11 @@ function your_function($locations)
 
 	return $locations;
 }
-</textarea>
+				</textarea>
 				</blockquote>
 				<blockquote>
 				<label>Example 2: Adding a Location to the Category Taxonomy</label>
-				<textarea>
+				<textarea class="grav-code-block">
 add_filter( 'grav_block_locations', 'your_function' );
 function your_function($locations)
 {
@@ -749,14 +750,14 @@ function your_function($locations)
 
 	return $locations;
 }
-</textarea>
+				</textarea>
 				</blockquote>
 			</li>
 			<li><h3>grav_block_fields</h3>
 				This filters through the fields for each block.
 				<blockquote>
 				<label>Example 1: Removing the Attribution option for the Quote Block </label>
-				<textarea>
+				<textarea class="grav-code-block">
 add_filter( 'grav_block_fields', 'your_function' );
 function your_function($fields)
 {
@@ -773,11 +774,11 @@ function your_function($fields)
 
 	return $fields;
 }
-</textarea>
+				</textarea>
 				</blockquote>
 				<blockquote>
 				<label>Example 2: Adding an Image to the Quote Block </label>
-				<textarea>
+				<textarea class="grav-code-block">
 add_filter( 'grav_block_fields', 'your_function' );
 function your_function($fields)
 {
@@ -798,8 +799,8 @@ function your_function($fields)
 
 	return $fields;
 }
-</textarea>
-<br>* Keep in mind you will still need to update the markup to accept the new settings
+				</textarea>
+				<br><em>* Keep in mind you will still need to update the markup to accept the new settings</em>
 				</blockquote>
 			</li>
 			</ul>

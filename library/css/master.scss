@@ -68,7 +68,6 @@ $gray-light : #999999;
 }
 .settings_page_gravitate_blocks tr[class^="grav-plugin-settings-blocks_enabled_"] {
  	td {
- 		//border-bottom: 1px solid #ccc;
 		max-width: 780px;
 		display: block;
 		label {
@@ -120,13 +119,25 @@ $gray-light : #999999;
 	}
 }
 .grav-blocks-developers {
-	textarea {
-		width: 100%;
-		max-width: 600px;
-		height: 160px;
+	h3 {
+		font-weight: 700;
+    	font-family: $source-sans;
+    	font-size: 1.3rem;
+    	color: rgba($gray-dark, .7);
+	}
+	.grav-code-block {
+		display: inline-block;
 		background-color: rgb(233, 233, 233);
 		color: rgb(111, 111, 111);
 		border: 1px dashed #d61b51;
+		padding: 4px;
+		margin: .25rem 0;
+		cursor: text;
+	}
+	textarea.grav-code-block {
+		width: 100%;
+		max-width: 600px;
+		height: 160px;
 		padding: 10px;
 	}
 	blockquote {
@@ -162,6 +173,13 @@ $gray-light : #999999;
 			&:nth-child(odd){
 				background-color: rgba($gray-light, .1);
 			}
+		}
+	}
+}
+.grav-plugin-settings-advanced_options {
+	&.grav-plugin-settings-type-checkbox {
+		td label {
+		    margin-bottom: .5rem;
 		}
 	}
 }
