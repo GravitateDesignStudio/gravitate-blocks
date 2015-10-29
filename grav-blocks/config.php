@@ -17,43 +17,49 @@ $block_background_colors = array (
 $layouts = array();
 
 // Loop through all enabled blocks and set them up
-foreach(GRAV_BLOCKS::get_blocks() as $block => $block_path)
+foreach(GRAV_BLOCKS::get_blocks() as $block => $block_params)
 {
-	$block_backgrounds = array (
-		'key' => 'field_'.$block.'_x01',
-		'label' => 'Background',
-		'name' => 'block_background',
-		'type' => 'select',
-		'column_width' => '',
-		'choices' => $block_background_colors,
-		'default_value' => '',
-		'allow_null' => 0,
-		'multiple' => 0,
-	);
+	if(!empty($block_params['path']))
+	{
+		$block_backgrounds = array (
+			'key' => 'field_'.$block.'_x01',
+			'label' => 'Background',
+			'name' => 'block_background',
+			'type' => 'select',
+			'column_width' => '',
+			'choices' => $block_background_colors,
+			'default_value' => '',
+			'allow_null' => 0,
+			'multiple' => 0,
+		);
 
-	$block_background_image = array (
-		'key' => 'field_'.$block.'_x02',
-		'label' => 'Background Image',
-		'name' => 'block_background_image',
-		'type' => 'image',
-		'conditional_logic' => array (
-			'status' => 1,
-			'rules' => array (
-				array (
-					'field' => 'field_'.$block.'_x01',
-					'operator' => '==',
-					'value' => 'image',
+		$block_background_image = array (
+			'key' => 'field_'.$block.'_x02',
+			'label' => 'Background Image',
+			'name' => 'block_background_image',
+			'type' => 'image',
+			'conditional_logic' => array (
+				'status' => 1,
+				'rules' => array (
+					array (
+						'field' => 'field_'.$block.'_x01',
+						'operator' => '==',
+						'value' => 'image',
+					),
 				),
+				'allorany' => 'all',
 			),
-			'allorany' => 'all',
-		),
-		'column_width' => '',
-		'save_format' => 'object',
-		'preview_size' => 'medium',
-		'library' => 'all',
-	);
+			'column_width' => '',
+			'save_format' => 'object',
+			'preview_size' => 'medium',
+			'library' => 'all',
+		);
 
-	$layouts[$block] = include($block_path.'/block_fields.php');
+		if(file_exists($block_params['path'].'/block_fields.php'))
+		{
+			$layouts[$block] = include($block_params['path'].'/block_fields.php');
+		}
+	}
 }
 
 /*

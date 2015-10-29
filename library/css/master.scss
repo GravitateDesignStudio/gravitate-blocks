@@ -67,12 +67,20 @@ $gray-light : #999999;
     	font-style: italic;
 	}
 }
-.grav-plugin-settings-blocks_enabled td {
-	max-width: 780px;
-	display: block;
-	label {
-		clear: none !important;
-		width: 200px;
+tr[class^="grav-plugin-settings-blocks_enabled_"] {
+ 	td {
+ 		border-bottom: 1px solid #ccc;
+		max-width: 780px;
+		display: block;
+		label {
+			clear: none !important;
+			width: 200px;
+		}
+		&:after {
+			content: '';
+			display: block;
+			clear: both;
+		}
 	}
 }
 .gravitate-redirects-page-links {

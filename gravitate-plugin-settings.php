@@ -444,7 +444,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 			{
 				$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
 
-				if(is_array($field['value']))
+				if(isset($field['value']) && is_array($field['value']))
 				{
 					$checked = (in_array($real_value, $field['value'])) ? 'checked' : '';
 				}

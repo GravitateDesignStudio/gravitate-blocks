@@ -317,7 +317,20 @@ class GRAV_BLOCKS {
 
 		if($available_blocks = self::get_available_blocks())
 		{
-			$blocks = array_intersect_key($available_blocks, array_flip(self::$settings['blocks_enabled']));
+
+			$enabled_blocks = array();
+
+			foreach (self::$settings as $setting_key => $setting_value)
+			{
+				if(strpos($setting_key, 'blocks_enabled_') !== false && is_array($setting_value))
+				{
+					$enabled_blocks = array_merge($enabled_blocks, $setting_value);
+				}
+			}
+
+			$blocks = array_intersect_key($available_blocks, array_flip($enabled_blocks));
+
+			//echo '<pre>';print_r($blocks);echo '</pre>';
 		}
 
 		return $blocks;
@@ -352,18 +365,28 @@ class GRAV_BLOCKS {
 			}
 		}
 
-		// Overwrite Plugin Blocks with Theme Blocks
-		$dirs = array_merge($plugin_blocks, $theme_blocks);
-
-		if($dirs)
+		if($plugin_blocks)
 		{
-			foreach($dirs as $dir)
+			foreach($plugin_blocks as $dir)
 			{
 				$block = basename($dir);
 
 			    if(file_exists($dir.'/block.php'))
 			    {
-					$blocks[$block] = $dir;
+					$blocks[$block] = array('label' => $block, 'path' => $dir, 'group' => 'default');
+				}
+			}
+		}
+
+		if($theme_blocks)
+		{
+			foreach($theme_blocks as $dir)
+			{
+				$block = basename($dir);
+
+			    if(file_exists($dir.'/block.php'))
+			    {
+					$blocks[$block] = array('label' => $block, 'path' => $dir, 'group' => 'custom');
 				}
 			}
 		}
@@ -473,10 +496,23 @@ class GRAV_BLOCKS {
 					'value' => array('type' => 'colorpicker', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)')
 				);
 
+				$block_groups = array();
+				foreach (self::get_available_blocks() as $block => $block_params)
+				{
+					$block_groups[str_replace(' ', '_', strtolower($block_params['group']))][$block] = $block_params['label'];
+				}
+
+				//echo '<pre>';print_r($block_groups);echo '</pre>';
+
 
 				$fields = array();
-				$fields['blocks_enabled'] = array('type' => 'checkbox', 'label' => 'Blocks Enabled', 'options' => implode(',', array_keys(self::get_available_blocks())), 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
-				$fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
+
+				foreach ($block_groups as $group => $blocks)
+				{
+					$fields['blocks_enabled_'.$group] = array('type' => 'checkbox', 'label' => ucwords(str_replace('_', ' ', $group)).' Blocks', 'options' => $blocks);
+				}
+
+				$fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what Background Colors you want to have the Gravitate Blocks.');
 				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Choose what post types you want to have the Gravitate Blocks.');
 				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Page Templates', 'options' => $template_options, 'description' => 'Choose what templates you want to have the Gravitate Blocks.');
 
@@ -617,7 +653,7 @@ class GRAV_BLOCKS {
 add_filter( 'grav_blocks', 'your_function' );
 function your_function($blocks)
 {
-	$blocks['My Block'] = 'path/to/your/block/folder/my_block';
+	$blocks['my_block'] = array('label' => 'My Block', 'path' => 'path/to/your/block/folder/my_block', 'group' => 'Custom');
 	return $blocks;
 }
 </textarea>
