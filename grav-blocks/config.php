@@ -1,12 +1,11 @@
 <?php
 
-/*
-* Global variables to use across multiple blocks
-*/
-
+/**
+ *
+ *  Set Background Colors
+ *
+ */
 $block_background_colors = array();
-
-
 $block_background_colors['block-bg-none'] = 'None';
 if(!empty(GRAV_BLOCKS::$settings['background_colors']))
 {
@@ -17,10 +16,13 @@ if(!empty(GRAV_BLOCKS::$settings['background_colors']))
 }
 $block_background_colors['block-bg-image'] = 'Image';
 
-// Variable for Including Blocks in Flexible Content
-$layouts = array();
 
-// Loop through all enabled blocks and set them up
+/**
+ *
+ *  Include Blocks in Flexible Content
+ *
+ */
+$layouts = array();
 foreach(GRAV_BLOCKS::get_blocks() as $block => $block_params)
 {
 	if(!empty($block_params['path']))
@@ -66,13 +68,15 @@ foreach(GRAV_BLOCKS::get_blocks() as $block => $block_params)
 	}
 }
 
+
 /*
 *
-* Block Function to build Admin for ACF
+* Block Function to build Admin and Set Fields for ACF
 *
 */
 if(function_exists("acf_add_local_field_group") && !empty($layouts))
 {
+	// Filter the Fields from developers
 	$layouts = apply_filters( 'grav_block_fields', $layouts );
 
 	acf_add_local_field_group(array (
