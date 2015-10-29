@@ -17,7 +17,6 @@ add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' 
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
 add_filter('plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link'));
 
-
 /**
  *
  * @author Gravitate
@@ -94,6 +93,11 @@ class GRAV_BLOCKS {
 		{
 			self::add_hook('action', 'wp_head', 'add_head_css');
 		}
+
+		if(!function_exists('acf_add_local_field_group') && (!isset($_GET['page']) || $_GET['page'] != 'gravitate_blocks'))
+		{
+			self::add_hook('action', 'admin_notices', 'acf_notice');
+		}
 	}
 
 	/**
@@ -105,11 +109,11 @@ class GRAV_BLOCKS {
 	{
 		if($type === 'action')
 		{
-			add_action( $hook , array('GRAV_BLOCKS', $hook_function), $param);
+			add_action( $hook , array(__CLASS__, $hook_function), $param);
 		}
 		else
 		{
-			add_filter( $hook , array('GRAV_BLOCKS', $hook_function));
+			add_filter( $hook , array(__CLASS__, $hook_function));
 		}
 	}
 
@@ -149,6 +153,15 @@ class GRAV_BLOCKS {
 
 			update_option(self::$option_key, $current_settings);
 		}
+	}
+
+	public static function acf_notice($dismissible=true)
+	{
+	    ?>
+	    <div class="notice error grav-blocks-acf-notice<?php echo ($dismissible ? ' is-dismissible' : '');?>">
+	        <p><?php _e( 'Gravitate Blocks - ACF Pro is required to run Gravitate Blocks<br>Go here to get it <a target="_blank" href="http://www.advancedcustomfields.com/pro/">http://www.advancedcustomfields.com/pro/</a><br>To remove this message permanently either Install ACF Pro or Deactivate the Gravitate Blocks Plugin', 'my-text-domain' ); ?></p>
+	    </div>
+	    <?php
 	}
 
 	/**
@@ -590,6 +603,13 @@ class GRAV_BLOCKS {
 			</header>
 			<main>
 			<h4 class="blocks-version">Version <?php echo self::$version;?></h4>
+
+
+			<?php if(!function_exists('acf_add_local_field_group'))
+			{
+				self::acf_notice(false);
+			}
+			?>
 
 			<?php if(!empty($error)){?><div class="error"><p><?php echo $error; ?></p></div><?php } ?>
 			<?php if(!empty($success)){?><div class="updated"><p><?php echo $success; ?></p></div><?php } ?>

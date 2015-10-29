@@ -340,7 +340,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 					var clone = $(this).closest('.repeater-table').find('.repeater-placeholder').clone();
 					var total = $(this).closest('.repeater-table').find('.repeater-item').length;
 					clone.removeClass('repeater-placeholder');
-					clone.html(clone.html().replace(new RegExp(/\[0\]/, 'g'), '['+total+']'));
+					clone.html(clone.html().split('[0]').join('['+total+']'));
 					clone.css('z-index', total);
 					clone.find('input[type="text"], textarea').val('');
 					clone.find('input[type="checkbox"]').removeAttr('checked');
