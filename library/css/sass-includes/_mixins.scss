@@ -1,0 +1,81 @@
+@mixin fontsize($fontsize, $lineheight: 'auto', $basesize: 16) {
+
+	@if $lineheight == 'auto' {
+		$lineheight: round($fontsize * 1.2);
+	}
+
+	font-size: $fontsize + px;
+	font-size: ($fontsize / $basesize) + rem;
+	line-height: ($lineheight) + px;
+	line-height: ($lineheight / $basesize) + rem;
+	margin-top: (($lineheight - $fontsize)/2 * -1) + px;
+	margin-top: ((($lineheight - $fontsize)/2 * -1) / $basesize) + rem;
+}
+
+@mixin clearfix{
+	&:after {
+		visibility: hidden;
+		display: block;
+		font-size: 0;
+		content: '';
+		clear: both;
+		height: 0;
+	}
+}
+
+@mixin absolute_center{
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	margin: auto;
+}
+
+.grav-vert-align {
+  position: relative;
+  top: 50%;
+  -webkit-transform: translateY(-50%);
+	  -ms-transform: translateY(-50%);
+	  transform: translateY(-50%);
+}
+
+.grav-vert-align-parent {
+  -webkit-transform-style: preserve-3d;
+	  -moz-transform-style: preserve-3d;
+	  transform-style: preserve-3d;
+}
+
+@mixin media($args...) {
+  $media-type: 'only screen';
+  $media-type-key: 'media-type';
+  $args: keywords($args);
+  $expr: '';
+
+  @if map-has-key($args, $media-type-key) {
+    $media-type: map-get($args, $media-type-key);
+    $args: map-remove($args, $media-type-key);
+  }
+
+  @each $key, $value in $args {
+    @if $value {
+      $expr: "#{$expr} and (#{$key}: #{$value})";
+    }
+  }
+
+  @media #{$media-type} #{$expr} {
+    @content;
+  }
+}
+
+@mixin media-max($max){
+  @include media($max-width: ($max - 1)) {
+    @content;
+  }
+}
+
+@mixin media-min($min){
+  @include media($min-width: $min) {
+    @content;
+  }
+}
