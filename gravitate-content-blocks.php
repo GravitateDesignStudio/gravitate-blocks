@@ -597,9 +597,18 @@ class GRAV_BLOCKS {
 					<li>You can Modify the Block by using the Hooks and Filters below (Recommended)</li>
 				</ul>
 
+			<h2>Adding your own Blocks</h2>
+			<p>There are a few options for Adding your own blocks.</p>
+				<ul>
+					<li>You can create your own WP plugin that uses the "grav_blocks" filter below to include your own.</li>
+					<li>You can create a block folder in
+					<br>wp-content/themes/your-theme-folder/grav-blocks</li>
+					<li>You can use the "grav_blocks" filter below in your functions.php file.</li>
+				</ul>
+
 			<h2>Hooks and Filters</h2>
 			<ul>
-			<li><br>
+			<li>
 				<h3>grav_blocks</h3>
 				This filters through the Available Blocks.
 				<blockquote>

@@ -115,8 +115,10 @@ $gray-light : #999999;
 		width: 100%;
 		max-width: 600px;
 		height: 160px;
-		background-color: #999;
-		color: #fff;
+		background-color: rgb(233, 233, 233);
+		color: rgb(111, 111, 111);
+		border: 1px dashed #d61b51;
+		padding: 10px;
 	}
 	blockquote {
 		label {
