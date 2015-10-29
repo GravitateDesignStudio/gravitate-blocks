@@ -101,15 +101,15 @@ class GRAV_BLOCKS {
 	 *
 	 * @return void
 	 */
-	public static function add_hook($type='', $filter='', $filter_function='', $param='')
+	public static function add_hook($type='', $hook='', $hook_function='', $param='')
 	{
 		if($type === 'action')
 		{
-			add_action( $filter , array('GRAV_BLOCKS', $filter_function), $param);
+			add_action( $hook , array('GRAV_BLOCKS', $hook_function), $param);
 		}
 		else
 		{
-			add_filter( $filter , array('GRAV_BLOCKS', $filter_function));
+			add_filter( $hook , array('GRAV_BLOCKS', $hook_function));
 		}
 	}
 
@@ -205,8 +205,9 @@ class GRAV_BLOCKS {
 		{
 			foreach (GRAV_BLOCKS::$settings['background_colors'] as $color_key => $color_params)
 			{
+				$use_css_variable = (!empty($color_params['class']) && GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_custom_color_class'));
 				?>
-			.block-container.<?php echo (!empty($color_params['class']) ? $color_params['class'] : 'block-bg-'.sanitize_title($color_params['name']));?> { background-color: <?php echo $color_params['value'];?>}
+			.block-container.<?php echo ($use_css_variable ? $color_params['class'] : 'block-bg-'.sanitize_title($color_params['name']));?> { background-color: <?php echo $color_params['value'];?>}
 				<?php
 			}
 		}
