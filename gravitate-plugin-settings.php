@@ -61,7 +61,10 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 
 							foreach ($rep_original_fields as $rep_key => $rep_value)
 							{
-								$fields[$key]['fields'][$rep_i][$rep_key]['value'] = $rep_values[$rep_key];
+								if(isset($rep_values[$rep_key]))
+								{
+									$fields[$key]['fields'][$rep_i][$rep_key]['value'] = $rep_values[$rep_key];
+								}
 							}
 						}
 					}

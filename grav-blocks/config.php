@@ -4,14 +4,18 @@
 * Global variables to use across multiple blocks
 */
 
-$block_background_colors = array (
-	'white' => 'White',
-	'dark' => 'Blue',
-	'darker' => 'Dark Blue',
-	'lightest' => 'Light Gray',
-	'none' => 'None',
-	'image' => 'Image'
-);
+$block_background_colors = array();
+
+
+$block_background_colors['block-bg-none'] = 'None';
+if(!empty(GRAV_BLOCKS::$settings['background_colors']))
+{
+	foreach (GRAV_BLOCKS::$settings['background_colors'] as $color_key => $color_params)
+	{
+		$block_background_colors[(!empty($color_params['class']) ? $color_params['class'] : 'block-bg-'.sanitize_title($color_params['name']))] = $color_params['name'];
+	}
+}
+$block_background_colors['block-bg-image'] = 'Image';
 
 // Variable for Including Blocks in Flexible Content
 $layouts = array();
@@ -44,7 +48,7 @@ foreach(GRAV_BLOCKS::get_blocks() as $block => $block_params)
 					array (
 						'field' => 'field_'.$block.'_x01',
 						'operator' => '==',
-						'value' => 'image',
+						'value' => 'block-bg-image',
 					),
 				),
 				'allorany' => 'all',
