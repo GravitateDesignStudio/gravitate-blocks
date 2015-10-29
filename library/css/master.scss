@@ -7,7 +7,7 @@ $white : #ffffff;
 $magenta : #d61b51;
 $gray-dark : #333333;
 $gray-light : #999999;
-$gray-lighter : #E8E8E8;
+$gray-lighter : #dedede;
 $gray-lightest : #F9F9F9;
 $wp-media-query : 783px;
 
@@ -164,6 +164,9 @@ $wp-media-query : 783px;
 		> td {
 			padding: 0;
 		}
+		.repeater-table {
+			border-top: 1px solid $gray-lighter;
+		}
 		.form-table {
 			width: 95%;
 			tbody {
@@ -178,13 +181,14 @@ $wp-media-query : 783px;
 			border: 0;
 			border-left: 4px solid $magenta;
 			background-color: $gray-lightest;
+			border-bottom: 1px solid $gray-lighter;
 			td {
 				border: 0;
 				background-color: transparent;
 			}
-			&:nth-child(odd){
-				background-color: $gray-lighter;
-			}
+			// &:last-child {
+			// 	border-bottom: 0;
+			// }
 		}
 	}
 }
