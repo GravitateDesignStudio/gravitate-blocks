@@ -186,13 +186,11 @@ $wp-media-query : 783px;
 				border: 0;
 				background-color: transparent;
 			}
-			// &:last-child {
-			// 	border-bottom: 0;
-			// }
 		}
 	}
 }
-.grav-plugin-settings-advanced_options {
+.grav-plugin-settings-advanced_options,
+.grav-plugin-settings-css_options {
 	&.grav-plugin-settings-type-checkbox {
 		td label {
 		    margin-bottom: .5rem;

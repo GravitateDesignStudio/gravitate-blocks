@@ -120,7 +120,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	 */
 	public static function save_settings()
 	{
-		if(!empty($_POST['save_grav_settings']) && !empty($_POST['settings']))
+		if(!empty($_POST['save_grav_settings']) && !empty($_POST['settings']) && check_admin_referer(self::$option_key))
 		{
 			$_POST['settings']['updated_at'] = time();
 
@@ -221,6 +221,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 
 			<form method="post" class="grav-plugin-settings-form">
 				<input type="hidden" name="save_grav_settings" value="1">
+				<?php wp_nonce_field(self::$option_key); ?>
 				<table class="form-table">
 				<?php
 				foreach($fields as $meta_key => $field)

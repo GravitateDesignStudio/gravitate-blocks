@@ -15,7 +15,7 @@ add_action( 'admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action( 'init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
-add_filter('plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link'));
+add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link' ));
 
 /**
  *
@@ -89,7 +89,7 @@ class GRAV_BLOCKS {
 			self::add_hook('filter', 'the_content', 'filter_content', 23);
 		}
 
-		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_css') && !is_admin())
+		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'enqueue_css') && !is_admin())
 		{
 			self::add_hook('action', 'wp_head', 'add_head_css');
 		}
@@ -109,11 +109,11 @@ class GRAV_BLOCKS {
 	{
 		if($type === 'action')
 		{
-			add_action( $hook , array(__CLASS__, $hook_function), $param);
+			add_action( $hook , array(__CLASS__, $hook_function));
 		}
 		else
 		{
-			add_filter( $hook , array(__CLASS__, $hook_function));
+			add_filter( $hook , array(__CLASS__, $hook_function), $param);
 		}
 	}
 
@@ -136,21 +136,24 @@ class GRAV_BLOCKS {
 	 */
 	public static function activate()
 	{
-		$active_settings = get_option('gravitate_blocks_settings');
+		$active_settings = get_option(self::$option_key);
 		if(!$active_settings)
 		{
 			$current_settings = array(
-				'blocks_enabled' => array_values(array_flip(self::get_available_blocks())),
-				'post_types' => array_values(array_flip(self::get_usable_post_types())),
+				'post_types' => array_keys(self::get_usable_post_types()),
 				'templates' => '',
-				'advanced_options' => array('filter_content', 'enqueue_cycle', 'add_custom_color_class', 'enqueue_css'),
+				'advanced_options' => array('filter_content', 'enqueue_cycle'),
+				'css_options' => array('enqueue_css'),
 				'background_colors' => array(
 											array('name' => 'White', 'value' => '#ffffff'),
 											array('name' => 'Light Gray', 'value' => '#eeeeee'),
 											array('name' => 'Dark Gray', 'value' => '#555555')
 										),
 			);
-
+			$blocks_groups = self::get_available_block_groups();
+			foreach($blocks_groups as $group_name => $group_info){
+				$current_settings['blocks_enabled_'.$group_name] = array_keys($group_info);
+			}
 			update_option(self::$option_key, $current_settings);
 		}
 	}
@@ -159,7 +162,7 @@ class GRAV_BLOCKS {
 	{
 	    ?>
 	    <div class="notice error grav-blocks-acf-notice<?php echo ($dismissible ? ' is-dismissible' : '');?>">
-	        <p><?php _e( 'Gravitate Blocks - ACF Pro is required to run Gravitate Blocks<br>Go here to get it <a target="_blank" href="http://www.advancedcustomfields.com/pro/">http://www.advancedcustomfields.com/pro/</a><br>To remove this message permanently either Install ACF Pro or Deactivate the Gravitate Blocks Plugin', 'my-text-domain' ); ?></p>
+	        <p><?php _e( 'Gravitate Blocks - ACF Pro is required to run Gravitate Blocks<br>To download the plugin go here. <a target="_blank" href="http://www.advancedcustomfields.com/pro/">http://www.advancedcustomfields.com/pro/</a><br>To remove this message permanently either Install ACF Pro or Deactivate the Gravitate Blocks Plugin', 'my-text-domain' ); ?></p>
 	    </div>
 	    <?php
 	}
@@ -218,7 +221,7 @@ class GRAV_BLOCKS {
 		{
 			foreach (GRAV_BLOCKS::$settings['background_colors'] as $color_key => $color_params)
 			{
-				$use_css_variable = (!empty($color_params['class']) && GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_custom_color_class'));
+				$use_css_variable = (!empty($color_params['class']) && GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'add_custom_color_class'));
 				?>
 			.block-container.<?php echo ($use_css_variable ? $color_params['class'] : 'block-bg-'.sanitize_title($color_params['name']));?> { background-color: <?php echo $color_params['value'];?>}
 				<?php
@@ -444,6 +447,22 @@ class GRAV_BLOCKS {
 	}
 
 	/**
+	 * Returns all the available block groups
+	 *
+	 *
+	 * @return array
+	 */
+	public static function get_available_block_groups()
+	{
+		$block_groups = array();
+		foreach (self::get_available_blocks() as $block => $block_params)
+		{
+			$block_groups[str_replace(' ', '_', strtolower($block_params['group']))][$block] = $block_params['label'];
+		}
+		return $block_groups;
+	}
+
+	/**
 	 * Gets the correct path of a file or directory for a Block asset.
 	 * Allows to be overwritten by the theme if the theme has a block asset in /grav-blocks/
 	 *
@@ -522,15 +541,18 @@ class GRAV_BLOCKS {
 
 			case 'advanced':
 				$advanced_options = array(
+					'filter_content' => 'Gravitate Blocks will be added to the end of your content. <span class="extra-info">( Using "the_content" filter )</span>',
+					'enqueue_cycle' => 'Cycle2 jQuery slider plugin will be used. <span class="extra-info">( Required for Imageside and Testimonials blocks</span> )',
+				);
+				$css_options = array(
+					'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
+					'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
 					//'use_foundation' => 'Use Foundation 5 CSS.',
-					'filter_content' => 'Add content blocks to the end of your content. <span class="extra-info">( using "the_content" filter )</span>',
-					'enqueue_cycle' => 'Add Cycle2 <span class="extra-info">( required for Imageside and Testimonials blocks</span> )',
-					'add_custom_color_class' => 'Add the ability to customize the Background Color option css Class names',
-					'enqueue_css' => 'Add Grav Blocks CSS to the Front End Head <span class="extra-info">( Needed for Custom Background Images, etc. )</span>',
 				);
 
 				$fields = array();
 				$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => '');
+				$fields['css_options'] = array('type' => 'checkbox', 'label' => 'CSS Settings', 'options' => $css_options, 'description' => '');
 
 			break;
 
@@ -538,22 +560,19 @@ class GRAV_BLOCKS {
 			case 'general':
 				$post_types = self::get_usable_post_types();
 				$template_options = self::get_template_options();
+				$block_groups = self::get_available_block_groups();
 
 				$background_colors_repeater = array();
 				$background_colors_repeater['name'] = array('type' => 'text', 'label' => 'Name', 'description' => 'Name of color');
 
-				if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_custom_color_class') )
+				if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'add_custom_color_class') )
 				{
 					$background_colors_repeater['class'] = array('type' => 'text', 'label' => 'CSS Class Name', 'description' => '( Optional )');
 				}
 
 				$background_colors_repeater['value'] = array('type' => 'colorpicker', 'label' => 'Value', 'description' => 'Use Hex values (ex. #ff0000)');
 
-				$block_groups = array();
-				foreach (self::get_available_blocks() as $block => $block_params)
-				{
-					$block_groups[str_replace(' ', '_', strtolower($block_params['group']))][$block] = $block_params['label'];
-				}
+
 
 				$fields = array();
 
@@ -962,7 +981,7 @@ function your_function($fields)
 	public static function get_template_options()
 	{
 
-		// TODO add filter here for $posts_to_exclude
+		// TODO add filter here for $templates_to_exclude
 
 		$templates = get_page_templates();
 		$template_options = array();
