@@ -359,10 +359,10 @@ class GRAV_BLOCKS {
 		self::get_settings(true);
 		$blocks = array();
 
-		if(empty(self::$settings['blocks_enabled']))
-		{
-			return array();
-		}
+		// if(empty(self::$settings['blocks_enabled']))
+		// {
+		// 	return array();
+		// }
 
 		if($available_blocks = self::get_available_blocks())
 		{
