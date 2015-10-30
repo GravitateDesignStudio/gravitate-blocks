@@ -14,7 +14,7 @@ if(get_sub_field('button_'.get_sub_field('button_type'))){ ?>
 				<?php if($subtitle = get_sub_field('subtitle')){ ?>
 					<h4><?php echo esc_html($subtitle); ?></h4>
 				<?php } ?>
-				<a class="button white" href="<?php the_sub_field('button_'.get_sub_field('button_type')); ?>"><?php the_sub_field('button_text'); ?></a>
+				<a class="button white" href="<?php echo esc_url(get_sub_field('button_'.get_sub_field('button_type'))); ?>"><?php the_sub_field('button_text'); ?></a>
 			</div>
 		</div>
 	</div>

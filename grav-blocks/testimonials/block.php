@@ -21,7 +21,7 @@ if(get_sub_field('testimonials'))
 						<div class="slide <?php echo GRAV_BLOCKS::css()->row()->get();?>">
 							<div class="<?php echo GRAV_BLOCKS::css()->col(12, 2)->get();?>">
 								<?php if($image){?>
-								<img src="<?php echo $image['sizes']['thumbnail'];?>" alt="<?php echo $image['alt'];?>">
+								<img src="<?php echo esc_attr($image['sizes']['thumbnail']); ?>" alt="<?php echo esc_attr($image['alt']); ?>">
 								<?php } ?>
 							</div>
 							<div class="<?php echo GRAV_BLOCKS::css()->col(12, 10)->get();?>">

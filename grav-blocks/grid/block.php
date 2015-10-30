@@ -18,7 +18,7 @@ if($grid_items = get_sub_field('grid_items')){ ?>
 								<h3><?php echo $title; ?></h3>
 							<?php } ?>
 							<?php if($image = $grid_item['item_image']){ ?>
-								<img src="<?php echo $image['sizes']['medium']; ?>" alt="<?php echo $image['alt']; ?>">
+								<img src="<?php echo esc_attr($image['sizes']['medium']); ?>" alt="<?php echo esc_attr($image['alt']); ?>">
 							<?php } ?>
 							<?php if($content = $grid_item['item_content']){ echo $content; } ?>
 						</li>
