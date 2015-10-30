@@ -35,4 +35,3 @@ Description: Welcome to Gravitate Blocks: A content solution using WordPress and
 == Todo ==
 
 * Add More Blocks
-* Add escape functions

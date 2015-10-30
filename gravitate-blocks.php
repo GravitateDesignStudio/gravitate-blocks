@@ -359,11 +359,6 @@ class GRAV_BLOCKS {
 		self::get_settings(true);
 		$blocks = array();
 
-		// if(empty(self::$settings['blocks_enabled']))
-		// {
-		// 	return array();
-		// }
-
 		if($available_blocks = self::get_available_blocks())
 		{
 
@@ -379,7 +374,6 @@ class GRAV_BLOCKS {
 
 			$blocks = array_intersect_key($available_blocks, array_flip($enabled_blocks));
 
-			//echo '<pre>';print_r($blocks);echo '</pre>';
 		}
 
 		return $blocks;
