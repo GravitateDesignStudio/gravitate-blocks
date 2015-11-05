@@ -408,15 +408,20 @@ class GRAV_BLOCKS {
 			}
 		}
 
+		/* These are just placed to ignore any php warnings when including the fields */
+		$block_backgrounds = '';
+		$block_background_image = '';
+
 		if($plugin_blocks)
 		{
 			foreach($plugin_blocks as $dir)
 			{
 				$block = basename($dir);
 
-			    if(file_exists($dir.'/block.php'))
+			    if(file_exists($dir.'/block_fields.php'))
 			    {
-					$blocks[$block] = array('label' => $block, 'path' => $dir, 'group' => 'default');
+			    	$fields = include($dir.'/block_fields.php');
+					$blocks[$block] = array('label' => $block, 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'default'));
 				}
 			}
 		}
@@ -427,17 +432,33 @@ class GRAV_BLOCKS {
 			{
 				$block = basename($dir);
 
-			    if(file_exists($dir.'/block.php'))
+			    if(file_exists($dir.'/block_fields.php'))
 			    {
-					$blocks[$block] = array('label' => $block, 'path' => $dir, 'group' => 'custom');
+			    	$fields = include($dir.'/block_fields.php');
+					$blocks[$block] = array('label' => $block . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'));
 				}
 			}
 		}
 
-		// Apply Filters to allow others to filter the blocks used.
-		$blocks = apply_filters( 'grav_blocks', $blocks );
 
-		return $blocks;
+
+		// Apply Filters to allow others to filter the blocks used.
+		$filterd_blocks = apply_filters( 'grav_blocks', $blocks );
+
+		// foreach ($filterd_blocks as $filtered_key => $filtered_value)
+		// {
+		// 	if(isset($blocks[$filtered_key]) && serialize($filtered_value) !== serialize($blocks[$filtered_key]))
+		// 	{
+		// 		$filterd_blocks[$filtered_key]['label'].= ' <span class="extra-info">( Custom )</span>';
+		// 	}
+
+		// 	if(empty(var))
+		// 	{
+
+		// 	}
+		// }
+
+		return $filterd_blocks;
 	}
 
 	/**

@@ -58,4 +58,7 @@ return array (
 			'default_value' => 0,
 		),
 	),
+	'grav_blocks_settings' => array(
+		'group' => 'Headings'
+	),
 );
