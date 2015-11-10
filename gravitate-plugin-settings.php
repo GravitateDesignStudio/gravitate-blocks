@@ -55,6 +55,8 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 					{
 						$rep_original_fields = $fields[$key]['fields'];
 
+						$rep_original_fields['_repeater_id'] = array('type' => 'repeater_id');
+
 						foreach ($value as $rep_i => $rep_values)
 						{
 							$fields[$key]['fields'][$rep_i] = $rep_original_fields;
@@ -267,17 +269,19 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 
 										?>
 										<tr class="repeater-item<?php echo (!is_numeric($rep_i) ? ' repeater-placeholder' : '');?>" style="z-index:<?php echo (is_numeric($rep_i) ? $rep_i : 0);?>;">
-											<td class="handle"></td>
+											<td class="handle"><input type="hidden" name="settings[<?php echo $meta_key;?>][<?php echo (is_numeric($rep_i) ? $rep_i : 0);?>][_repeater_id]" value="<?php echo (isset($rep_fields['_repeater_id']['value']) ? $rep_fields['_repeater_id']['value'] : (!is_numeric($rep_i) ? '_repeater_id' : '').(is_numeric($rep_i) ? $rep_i : 0));?>"></td>
 											<?php
 
 											foreach ($rep_fields as $rep_key => $rep_field)
 											{
-												?>
-												<td class="grav-plugin-settings-field grav-plugin-settings-field-<?php echo $rep_field['type'];?>">
-													<?php self::settings_field($rep_key, $rep_field, $meta_key, $repeater_num); ?>
-												</td>
-												<?php
-
+												if($rep_field['type'] != 'repeater_id')
+												{
+													?>
+													<td class="grav-plugin-settings-field grav-plugin-settings-field-<?php echo $rep_field['type'];?>">
+														<?php self::settings_field($rep_key, $rep_field, $meta_key, $repeater_num); ?>
+													</td>
+													<?php
+												}
 											}
 											$rep_i++;
 											?>
@@ -342,6 +346,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 					var total = $(this).closest('.repeater-table').find('.repeater-item').length;
 					clone.removeClass('repeater-placeholder');
 					clone.html(clone.html().split('[0]').join('['+total+']'));
+					clone.html(clone.html().split('_repeater_id0').join((Math.floor(Math.random() * (99999 - 10000 + 1)) + 10000)));
 					clone.css('z-index', total);
 					clone.find('input[type="text"], textarea').val('');
 					clone.find('input[type="checkbox"]').removeAttr('checked');
