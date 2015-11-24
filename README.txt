@@ -29,6 +29,13 @@ Description: Welcome to Gravitate Blocks: A content solution using WordPress and
 
 == Changelog ==
 
+
+= 1.1.0 =
+* Added Search Filtering Option
+* Updated Background Color Options to retain settings
+* Added Option to Remove Color Picker
+* Updated Developer Tab
+
 = 1.0.0 =
 * Initial Creation
 
