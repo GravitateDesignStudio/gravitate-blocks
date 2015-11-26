@@ -1,0 +1,20 @@
+.block-container {
+	&:first-of-type {
+		.block-inner {
+			padding-top: 3rem;
+		}
+	}
+	.block-inner {
+		padding-bottom: 3rem;
+	}
+	+ .block-container {
+		.block-inner {
+			padding-top: 3rem;
+		}
+	}
+}
+
+$block_colors: 'bg-white', 'bg-black', 'bg-light', 'bg-dark', 'bg-red', 'bg-blue', 'bg-green', 'bg-none', 'bg-gray', 'bg-lightgray', 'bg-darkgray', 'bg-grey', 'bg-lightgrey', 'bg-darkgrey';
+@each $color in $block_colors {
+	.block-container.#{$color} + .block-container.#{$color} .block-inner { padding-top: 0; }
+}

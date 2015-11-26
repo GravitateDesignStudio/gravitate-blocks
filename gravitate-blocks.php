@@ -276,7 +276,7 @@ class GRAV_BLOCKS {
 				'post_types' => array_keys(self::get_usable_post_types()),
 				'templates' => '',
 				'advanced_options' => array('filter_content', 'enqueue_cycle'),
-				'css_options' => array('enqueue_css'),
+				'css_options' => array('enqueue_css', 'use_foundation', 'use_default'),
 				'background_colors' => array(
 											array('name' => 'White', 'value' => '#ffffff'),
 											array('name' => 'Light Gray', 'value' => '#eeeeee'),
@@ -295,7 +295,7 @@ class GRAV_BLOCKS {
 	{
 	    ?>
 	    <div class="notice error grav-blocks-acf-notice<?php echo ($dismissible ? ' is-dismissible' : '');?>">
-	        <p><?php _e( 'Gravitate Blocks - ACF Pro is required to run Gravitate Blocks<br>To download the plugin go here. <a target="_blank" href="http://www.advancedcustomfields.com/pro/">http://www.advancedcustomfields.com/pro/</a><br>To remove this message permanently either Install ACF Pro or Deactivate the Gravitate Blocks Plugin', 'my-text-domain' ); ?></p>
+	        <p><?php _e( 'Gravitate Blocks - ACF Pro is required to run Gravitate Blocks<br>To download the plugin go here. <a target="_blank" href="http://www.advancedcustomfields.com/pro/">http://www.advancedcustomfields.com/pro/</a><br>To remove this message permanently either Install ACF Pro or Deactivate the Gravitate Blocks Plugin', 'GRAV_BLOCKS' ); ?></p>
 	    </div>
 	    <?php
 	}
@@ -583,7 +583,8 @@ class GRAV_BLOCKS {
 			    if(file_exists($dir.'/block_fields.php'))
 			    {
 			    	$fields = include($dir.'/block_fields.php');
-					$blocks[$block] = array('label' => $block, 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'default'));
+			    	$label = (!empty($fields['label'])) ? $fields['label'] : $block;
+					$blocks[$block] = array('label' => $label, 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'default'));
 				}
 			}
 		}
@@ -597,7 +598,8 @@ class GRAV_BLOCKS {
 			    if(file_exists($dir.'/block_fields.php'))
 			    {
 			    	$fields = include($dir.'/block_fields.php');
-					$blocks[$block] = array('label' => $block . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'));
+			    	$label = (!empty($fields['label'])) ? $fields['label'] : $block;
+					$blocks[$block] = array('label' => $label . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'));
 				}
 			}
 		}
@@ -725,12 +727,12 @@ class GRAV_BLOCKS {
 					'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
 					'disable_colorpicker' => 'Disable color picker ( Use this to force your own css class names ).',
 					'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
-					//'use_foundation' => 'Use Foundation 5 CSS.',
+					'use_default' => 'Use the default content block css. <span>( Affects padding and basic styling. )</span>',
+					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/grid.html">Foundation 6</a> CSS grid.',
 				);
 
 				$search_options = array(
 					'include_in_search' => 'Includes Block Fields (all postmeta fields) in the search criteria.',
-					//'use_foundation' => 'Use Foundation 5 CSS.',
 				);
 
 				$fields = array();
@@ -1085,6 +1087,14 @@ function your_function($fields)
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_cycle') && self::is_viewable())
 		{
 			wp_enqueue_script( 'cycle2_js', plugin_dir_url( __FILE__ ) . 'library/js/cycle2.min.js', array('jquery'), '2.1.6', true );
+		}
+		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'use_foundation') && self::is_viewable())
+		{
+			wp_enqueue_style( 'foundation_css', plugin_dir_url( __FILE__ ) . 'library/css/foundation.css' , array(), '6.0.0');
+		}
+		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'use_default') && self::is_viewable())
+		{
+			wp_enqueue_style( 'default_css', plugin_dir_url( __FILE__ ) . 'library/css/default.css' , array(), self::$version);
 		}
 
 	}
