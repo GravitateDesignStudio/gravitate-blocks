@@ -1,4 +1,8 @@
 <?php
+$block = 'call_to_action';
+GRAV_BLOCKS::dump(GRAV_BLOCKS::generate_link_fields('button2', array('none', 'file', 'page', 'link') ));
+
+
 $buttons = get_sub_field('buttons');
 $title = get_sub_field('title');
 $description = get_sub_field('description');

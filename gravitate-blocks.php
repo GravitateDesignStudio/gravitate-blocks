@@ -156,6 +156,17 @@ class GRAV_BLOCKS {
 		*/
 		if(function_exists("acf_add_local_field_group") && !empty($layouts))
 		{
+
+			//self::dump($layouts);
+			//self::recursive_array_search('grav_link_fields',$layouts);
+			self::dump(self::recursive_array_search('grav_link_fields',$layouts));
+			//self::dump($layouts);
+
+			// foreach($layouts as $key => $layout){
+			// 	//do something
+			// }
+			exit;
+
 			// Filter the Fields from developers
 			$layouts = apply_filters( 'grav_block_fields', $layouts );
 
@@ -1326,5 +1337,217 @@ function your_function($fields)
 		}
 		return '';
 	}
+
+	public static function generate_link_fields($label = 'link', $includes = array()){
+		$allowed_options = array(
+			'none' => 'none',
+			'page' => 'Page Link',
+			'link' => 'External Link',
+			'file' => 'File Download',
+			'video' => 'Play Video',
+		);
+		$allowed_fields = (!empty($includes)) ? array() : $allowed_options;
+		if(!empty($includes)){
+			foreach($includes as $include){
+				$allowed_fields[$include] = $allowed_options[$include];
+			}
+		}
+		$label_title = ucwords($label);
+		$label_sanitized = sanitize_title($label);
+		$text = array (
+			'key' => 'field_block_'.$label_sanitized.'_v',
+			'label' => $label_title.' Text',
+			'name' => $label_sanitized.'_text',
+			'type' => 'text',
+			'column_width' => '',
+			'default_value' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'formatting' => 'none',
+			'maxlength' => '',
+		);
+		$type = array (
+			'key' => 'field_block_'.$label_sanitized.'_type',
+			'label' => $label_title.' Type',
+			'name' => $label_sanitized.'_type',
+			'type' => 'radio',
+			'layout' => 'horizontal',
+			'column_width' => '',
+			'choices' => array (
+				$allowed_fields
+			),
+			'default_value' => 'page',
+			'allow_null' => 0,
+			'multiple' => 0,
+		);
+		$external = array (
+			'key' => 'field_block_'.$label_sanitized.'_w',
+			'label' => 'External Link',
+			'name' => $label_sanitized.'_link',
+			'type' => 'text',
+			'conditional_logic' => array (
+				'status' => 1,
+				'rules' => array (
+					array (
+						'field' => 'field_block_'.$label_sanitized.'_type',
+						'operator' => '==',
+						'value' => 'link',
+					),
+				),
+				'allorany' => 'all',
+			),
+			'column_width' => '',
+			'default_value' => '',
+			'placeholder' => 'http://',
+			'prepend' => '',
+			'append' => '',
+			'formatting' => 'none',
+			'maxlength' => '',
+		);
+		$page = array (
+			'key' => 'field_block_'.$label_sanitized.'_x',
+			'label' => 'Page Link',
+			'name' => $label_sanitized.'_page',
+			'type' => 'page_link',
+			'conditional_logic' => array (
+				'status' => 1,
+				'rules' => array (
+					array (
+						'field' => 'field_block_'.$label_sanitized.'_type',
+						'operator' => '==',
+						'value' => 'page',
+					),
+				),
+				'allorany' => 'all',
+			),
+			'column_width' => '',
+			'post_type' => array (
+				0 => 'all',
+			),
+			'allow_null' => 0,
+			'multiple' => 0,
+		);
+		$file = array (
+			'key' => 'field_block_'.$label_sanitized.'_y',
+			'label' => 'File Download',
+			'name' => $label_sanitized.'_file',
+			'type' => 'file',
+			'conditional_logic' => array (
+				'status' => 1,
+				'rules' => array (
+					array (
+						'field' => 'field_block_'.$label_sanitized.'_type',
+						'operator' => '==',
+						'value' => 'file',
+					),
+				),
+				'allorany' => 'all',
+			),
+			'column_width' => '',
+			'save_format' => 'url',
+			'library' => 'all',
+		);
+		$video = array (
+			'key' => 'field_block_'.$label_sanitized.'_z',
+			'label' => 'Play Video',
+			'name' => $label_sanitized.'_video',
+			'type' => 'text',
+			'instructions' => 'This works for Vimeo or Youtube. Just paste in the url to the video you want to show.',
+			'conditional_logic' => array (
+				'status' => 1,
+				'rules' => array (
+					array (
+						'field' => 'field_block_'.$label_sanitized.'_type',
+						'operator' => '==',
+						'value' => 'video',
+					),
+				),
+				'allorany' => 'all',
+			),
+			'column_width' => '',
+			'default_value' => '',
+			'placeholder' => 'http://',
+			'prepend' => '',
+			'append' => '',
+			'formatting' => 'none',
+			'maxlength' => '',
+		);
+		$allowed_types = array(
+			'link' => $external,
+			'page' => $page,
+			'file' => $file,
+			'video' => $video,
+		);
+		$included_options = array($text, $type);
+		if(!empty($includes)){
+			foreach($includes as $include){
+				if($include != 'none'){
+					$included_options[] = $allowed_types[$include];
+				}
+			}
+		}
+		return array('grav_link_fields' => $included_options);
+	}
+
+	public static function recursive_array_search($needle,$haystack,$current_path = '', $return = false, $total_paths = array()) {
+
+
+	    foreach($haystack as $key=>$value) {
+	        $current_key=$key;
+
+	        if($needle === $current_key){
+	        	$current_path .= '::'.$key;
+	        	if($return){
+	        		return $current_path;
+	        	}
+
+	        	if(!in_array($current_path, $total_paths)){
+
+	        		//self::dump($current_path);
+		        	$total_paths[] = $current_path;
+
+		        }
+
+	        } elseif(is_array($value)) {
+
+
+	        	if(self::has_recursive_array_search($needle,$value)){
+
+	        		//if(!in_array($results, $total_paths)){
+	        			//self::dump($results);
+		        		$current_path .= '::'.$key;
+		        		$total_paths = self::recursive_array_search($needle,$value,$current_path, false, $total_paths);
+		        	//}
+
+		        }
+	        }
+
+	    }
+
+    	return $total_paths;
+
+	}
+	public static function has_recursive_array_search($needle,$haystack) {
+
+
+	    foreach($haystack as $key=>$value) {
+	    	self::dump($key);
+	        if($needle === $key){
+
+	        	return true;
+
+	        } elseif(is_array($value)) {
+
+	        	return self::has_recursive_array_search($needle,$value);
+
+	        }
+
+	    }
+
+    	return false;
+
+	}
+
 
 }
