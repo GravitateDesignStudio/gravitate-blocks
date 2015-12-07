@@ -14,9 +14,9 @@
 */
 
 return array (
-	'label' => 'HTML',
+	'label' => 'Content',
 	'name' => $block,
-	'display' => 'row',
+	'display' => 'block',
 	'min' => '',
 	'max' => '',
 	'sub_fields' => array (
@@ -24,8 +24,8 @@ return array (
 		$block_background_image,
 		array (
 			'key' => 'field_'.$block.'_1',
-			'label' => 'HTML Column',
-			'name' => 'html_column',
+			'label' => 'Content Columns',
+			'name' => 'content_column',
 			'type' => 'repeater',
 			'column_width' => '',
 			'sub_fields' => array (
@@ -36,14 +36,16 @@ return array (
 					'type' => 'wysiwyg',
 					'column_width' => '',
 					'default_value' => '',
+					'tabs' => 'all',
 					'toolbar' => 'full',
 					'media_upload' => 'yes',
 				),
 			),
-			'row_min' => '',
-			'row_limit' => '3',
-			'layout' => 'row',
+			'min' => '',
+			'max' => '3',
+			'layout' => 'block',
 			'button_label' => 'Add Column',
 		),
 	),
+	'grav_blocks_settings' => array(),
 );

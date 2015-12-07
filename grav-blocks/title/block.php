@@ -1,13 +1,13 @@
 <?php
 
-if($heading = get_sub_field('heading')){ ?>
+if($heading = get_sub_field('title')){ ?>
 	<div class="block-inner">
 		<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 			<div class="<?php echo GRAV_BLOCKS::css()->col()->get();?>">
 				<h2<?php if(get_sub_field('center')){?> style="text-align:center;"<?php } ?>>
 					<?php echo $heading; ?>
 				</h2>
-				<?php if($sub_heading = get_sub_field('sub-heading')){ ?>
+				<?php if($sub_heading = get_sub_field('sub-title')){ ?>
 					<h3<?php if(get_sub_field('center')){?> style="text-align:center;"<?php } ?>>
 						<?php echo $sub_heading; ?>
 					</h3>

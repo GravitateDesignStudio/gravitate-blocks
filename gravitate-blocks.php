@@ -584,7 +584,7 @@ class GRAV_BLOCKS {
 			    {
 			    	$fields = include($dir.'/block_fields.php');
 			    	$label = (!empty($fields['label'])) ? $fields['label'] : $block;
-					$blocks[$block] = array('label' => $label, 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'default'));
+					$blocks[$block] = array('label' => $label, 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'default') );
 				}
 			}
 		}
@@ -599,7 +599,7 @@ class GRAV_BLOCKS {
 			    {
 			    	$fields = include($dir.'/block_fields.php');
 			    	$label = (!empty($fields['label'])) ? $fields['label'] : $block;
-					$blocks[$block] = array('label' => $label . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'));
+					$blocks[$block] = array('label' => $label . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'), 'icon' => 'dashicons-before dashicons-admin-comments' );
 				}
 			}
 		}
@@ -727,7 +727,7 @@ class GRAV_BLOCKS {
 					'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
 					'disable_colorpicker' => 'Disable color picker ( Use this to force your own css class names ).',
 					'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
-					'use_default' => 'Use the default content block css. <span>( Affects padding and basic styling. )</span>',
+					'use_default' => 'Use the default content block css. <span class="extra-info">( Affects padding and basic styling. )</span>',
 					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/grid.html">Foundation 6</a> CSS grid.',
 				);
 
@@ -1086,7 +1086,7 @@ function your_function($fields)
 	public static function enqueue_files($hook){
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_cycle') && self::is_viewable())
 		{
-			wp_enqueue_script( 'cycle2_js', plugin_dir_url( __FILE__ ) . 'library/js/cycle2.min.js', array('jquery'), '2.1.6', true );
+			wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/scripts.min.js', array('jquery'), self::$version, true );
 		}
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'use_foundation') && self::is_viewable())
 		{
@@ -1224,5 +1224,107 @@ function your_function($fields)
 
 	}
 
+
+	/**
+	 * Converts a URL to a verified Vimeo ID
+	 *
+	 * @param  $url  (string) Url of a defined Vimeo Video.
+	 *
+	 * @return (int)
+	 * @author GG
+	 *
+	 **/
+	public static function grav_get_vimeo_id($url)
+	{
+		preg_match('/([0-9]+)/', $url, $matches);
+		if(!empty($matches[1]) && is_numeric($matches[1]))
+		{
+			return $matches[1];
+		}
+		else if(!$pos && strpos($url, 'http') === false)
+		{
+			return $url;
+		}
+		return 0;
+	}
+	/**
+	 * onverts a URL to a verified YouTube ID
+	 *
+	 * @param  $url  (string) Url of a defined Youtube Video.
+	 *
+	 * @return (int)
+	 * @author GG
+	 *
+	 **/
+	public static function grav_get_youtube_id($url)
+	{
+		if(!$pos = strpos($url, 'youtu.be/'))
+		{
+			$pos = strpos($url, '/watch?v=');
+		}
+		if($pos)
+		{
+			$split = explode("?", substr($url, ($pos+9)));
+			$split = explode("&", $split[0]);
+			return $split[0];
+		}
+		else if($pos = strpos($url, '/embed/'))
+		{
+			$split = explode("?", substr($url, ($pos+7)));
+			return $split[0];
+		}
+		else if($pos = strpos($url, '/v/'))
+		{
+			$split = explode("?", substr($url, ($pos+3)));
+			return $split[0];
+		}
+		else if(!$pos && strpos($url, 'http') === false)
+		{
+			return $url;
+		}
+		return 0;
+	}
+	/**
+	 * Converts a URL to a verified YouTube video ID function
+	 *
+	 * @param  $url  (string) Url of a defined Youtube Video.
+	 *
+	 * REQUIRES: function grav_get_youtube_id()
+	 *
+	 * @return (str)
+	 * @author GG
+	 *
+	 **/
+	public static function grav_get_video_url($url)
+	{
+		$autoplay = 1;
+		if(strpos($url, 'autoplay=0') || strpos($url, 'autoplay=false'))
+		{
+			$autoplay = 0;
+		}
+		if(strpos($url, 'vimeo'))
+		{
+			$id = self::grav_get_vimeo_id($url);
+			if(is_numeric($id))
+			{
+				return 'http://player.vimeo.com/video/'.$id.'?autoplay='.$autoplay;
+			}
+			return $url;
+		}
+		$id = self::grav_get_youtube_id($url);
+		if($id)
+		{
+			$link = 'https://www.youtube.com/embed/'.$id.'?rel=0&amp;iframe=true&amp;wmode=transparent&amp;autoplay='.$autoplay;
+			if(function_exists('grav_is_mobile'))
+			{
+				if(grav_is_mobile())
+				{
+					$link = 'https://www.youtube.com/watch?v='.$id.'&amp;rel=0&amp;iframe=true&amp;wmode=transparent&amp;autoplay='.$autoplay;
+				}
+			}
+			return $link;
+		}
+		return '';
+	}
 
 }

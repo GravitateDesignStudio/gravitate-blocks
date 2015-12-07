@@ -1,8 +1,7 @@
 <?php
 
-if(get_sub_field('html_column'))
+if($cols = get_sub_field('content_column'))
 {
-	$cols = get_sub_field('html_column');
 	$cols_count = count($cols);
 	$cols_span = (12/$cols_count);
 
@@ -11,9 +10,9 @@ if(get_sub_field('html_column'))
 	<div class="block-inner">
 		<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 			<?php
-				if(have_rows('html_column'))
+				if(have_rows('content_column'))
 				{
-				    while(have_rows('html_column'))
+				    while(have_rows('content_column'))
 				    {
 				    	the_row();
 

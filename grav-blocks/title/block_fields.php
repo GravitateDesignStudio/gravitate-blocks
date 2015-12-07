@@ -15,7 +15,7 @@
 
 
 return array (
-	'label' => 'Heading',
+	'label' => 'Title',
 	'name' => $block,
 	'display' => 'row',
 	'min' => '',
@@ -25,8 +25,8 @@ return array (
 		$block_background_image,
 		array (
 			'key' => 'field_'.$block.'_1',
-			'label' => 'Heading',
-			'name' => 'heading',
+			'label' => 'Title',
+			'name' => 'title',
 			'type' => 'text',
 			'column_width' => '',
 			'default_value' => '',
@@ -38,8 +38,8 @@ return array (
 		),
 		array (
 			'key' => 'field_'.$block.'_2',
-			'label' => 'Sub Heading',
-			'name' => 'sub-heading',
+			'label' => 'Sub Title',
+			'name' => 'sub-title',
 			'type' => 'text',
 			'column_width' => '',
 			'default_value' => '',
