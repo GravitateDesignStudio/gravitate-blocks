@@ -79,6 +79,7 @@ class GRAV_BLOCKS {
 	 */
 	private static function setup()
 	{
+		global $block;
 		include_once plugin_dir_path( __FILE__ ).'gravitate-blocks-css.php';
 
 		include plugin_dir_path( __FILE__ ).'gravitate-plugin-settings.php';
@@ -159,20 +160,25 @@ class GRAV_BLOCKS {
 
 			//self::dump($layouts);
 
-			if($key_paths = self::grav_get_key_paths('grav_link_fields',$layouts)){
-				foreach($key_paths as $key_path){
-					$path_array = explode('::', $key_path);
-					foreach($path_array as $path){
-						//self::dump($path);
-					}
-				}
-			}
+			//echo '<pre>';print_r($layouts);echo '</pre>';
+
+			// if($key_paths = self::grav_get_key_paths('grav_link_fields',$layouts)){
+			// 	foreach($key_paths as $key_path){
+			// 		$path_array = explode('::', $key_path);
+			// 		foreach($path_array as $path){
+			// 			//self::dump($path);
+			// 		}
+			// 	}
+			// }
 			//self::dump($layouts);
 
-			echo '<pre>';
-			print_r($layouts);
-			echo '</pre>';
-			exit;
+
+
+			self::filter_layout_links($layouts, '', 'grav_link_fields');
+//			self::filter_layouts($layouts, '', 'grav_link_fields');
+
+			// echo '<pre>';print_r($layouts);echo '</pre>';
+			// exit;
 
 			// Filter the Fields from developers
 			$layouts = apply_filters( 'grav_block_fields', $layouts );
@@ -1346,6 +1352,7 @@ function your_function($fields)
 	}
 
 	public static function generate_link_fields($label = 'link', $includes = array()){
+		global $block;
 		$allowed_options = array(
 			'none' => 'none',
 			'page' => 'Page Link',
@@ -1354,18 +1361,53 @@ function your_function($fields)
 			'video' => 'Play Video',
 		);
 		$allowed_fields = (!empty($includes)) ? array() : $allowed_options;
+
 		if(!empty($includes)){
-			foreach($includes as $include){
-				$allowed_fields[$include] = $allowed_options[$include];
+			foreach($includes as $include_key => $include){
+				// Allow the Dev to change the Label
+				if(!is_numeric($include_key) && isset($allowed_options[$include_key]))
+				{
+					$allowed_fields[$include_key] = $include;
+				}
+				else  // Use Default Label
+				{
+					$allowed_fields[$include] = $allowed_options[$include];
+				}
 			}
 		}
+
 		$label_title = ucwords($label);
 		$label_sanitized = sanitize_title($label);
-		$text = array (
-			'key' => 'field_block_'.$label_sanitized.'_v',
+		$fields = array();
+
+		$fields[] = array (
+			'key' => 'field_'.$block.'_'.$label_sanitized.'_type',
+			'label' => $label_title.' Type',
+			'name' => $label_sanitized.'_type',
+			'type' => 'radio',
+			'layout' => 'horizontal',
+			'column_width' => '',
+			'choices' => $allowed_fields,
+			'default_value' => 'page',
+			'allow_null' => 0,
+			'multiple' => 0,
+		);
+		$fields[] = array (
+			'key' => 'field_'.$block.'_'.$label_sanitized.'_text',
 			'label' => $label_title.' Text',
 			'name' => $label_sanitized.'_text',
 			'type' => 'text',
+			'conditional_logic' => array (
+				'status' => 1,
+				'rules' => array (
+					array (
+						'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
+						'operator' => '!=',
+						'value' => 'none',
+					),
+				),
+				'allorany' => 'all',
+			),
 			'column_width' => '',
 			'default_value' => '',
 			'placeholder' => '',
@@ -1374,127 +1416,129 @@ function your_function($fields)
 			'formatting' => 'none',
 			'maxlength' => '',
 		);
-		$type = array (
-			'key' => 'field_block_'.$label_sanitized.'_type',
-			'label' => $label_title.' Type',
-			'name' => $label_sanitized.'_type',
-			'type' => 'radio',
-			'layout' => 'horizontal',
-			'column_width' => '',
-			'choices' => array (
-				$allowed_fields
-			),
-			'default_value' => 'page',
-			'allow_null' => 0,
-			'multiple' => 0,
-		);
-		$external = array (
-			'key' => 'field_block_'.$label_sanitized.'_w',
-			'label' => 'External Link',
-			'name' => $label_sanitized.'_link',
-			'type' => 'text',
-			'conditional_logic' => array (
-				'status' => 1,
-				'rules' => array (
-					array (
-						'field' => 'field_block_'.$label_sanitized.'_type',
-						'operator' => '==',
-						'value' => 'link',
+
+		if(isset($allowed_fields['link']))
+		{
+			$fields[] = array (
+				'key' => 'field_'.$block.'_'.$label_sanitized.'_link',
+				'label' => $allowed_fields['link'],
+				'name' => $label_sanitized.'_link',
+				'type' => 'text',
+				'conditional_logic' => array (
+					'status' => 1,
+					'rules' => array (
+						array (
+							'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
+							'operator' => '==',
+							'value' => 'link',
+						),
 					),
+					'allorany' => 'all',
 				),
-				'allorany' => 'all',
-			),
-			'column_width' => '',
-			'default_value' => '',
-			'placeholder' => 'http://',
-			'prepend' => '',
-			'append' => '',
-			'formatting' => 'none',
-			'maxlength' => '',
-		);
-		$page = array (
-			'key' => 'field_block_'.$label_sanitized.'_x',
-			'label' => 'Page Link',
-			'name' => $label_sanitized.'_page',
-			'type' => 'page_link',
-			'conditional_logic' => array (
-				'status' => 1,
-				'rules' => array (
-					array (
-						'field' => 'field_block_'.$label_sanitized.'_type',
-						'operator' => '==',
-						'value' => 'page',
-					),
-				),
-				'allorany' => 'all',
-			),
-			'column_width' => '',
-			'post_type' => array (
-				0 => 'all',
-			),
-			'allow_null' => 0,
-			'multiple' => 0,
-		);
-		$file = array (
-			'key' => 'field_block_'.$label_sanitized.'_y',
-			'label' => 'File Download',
-			'name' => $label_sanitized.'_file',
-			'type' => 'file',
-			'conditional_logic' => array (
-				'status' => 1,
-				'rules' => array (
-					array (
-						'field' => 'field_block_'.$label_sanitized.'_type',
-						'operator' => '==',
-						'value' => 'file',
-					),
-				),
-				'allorany' => 'all',
-			),
-			'column_width' => '',
-			'save_format' => 'url',
-			'library' => 'all',
-		);
-		$video = array (
-			'key' => 'field_block_'.$label_sanitized.'_z',
-			'label' => 'Play Video',
-			'name' => $label_sanitized.'_video',
-			'type' => 'text',
-			'instructions' => 'This works for Vimeo or Youtube. Just paste in the url to the video you want to show.',
-			'conditional_logic' => array (
-				'status' => 1,
-				'rules' => array (
-					array (
-						'field' => 'field_block_'.$label_sanitized.'_type',
-						'operator' => '==',
-						'value' => 'video',
-					),
-				),
-				'allorany' => 'all',
-			),
-			'column_width' => '',
-			'default_value' => '',
-			'placeholder' => 'http://',
-			'prepend' => '',
-			'append' => '',
-			'formatting' => 'none',
-			'maxlength' => '',
-		);
-		$allowed_types = array(
-			'link' => $external,
-			'page' => $page,
-			'file' => $file,
-			'video' => $video,
-		);
-		$included_options = array($text, $type);
-		if(!empty($includes)){
-			foreach($includes as $include){
-				if($include != 'none'){
-					$included_options[] = $allowed_types[$include];
-				}
-			}
+				'column_width' => '',
+				'default_value' => '',
+				'placeholder' => 'http://',
+				'prepend' => '',
+				'append' => '',
+				'formatting' => 'none',
+				'maxlength' => '',
+			);
 		}
-		return array('grav_link_fields' => $included_options);
+
+		if(isset($allowed_fields['page']))
+		{
+			$fields[] = array (
+				'key' => 'field_'.$block.'_'.$label_sanitized.'_page',
+				'label' => $allowed_fields['page'],
+				'name' => $label_sanitized.'_page',
+				'type' => 'page_link',
+				'conditional_logic' => array (
+					'status' => 1,
+					'rules' => array (
+						array (
+							'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
+							'operator' => '==',
+							'value' => 'page',
+						),
+					),
+					'allorany' => 'all',
+				),
+				'column_width' => '',
+				'post_type' => array (
+					0 => 'all',
+				),
+				'allow_null' => 0,
+				'multiple' => 0,
+			);
+		}
+
+		if(isset($allowed_fields['file']))
+		{
+			$fields[] = array (
+				'key' => 'field_'.$block.'_'.$label_sanitized.'_file',
+				'label' => $allowed_fields['file'],
+				'name' => $label_sanitized.'_file',
+				'type' => 'file',
+				'conditional_logic' => array (
+					'status' => 1,
+					'rules' => array (
+						array (
+							'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
+							'operator' => '==',
+							'value' => 'file',
+						),
+					),
+					'allorany' => 'all',
+				),
+				'column_width' => '',
+				'save_format' => 'url',
+				'library' => 'all',
+			);
+		}
+
+		if(isset($allowed_fields['video']))
+		{
+			$fields[] = array (
+				'key' => 'field_'.$block.'_'.$label_sanitized.'_video',
+				'label' => $allowed_fields['video'],
+				'name' => $label_sanitized.'_video',
+				'type' => 'text',
+				'instructions' => 'This works for Vimeo or Youtube. Just paste in the url to the video you want to show.',
+				'conditional_logic' => array (
+					'status' => 1,
+					'rules' => array (
+						array (
+							'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
+							'operator' => '==',
+							'value' => 'video',
+						),
+					),
+					'allorany' => 'all',
+				),
+				'column_width' => '',
+				'default_value' => '',
+				'placeholder' => 'http://',
+				'prepend' => '',
+				'append' => '',
+				'formatting' => 'none',
+				'maxlength' => '',
+			);
+		}
+		// $allowed_types = array(
+		// 	'link' => $external,
+		// 	'page' => $page,
+		// 	'file' => $file,
+		// 	'video' => $video,
+		// );
+		// $included_options = array($type, $text);
+		// if(!empty($includes)){
+		// 	foreach($allowed_fields as $include => $include_label){
+		// 		if($include != 'none'){
+		// 			$included_options[] = $allowed_types[$include];
+		// 		}
+		// 	}
+		// }
+		return array('grav_link_fields' => $fields);
 	}
 
 
@@ -1518,6 +1562,21 @@ function your_function($fields)
 	        }
 	    }
 	    return array_unique($total);
+	}
+
+	public static function filter_layout_links(&$item, $key='', $lookup='')
+	{
+	    if(!empty($item) && is_array($item))
+	    {
+	        foreach ($item as $k => $v)
+	        {
+	            if(isset($v[$lookup]))
+	            {
+	                array_splice($item, array_search($k, array_keys($item)), 1, $v[$lookup]);
+	            }
+	        }
+	        array_walk($item, array(__CLASS__, 'filter_layout_links'), $lookup);
+	    }
 	}
 
 

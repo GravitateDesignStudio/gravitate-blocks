@@ -36,7 +36,7 @@ return array (
 			'formatting' => 'none', 		// none | html
 			'maxlength' => '',
 		),
-		GRAV_BLOCKS::generate_link_fields('link', array('none', 'page', 'file', 'link', 'video') ),
+		GRAV_BLOCKS::generate_link_fields('link', array('none' => 'NA', 'page' => 'Page', 'file' => 'File', 'link' => 'Linky', 'video' => 'Video Stuff') ),
 		array (
 			'key' => 'field_'.$block.'_2',
 			'label' => 'Description (optional)',
@@ -69,7 +69,7 @@ return array (
 			'layout' => 'block',
 			'button_label' => 'Add Button',
 			'sub_fields' => array (
-				GRAV_BLOCKS::generate_link_fields('button', array('none', 'page', 'file', 'link', 'video') ),
+				GRAV_BLOCKS::generate_link_fields('button', array('page', 'file', 'link') ),
 
 				// array (
 				// 	'key' => 'field_'.$block.'_4',
@@ -195,7 +195,7 @@ return array (
 				// ),
 			),
 		),
-		GRAV_BLOCKS::generate_link_fields('link2', array('none', 'page', 'file', 'link', 'video') ),
+		GRAV_BLOCKS::generate_link_fields('link2'),
 	),
 );
 ?>
