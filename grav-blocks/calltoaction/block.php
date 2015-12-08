@@ -2,7 +2,7 @@
 
 $buttons = get_sub_field('buttons');
 $title = get_sub_field('title');
-$description = get_sub_field('description');
+$description = get_sub_field('link_type');
 
 if($title || $description || $buttons){ ?>
 

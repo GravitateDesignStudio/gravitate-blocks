@@ -73,4 +73,5 @@ return array (
 			'button_label' => 'Add Testimonial',
 		),
 	),
+	'grav_blocks_settings' => array(),
 );

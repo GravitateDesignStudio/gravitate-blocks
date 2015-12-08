@@ -80,9 +80,10 @@ class GRAV_BLOCKS {
 	private static function setup()
 	{
 		global $block;
-		include_once plugin_dir_path( __FILE__ ).'gravitate-blocks-css.php';
 
+		include_once plugin_dir_path( __FILE__ ).'gravitate-blocks-css.php';
 		include plugin_dir_path( __FILE__ ).'gravitate-plugin-settings.php';
+
 		new GRAV_BLOCKS_PLUGIN_SETTINGS(self::$option_key);
 
 		self::get_settings(true);
@@ -231,6 +232,11 @@ class GRAV_BLOCKS {
 			self::add_hook('filter', 'get_the_excerpt', 'add_search_excerpt_filtering');
 		}
 
+		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_scripts'))
+		{
+			self::add_hook('action', 'wp_footer', 'add_footer_js', 100);
+		}
+
 		if(!function_exists('acf_add_local_field_group') && (!isset($_GET['page']) || $_GET['page'] != 'gravitate_blocks'))
 		{
 			self::add_hook('action', 'admin_notices', 'acf_notice');
@@ -279,8 +285,9 @@ class GRAV_BLOCKS {
 			$current_settings = array(
 				'post_types' => array_keys(self::get_usable_post_types()),
 				'templates' => '',
-				'advanced_options' => array('filter_content', 'enqueue_cycle'),
+				'advanced_options' => array('filter_content', 'enqueue_scripts'),
 				'css_options' => array('enqueue_css', 'use_foundation', 'use_default'),
+				'search_options' => array('include_in_search'),
 				'background_colors' => array(
 											array('name' => 'White', 'value' => '#ffffff'),
 											array('name' => 'Light Gray', 'value' => '#eeeeee'),
@@ -498,8 +505,10 @@ class GRAV_BLOCKS {
 	 */
 	public static function get_block($block='')
 	{
+
 		if($path = self::get_path($block))
 		{
+
 			if(file_exists($path.'/block.php'))
 			{
 				include($path.'/block.php');
@@ -613,19 +622,6 @@ class GRAV_BLOCKS {
 		// Apply Filters to allow others to filter the blocks used.
 		$filterd_blocks = apply_filters( 'grav_blocks', $blocks );
 
-		// foreach ($filterd_blocks as $filtered_key => $filtered_value)
-		// {
-		// 	if(isset($blocks[$filtered_key]) && serialize($filtered_value) !== serialize($blocks[$filtered_key]))
-		// 	{
-		// 		$filterd_blocks[$filtered_key]['label'].= ' <span class="extra-info">( Custom )</span>';
-		// 	}
-
-		// 	if(empty(var))
-		// 	{
-
-		// 	}
-		// }
-
 		return $filterd_blocks;
 	}
 
@@ -684,6 +680,10 @@ class GRAV_BLOCKS {
 			{
 				return plugin_dir_path( __FILE__ ).'grav-blocks/'.$path;
 			}
+			else if(file_exists(get_template_directory().'/grav-blocks/'.str_replace('-', '_', $path)))
+			{
+				return get_template_directory().'/grav-blocks/'.str_replace('-', '_', $path);
+			}
 
 			return false;
 		}
@@ -725,14 +725,14 @@ class GRAV_BLOCKS {
 			case 'advanced':
 				$advanced_options = array(
 					'filter_content' => 'Gravitate Blocks will be added to the end of your content. <span class="extra-info">( Using "the_content" filter )</span>',
-					'enqueue_cycle' => 'Cycle2 jQuery slider plugin will be used. <span class="extra-info">( Required for Imageside and Testimonials blocks</span> )',
+					'enqueue_scripts' => 'Add necessary jQuery plugins. <span class="extra-info">( adds Cycle2 and Colorbox scripts for sliders and lightbox )</span>',
 				);
 				$css_options = array(
 					'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
 					'disable_colorpicker' => 'Disable color picker ( Use this to force your own css class names ).',
 					'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
-					'use_default' => 'Use the default content block css. <span class="extra-info">( Affects padding and basic styling. )</span>',
-					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/grid.html">Foundation 6</a> CSS grid.',
+					'use_default' => 'Use the default Gravitate Blocks CSS. <span class="extra-info">( Affects padding and some basic styling. )</span>',
+					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/v/5.5.3/index.html">Foundation 5</a> CSS grid.',
 				);
 
 				$search_options = array(
@@ -1088,7 +1088,7 @@ function your_function($fields)
 	 * @return runs enqueue for front end where required
 	 */
 	public static function enqueue_files($hook){
-		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_cycle') && self::is_viewable())
+		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_scripts') && self::is_viewable())
 		{
 			wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/scripts.min.js', array('jquery'), self::$version, true );
 		}
@@ -1101,6 +1101,24 @@ function your_function($fields)
 			wp_enqueue_style( 'default_css', plugin_dir_url( __FILE__ ) . 'library/css/default.css' , array(), self::$version);
 		}
 
+	}
+
+	/**
+	 * Add any necessary JS to footer
+	 *
+	 * @param
+	 *
+	 * @return
+	 */
+	public static function add_footer_js(){
+		echo "<script>
+				jQuery(function($){
+					$(document).ready(function(){
+						jQuery('.block-link-video').colorbox({iframe:true, height:'80%', width:'80%'});
+						jQuery('.block-link-gallery').colorbox({rel:'block-link-gallery', iframe:true, height:'80%', width:'80%', transition:'fade'});
+					});
+				});
+			</script>";
 	}
 
 
@@ -1324,12 +1342,37 @@ function your_function($fields)
 		return '';
 	}
 
-	public static function get_link_fields($label = 'link', $includes = array())
+	public static function column_width_options()
+	{
+		$column_width_options = array(
+			2 => 'Small',
+			5 => 'Medium',
+			6 => 'Half',
+			8 => 'Large',
+		);
+
+		// allow filtering of column sizes for the media with content block
+		$filtered_column_width_options = apply_filters( 'grav_column_widths', $column_width_options );
+
+		return $filtered_column_width_options;
+	}
+
+
+	/**
+	 * Converts a single array of link options into multiple fields
+	 *
+	 * @param  $label, $includes, $show_text
+	 *
+	 * @return array
+	 * @author GG & BF
+	 *
+	 **/
+	public static function get_link_fields($label = 'link', $includes = array(), $show_text = true)
 	{
 		global $block;
 
 		$allowed_options = array(
-			'none' => 'none',
+			'none' => 'None',
 			'page' => 'Page Link',
 			'url' => 'URL',
 			'file' => 'File Download',
@@ -1363,34 +1406,36 @@ function your_function($fields)
 			'layout' => 'horizontal',
 			'column_width' => '',
 			'choices' => $allowed_fields,
-			'default_value' => 'page',
+			'default_value' => '',
 			'allow_null' => 0,
 			'multiple' => 0,
 		);
-		$fields[] = array (
-			'key' => 'field_'.$block.'_'.$label_sanitized.'_text',
-			'label' => $label_title.' Text',
-			'name' => $label_sanitized.'_text',
-			'type' => 'text',
-			'conditional_logic' => array (
-				'status' => 1,
-				'rules' => array (
-					array (
-						'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
-						'operator' => '!=',
-						'value' => 'none',
+		if($show_text){
+			$fields[] = array (
+				'key' => 'field_'.$block.'_'.$label_sanitized.'_text',
+				'label' => $label_title.' Text',
+				'name' => $label_sanitized.'_text',
+				'type' => 'text',
+				'conditional_logic' => array (
+					'status' => 1,
+					'rules' => array (
+						array (
+							'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
+							'operator' => '!=',
+							'value' => 'none',
+						),
 					),
+					'allorany' => 'all',
 				),
-				'allorany' => 'all',
-			),
-			'column_width' => '',
-			'default_value' => '',
-			'placeholder' => '',
-			'prepend' => '',
-			'append' => '',
-			'formatting' => 'none',
-			'maxlength' => '',
-		);
+				'column_width' => '',
+				'default_value' => '',
+				'placeholder' => '',
+				'prepend' => '',
+				'append' => '',
+				'formatting' => 'none',
+				'maxlength' => '',
+			);
+		}
 
 		if(isset($allowed_fields['url']))
 		{

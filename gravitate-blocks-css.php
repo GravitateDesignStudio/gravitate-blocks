@@ -137,17 +137,17 @@ class GRAV_BLOCKS_CSS {
 
 		if($small && $small <= 4)
 		{
-			$this->class[] = 'small-block-grid-'.$small;
+			$this->class[] = 'small-block-grid-'.$small.' small-up-'.$small;
 		}
 
 		if($med && $med <= 4)
 		{
-			$this->class[] = 'medium-block-grid-'.$med;
+			$this->class[] = 'medium-block-grid-'.$med.' medium-up-'.$med;
 		}
 
 		if($large && $large <= 4)
 		{
-			$this->class[] = 'large-block-grid-'.$large;
+			$this->class[] = 'large-block-grid-'.$large.' large-up-'.$large;
 		}
 
 		// if($xlarge && $xlarge <= 4)

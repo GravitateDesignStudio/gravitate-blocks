@@ -2,7 +2,6 @@
 	$placement = get_sub_field('image_placement');
 	$col_width = get_sub_field('image_size');
 	$content = get_sub_field('content');
-	$images = get_sub_field('images');
 
 	$col_content_width = 12-$col_width;
 
@@ -16,23 +15,15 @@
 <div class="block-inner">
 	<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 		<div class="<?php echo GRAV_BLOCKS::css()->col(0, $col_width)->get(); ?> <?php echo $top_classes; ?>">
-
-			<div class="cycle-slideshow"
-				data-cycle-fx="fade"
-				data-cycle-timeout="8000"
-				data-cycle-speed="1200"
-				data-cycle-log="false">
-
-				<?php if($images){
-					foreach($images as $image){ ?>
-					<img src="<?php echo esc_attr($image['image']['sizes']['large']); ?>" alt="<?php echo esc_attr($image['image']['alt']); ?>" />
-				<?php }
-				}?>
-
-				<?php if(count($images) > 1){ ?> <div class="cycle-pager"></div> <?php } ?>
-
-			</div>
-
+			<?php if($link = GRAV_BLOCKS::get_link_url('link')){ ?>
+				<a class="block-link-<?php echo esc_attr(get_sub_field('link_type'));?>" href="<?php echo esc_url($link); ?>">
+			<?php } ?>
+			<?php if($image = get_sub_field('image')){ ?>
+				<img src="<?php echo esc_attr($image['sizes']['large']); ?>" alt="<?php echo esc_attr($image['alt']); ?>" />
+			<?php } ?>
+			<?php if($link){ ?>
+				</a>
+			<?php } ?>
 		</div>
 		<div class="<?php echo GRAV_BLOCKS::css()->col(0, $col_content_width)->get(); ?> <?php echo $bottom_classes; ?>">
 			<?php echo $content; ?>

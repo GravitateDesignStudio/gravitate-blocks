@@ -17,6 +17,11 @@ $wp-media-query : 783px;
 		* {
 			-webkit-font-smoothing: antialiased;
 		}
+		label {
+			a {
+				text-decoration: none;
+			}
+		}
 		&.grav-blocks {
 			margin: 0;
 			h1 {
@@ -124,6 +129,9 @@ $wp-media-query : 783px;
 	}
 }
 .grav-blocks-developers {
+	a {
+		text-decoration: none;
+	}
 	h3 {
 		font-weight: 700;
     	font-family: $source-sans;

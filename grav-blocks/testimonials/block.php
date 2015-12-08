@@ -11,6 +11,7 @@ if(get_sub_field('testimonials'))
 					data-cycle-timeout="8000"
 					data-cycle-speed="1200"
 					data-cycle-slides=".slide"
+					data-cycle-auto-height="calc"
 					data-cycle-log="false">
 
 					<?php
