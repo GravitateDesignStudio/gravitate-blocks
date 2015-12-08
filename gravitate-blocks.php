@@ -1520,12 +1520,12 @@ function your_function($fields)
 		return '';
 	}
 
-	public static function get_link_html($field)
+	public static function get_link_html($field, $class='')
 	{
 		if($url = self::get_link_url($field))
 		{
 			?>
-				<a class="block-link-<?php echo esc_attr(get_sub_field($field.'_type'));?>" href="<?php echo esc_url($url);?>"><?php echo esc_html(get_sub_field($field.'_text'));?></a>
+				<a class="block-link-<?php echo esc_attr(get_sub_field($field.'_type'));?><?php echo ($class ? ' '.$class : '');?>" href="<?php echo esc_url($url);?>"><?php echo esc_html(get_sub_field($field.'_text'));?></a>
 			<?php
 		}
 	}

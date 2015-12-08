@@ -23,7 +23,7 @@ if($title || $description || $buttons){ ?>
 					{
 						while(has_sub_field('buttons'))
 						{
-							GRAV_BLOCKS::get_link_html('button');
+							GRAV_BLOCKS::get_link_html('button', 'button');
 						}
 					}
 
