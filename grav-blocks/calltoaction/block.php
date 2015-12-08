@@ -1,7 +1,4 @@
 <?php
-$block = 'call_to_action';
-//GRAV_BLOCKS::dump(GRAV_BLOCKS::generate_link_fields('button2', array('none', 'file', 'page', 'link') ));
-
 
 $buttons = get_sub_field('buttons');
 $title = get_sub_field('title');
@@ -22,7 +19,7 @@ if($title || $description || $buttons){ ?>
 				<?php } ?>
 				<?php
 
-					if(get_sub_field('buttons'))
+					if($buttons)
 					{
 						while(has_sub_field('buttons'))
 						{
