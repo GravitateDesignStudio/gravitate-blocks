@@ -1,6 +1,6 @@
 <?php
 $block = 'call_to_action';
-GRAV_BLOCKS::dump(GRAV_BLOCKS::generate_link_fields('button2', array('none', 'file', 'page', 'link') ));
+//GRAV_BLOCKS::dump(GRAV_BLOCKS::generate_link_fields('button2', array('none', 'file', 'page', 'link') ));
 
 
 $buttons = get_sub_field('buttons');
@@ -21,12 +21,16 @@ if($title || $description || $buttons){ ?>
 					<h4><?php echo esc_html($description); ?></h4>
 				<?php } ?>
 				<?php
-					if($buttons){
-						foreach($buttons as $button){
-							$button_link = ($button['button_type'] != 'video') ? $button['button_'.$button['button_type']]: GRAV_BLOCKS::grav_get_video_url( $button['button_video'] );
+
+					if(get_sub_field('buttons'))
+					{
+						while(has_sub_field('buttons'))
+						{
+							GRAV_BLOCKS::get_link_html('button');
+						}
+					}
+
 				?>
-					<a class="button <?php if($button['button_type'] == 'video'){ echo 'gravitate-blocks-video'; } ?>" href="<?php echo esc_url($button_link); ?>"><?php echo esc_html($button['button_text']); ?></a>
-				<?php } } ?>
 			</div>
 		</div>
 	</div>

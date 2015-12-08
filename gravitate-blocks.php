@@ -157,28 +157,8 @@ class GRAV_BLOCKS {
 		*/
 		if(function_exists("acf_add_local_field_group") && !empty($layouts))
 		{
-
-			//self::dump($layouts);
-
-			//echo '<pre>';print_r($layouts);echo '</pre>';
-
-			// if($key_paths = self::grav_get_key_paths('grav_link_fields',$layouts)){
-			// 	foreach($key_paths as $key_path){
-			// 		$path_array = explode('::', $key_path);
-			// 		foreach($path_array as $path){
-			// 			//self::dump($path);
-			// 		}
-			// 	}
-			// }
-			//self::dump($layouts);
-
-
-
+			// Filter the Link Options
 			self::filter_layout_links($layouts, '', 'grav_link_fields');
-//			self::filter_layouts($layouts, '', 'grav_link_fields');
-
-			// echo '<pre>';print_r($layouts);echo '</pre>';
-			// exit;
 
 			// Filter the Fields from developers
 			$layouts = apply_filters( 'grav_block_fields', $layouts );
@@ -1258,7 +1238,7 @@ function your_function($fields)
 	 * @author GG
 	 *
 	 **/
-	public static function grav_get_vimeo_id($url)
+	public static function get_vimeo_id($url)
 	{
 		preg_match('/([0-9]+)/', $url, $matches);
 		if(!empty($matches[1]) && is_numeric($matches[1]))
@@ -1280,7 +1260,7 @@ function your_function($fields)
 	 * @author GG
 	 *
 	 **/
-	public static function grav_get_youtube_id($url)
+	public static function get_youtube_id($url)
 	{
 		if(!$pos = strpos($url, 'youtu.be/'))
 		{
@@ -1319,7 +1299,7 @@ function your_function($fields)
 	 * @author GG
 	 *
 	 **/
-	public static function grav_get_video_url($url)
+	public static function get_video_url($url)
 	{
 		$autoplay = 1;
 		if(strpos($url, 'autoplay=0') || strpos($url, 'autoplay=false'))
@@ -1328,35 +1308,30 @@ function your_function($fields)
 		}
 		if(strpos($url, 'vimeo'))
 		{
-			$id = self::grav_get_vimeo_id($url);
+			$id = self::get_vimeo_id($url);
 			if(is_numeric($id))
 			{
 				return 'http://player.vimeo.com/video/'.$id.'?autoplay='.$autoplay;
 			}
 			return $url;
 		}
-		$id = self::grav_get_youtube_id($url);
+		$id = self::get_youtube_id($url);
 		if($id)
 		{
 			$link = 'https://www.youtube.com/embed/'.$id.'?rel=0&amp;iframe=true&amp;wmode=transparent&amp;autoplay='.$autoplay;
-			if(function_exists('grav_is_mobile'))
-			{
-				if(grav_is_mobile())
-				{
-					$link = 'https://www.youtube.com/watch?v='.$id.'&amp;rel=0&amp;iframe=true&amp;wmode=transparent&amp;autoplay='.$autoplay;
-				}
-			}
 			return $link;
 		}
 		return '';
 	}
 
-	public static function generate_link_fields($label = 'link', $includes = array()){
+	public static function get_link_fields($label = 'link', $includes = array())
+	{
 		global $block;
+
 		$allowed_options = array(
 			'none' => 'none',
 			'page' => 'Page Link',
-			'link' => 'External Link',
+			'url' => 'URL',
 			'file' => 'File Download',
 			'video' => 'Play Video',
 		);
@@ -1417,12 +1392,12 @@ function your_function($fields)
 			'maxlength' => '',
 		);
 
-		if(isset($allowed_fields['link']))
+		if(isset($allowed_fields['url']))
 		{
 			$fields[] = array (
-				'key' => 'field_'.$block.'_'.$label_sanitized.'_link',
-				'label' => $allowed_fields['link'],
-				'name' => $label_sanitized.'_link',
+				'key' => 'field_'.$block.'_'.$label_sanitized.'_url',
+				'label' => $allowed_fields['url'],
+				'name' => $label_sanitized.'_url',
 				'type' => 'text',
 				'conditional_logic' => array (
 					'status' => 1,
@@ -1430,7 +1405,7 @@ function your_function($fields)
 						array (
 							'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
 							'operator' => '==',
-							'value' => 'link',
+							'value' => 'url',
 						),
 					),
 					'allorany' => 'all',
@@ -1524,44 +1499,35 @@ function your_function($fields)
 				'maxlength' => '',
 			);
 		}
-		// $allowed_types = array(
-		// 	'link' => $external,
-		// 	'page' => $page,
-		// 	'file' => $file,
-		// 	'video' => $video,
-		// );
-		// $included_options = array($type, $text);
-		// if(!empty($includes)){
-		// 	foreach($allowed_fields as $include => $include_label){
-		// 		if($include != 'none'){
-		// 			$included_options[] = $allowed_types[$include];
-		// 		}
-		// 	}
-		// }
+
 		return array('grav_link_fields' => $fields);
 	}
 
-
-	public static function grav_get_key_paths($needle, &$array, $path='', $total=array(), $parent_key = '', $grandparent_key = '')
+	public static function get_link_url($field)
 	{
-	    $og_path = $path;
-	    if(!empty($array) && is_array($array))
-	    {
-	        foreach ($array as $key => &$value)
-	        {
+		if($type = get_sub_field($field.'_type'))
+		{
+			if($type != 'none')
+			{
+				$url = get_sub_field($field.'_'.$type);
+				if($type == 'video')
+				{
+					$url = self::get_video_url($url);
+				}
+				return $url;
+			}
+		}
+		return '';
+	}
 
-	            if(isset($array[$needle]))
-	            {
-	            	$array = '123456';
-	                $total[] = $path;
-	                break;
-	            }
-	            $path.= ($path ? '::' : '').$key;
-	            $total = array_merge(self::grav_get_key_paths($needle, $value, $path, $total, $key, $parent_key), $total);
-	            $path = $og_path;
-	        }
-	    }
-	    return array_unique($total);
+	public static function get_link_html($field)
+	{
+		if($url = self::get_link_url($field))
+		{
+			?>
+				<a class="block-link-<?php echo esc_attr(get_sub_field($field.'_type'));?>" href="<?php echo esc_url($url);?>"><?php echo esc_html(get_sub_field($field.'_text'));?></a>
+			<?php
+		}
 	}
 
 	public static function filter_layout_links(&$item, $key='', $lookup='')
@@ -1575,7 +1541,7 @@ function your_function($fields)
 	                array_splice($item, array_search($k, array_keys($item)), 1, $v[$lookup]);
 	            }
 	        }
-	        array_walk($item, array(__CLASS__, 'filter_layout_links'), $lookup);
+	        array_walk($item, array(__CLASS__, __METHOD__), $lookup);
 	    }
 	}
 
