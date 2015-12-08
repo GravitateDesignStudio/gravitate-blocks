@@ -158,13 +158,20 @@ class GRAV_BLOCKS {
 		{
 
 			//self::dump($layouts);
-			//self::recursive_array_search('grav_link_fields',$layouts);
-			self::dump(self::recursive_array_search('grav_link_fields',$layouts));
+
+			if($key_paths = self::grav_get_key_paths('grav_link_fields',$layouts)){
+				foreach($key_paths as $key_path){
+					$path_array = explode('::', $key_path);
+					foreach($path_array as $path){
+						//self::dump($path);
+					}
+				}
+			}
 			//self::dump($layouts);
 
-			// foreach($layouts as $key => $layout){
-			// 	//do something
-			// }
+			echo '<pre>';
+			print_r($layouts);
+			echo '</pre>';
 			exit;
 
 			// Filter the Fields from developers
@@ -1490,63 +1497,27 @@ function your_function($fields)
 		return array('grav_link_fields' => $included_options);
 	}
 
-	public static function recursive_array_search($needle,$haystack,$current_path = '', $return = false, $total_paths = array()) {
 
+	public static function grav_get_key_paths($needle, &$array, $path='', $total=array(), $parent_key = '', $grandparent_key = '')
+	{
+	    $og_path = $path;
+	    if(!empty($array) && is_array($array))
+	    {
+	        foreach ($array as $key => &$value)
+	        {
 
-	    foreach($haystack as $key=>$value) {
-	        $current_key=$key;
-
-	        if($needle === $current_key){
-	        	$current_path .= '::'.$key;
-	        	if($return){
-	        		return $current_path;
-	        	}
-
-	        	if(!in_array($current_path, $total_paths)){
-
-	        		//self::dump($current_path);
-		        	$total_paths[] = $current_path;
-
-		        }
-
-	        } elseif(is_array($value)) {
-
-
-	        	if(self::has_recursive_array_search($needle,$value)){
-
-	        		//if(!in_array($results, $total_paths)){
-	        			//self::dump($results);
-		        		$current_path .= '::'.$key;
-		        		$total_paths = self::recursive_array_search($needle,$value,$current_path, false, $total_paths);
-		        	//}
-
-		        }
+	            if(isset($array[$needle]))
+	            {
+	            	$array = '123456';
+	                $total[] = $path;
+	                break;
+	            }
+	            $path.= ($path ? '::' : '').$key;
+	            $total = array_merge(self::grav_get_key_paths($needle, $value, $path, $total, $key, $parent_key), $total);
+	            $path = $og_path;
 	        }
-
 	    }
-
-    	return $total_paths;
-
-	}
-	public static function has_recursive_array_search($needle,$haystack) {
-
-
-	    foreach($haystack as $key=>$value) {
-	    	self::dump($key);
-	        if($needle === $key){
-
-	        	return true;
-
-	        } elseif(is_array($value)) {
-
-	        	return self::has_recursive_array_search($needle,$value);
-
-	        }
-
-	    }
-
-    	return false;
-
+	    return array_unique($total);
 	}
 
 
