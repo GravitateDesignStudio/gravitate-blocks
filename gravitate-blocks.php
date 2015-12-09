@@ -97,7 +97,10 @@ class GRAV_BLOCKS {
 		{
 			foreach (self::$settings['background_colors'] as $color_key => $color_params)
 			{
-				$block_background_colors['block-bg-'.$color_params['_repeater_id']] = $color_params['name'];
+				if(!empty($color_params['_repeater_id']))
+				{
+					$block_background_colors['block-bg-'.$color_params['_repeater_id']] = $color_params['name'];
+				}
 			}
 		}
 		$block_background_colors['block-bg-image'] = 'Image';
@@ -1581,7 +1584,7 @@ function your_function($fields)
 	    {
 	        foreach ($item as $k => $v)
 	        {
-	            if(isset($v[$lookup]))
+	            if(is_array($v) && isset($v[$lookup]))
 	            {
 	                array_splice($item, array_search($k, array_keys($item)), 1, $v[$lookup]);
 	            }
