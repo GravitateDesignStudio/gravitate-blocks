@@ -11,6 +11,8 @@ Easily manage Content Blocks.
 
 == Description ==
 
+Warning: If you have been using version 1.1.0 or below the update to 1.2.0 may break the current blocks. We recommend copying the "grav-blocks" folder from the plugin to your theme folder before updating.
+
 Description: Welcome to Gravitate Blocks: A content solution using WordPress and Advanced Custom Fields that allows clients to build an extremely flexible and stylish webpage without worrying about the code, layout or design. Clients select the type of content, add the content, and the system does the rest.
 
 ==Requirements==
@@ -29,6 +31,14 @@ Description: Welcome to Gravitate Blocks: A content solution using WordPress and
 
 == Changelog ==
 
+= 1.2.0 =
+* Changed block names and intention ( HTML became "Content", Button became "Call to Action", Image became "Media", Image Content became "Media with Content", Grid became "Media Gallery")
+* Updated Call to Action block to allow for multiple buttons
+* Updated block labels in admin panel settings to be consistent
+* Changed layout of Content block in admin panel
+* Added default CSS option to address some basic styling
+* Added Foundation responsive grid to help with layout styling
+* Added Colorbox to allow Media Gallery to show in a grouped modal window
 
 = 1.1.0 =
 * Added Search Filtering Option
