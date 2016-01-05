@@ -31,6 +31,10 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.2.1 =
+* Bug Fix - Memory Leak issue
+* Bug Fix - Resolved PHP Warning
+
 = 1.2.0 =
 * Changed block names and intention ( HTML became "Content", Button became "Call to Action", Image became "Media", Image Content became "Media with Content", Grid became "Media Gallery")
 * Updated Call to Action block to allow for multiple buttons
