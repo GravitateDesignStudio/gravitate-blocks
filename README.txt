@@ -11,9 +11,9 @@ Easily manage Content Blocks.
 
 == Description ==
 
-Warning: If you have been using version 1.1.0 or below the update to 1.2.0 may break the current blocks. We recommend copying the "grav-blocks" folder from the plugin to your theme folder before updating.
+**Warning:** If you have been using version 1.1.0 or below the update to 1.2.0 may break the current blocks. We recommend copying the "grav-blocks" folder from the plugin to your theme folder before updating.
 
-Description: Welcome to Gravitate Blocks: A content solution using WordPress and Advanced Custom Fields that allows clients to build an extremely flexible and stylish webpage without worrying about the code, layout or design. Clients select the type of content, add the content, and the system does the rest.
+**Description:** Welcome to Gravitate Blocks: A content solution using WordPress and Advanced Custom Fields that allows clients to build an extremely flexible and stylish webpage without worrying about the code, layout or design. Clients select the type of content, add the content, and the system does the rest.
 
 ==Requirements==
 
