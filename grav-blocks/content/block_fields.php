@@ -47,5 +47,7 @@ return array (
 			'button_label' => 'Add Column',
 		),
 	),
-	'grav_blocks_settings' => array(),
+	'grav_blocks_settings' => array(
+		'icon' => 'testing'
+		),
 );

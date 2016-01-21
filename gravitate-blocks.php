@@ -1186,7 +1186,6 @@ function your_function($fields)
 	public static function get_usable_post_types()
 	{
 
-		// TODO add filter here for $posts_to_exclude
 
 		$posts = get_post_types();
 		$post_types = array();
@@ -1198,6 +1197,8 @@ function your_function($fields)
 				$post_types[$post_type] = self::unsanitize_title($post_type);
 			}
 		}
+
+		// TODO add filter here for $post_types
 
 		return $post_types;
 
