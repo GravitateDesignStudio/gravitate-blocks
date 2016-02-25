@@ -48,6 +48,6 @@ return array (
 		),
 	),
 	'grav_blocks_settings' => array(
-		'icon' => 'testing'
-		),
+		'icon' => 'gravicon-chrome_reader_mode'
+	),
 );

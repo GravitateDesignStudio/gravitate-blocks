@@ -86,5 +86,9 @@ return array (
 	),
 	'min' => '',
 	'max' => '',
-	'grav_blocks_settings' => array(),
+	'grav_blocks_settings' => array(
+		'icon' => 'gravicon-grid_on',
+		'group' => 'test',
+		'description' => '<h2>Testing stuff</h2>'
+	),
 );

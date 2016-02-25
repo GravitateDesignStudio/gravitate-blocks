@@ -14,6 +14,7 @@ add_action( 'admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
 add_action( 'admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action( 'init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
+add_action( 'in_admin_footer', array('GRAV_BLOCKS', 'add_footer_js' ));
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
 add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link' ));
 
@@ -528,6 +529,29 @@ class GRAV_BLOCKS {
 	}
 
 	/**
+	 * Returns the specified setting for the block or array of all settings
+	 *
+	 * @param string $block - This is the name of the block folder to retrieve
+	 * @param string $setting - This is the setting to retrieve
+	 *
+	 * @return array if no setting specified, string if setting is specified
+	 */
+	public static function get_block_settings($block='', $setting='')
+	{
+		if($path = self::get_path($block))
+		{
+			if(file_exists($path.'/block_fields.php'))
+			{
+				$fields = include($path.'/block_fields.php');
+				$settings = ($setting === '') ? $fields['grav_blocks_settings'] : $fields['grav_blocks_settings'][$setting];
+
+				return $settings;
+			}
+		}
+		return false;
+	}
+
+	/**
 	 * Returns the Enabled Blocks
 	 *
 	 * @return array
@@ -567,6 +591,7 @@ class GRAV_BLOCKS {
 	 */
 	public static function get_available_blocks()
 	{
+
 		$blocks = array();
 		$plugin_blocks = array();
 		$theme_blocks = array();
@@ -594,13 +619,13 @@ class GRAV_BLOCKS {
 		{
 			foreach($plugin_blocks as $dir)
 			{
-				$block = basename($dir);
 
+				$block = basename($dir);
 			    if(file_exists($dir.'/block_fields.php'))
 			    {
 			    	$fields = include($dir.'/block_fields.php');
 			    	$label = (!empty($fields['label'])) ? $fields['label'] : $block;
-					$blocks[$block] = array('label' => $label, 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'default') );
+					$blocks[$block] = array('label' => $label, 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'default'));
 				}
 			}
 		}
@@ -615,7 +640,7 @@ class GRAV_BLOCKS {
 			    {
 			    	$fields = include($dir.'/block_fields.php');
 			    	$label = (!empty($fields['label'])) ? $fields['label'] : $block;
-					$blocks[$block] = array('label' => $label . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'), 'icon' => 'dashicons-before dashicons-admin-comments' );
+					$blocks[$block] = array('label' => $label . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'));
 				}
 			}
 		}
@@ -774,6 +799,14 @@ class GRAV_BLOCKS {
 
 				foreach ($block_groups as $group => $blocks)
 				{
+					foreach($blocks as $block_slug => $block_label)
+					{
+						if($block_settings = self::get_block_settings($block_slug))
+						{
+							$block_settings['label'] = $block_label;
+							$blocks[$block_slug] = $block_settings;
+						}
+					}
 					$description = ($group == 'default') ? 'Determine what default blocks will be available.' : '';
 					$fields['blocks_enabled_'.$group] = array('type' => 'checkbox', 'label' => ucwords(str_replace('_', ' ', $group)).' Blocks', 'options' => $blocks, 'description' => $description);
 				}
@@ -1079,6 +1112,8 @@ function your_function($fields)
 	        return;
 	    }
     	wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
+    	wp_enqueue_style( 'grav_blocks_icons_css', 'https://i.icomoon.io/public/790bec4572/GravitateBlocks/style.css', true, '1.1.0' );
+    	wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/scripts.min.js', array('jquery'), self::$version, true );
 	    wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
 	}
@@ -1119,6 +1154,7 @@ function your_function($fields)
 					$(document).ready(function(){
 						jQuery('.block-link-video').colorbox({iframe:true, height:'80%', width:'80%'});
 						jQuery('.block-link-gallery').colorbox({rel:'block-link-gallery', iframe:true, height:'80%', width:'80%', transition:'fade'});
+						jQuery('.grav-inline').colorbox({inline: true, height:'80%', width:'80%', transition:'fade'});
 					});
 				});
 			</script>";

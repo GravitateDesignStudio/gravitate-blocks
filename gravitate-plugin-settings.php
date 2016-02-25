@@ -399,6 +399,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	 */
 	public static function settings_field($meta_key, $field, $repeater_key='', $rep_i=0)
 	{
+		?><span class="settings-field-wrapper"><?php
 		$settings_attribute = 'settings['.$meta_key.']';
 
 		if($repeater_key && !empty($field['label']))
@@ -427,11 +428,12 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 					<option value="">- Select -</option>
 					<?php
 				}
-				foreach($field['options'] as $option_value => $option_label)
+				foreach($field['options'] as $option_value => $options)
 				{
-					$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+					$options_label = (is_array($options)) ? $options['label'] : $options;
+					$real_value = ($option_value !== $options_label && !is_numeric($option_value) ? $option_value : $options_label);
 					?>
-					<option<?php echo ($real_value !== $option_label ? ' value="'.$real_value.'"' : '');?> <?php selected( ($real_value !== $option_label ? $real_value : $option_label), esc_attr( (isset($field['value']) ? $field['value'] : '') ));?>><?php echo $option_label;?></option>
+					<option<?php echo ($real_value !== $options_label ? ' value="'.$real_value.'"' : '');?> <?php selected( ($real_value !== $options_label ? $real_value : $options_label), esc_attr( (isset($field['value']) ? $field['value'] : '') ));?>><?php echo $options_label;?></option>
 					<?php
 				} ?>
 			</select>
@@ -449,9 +451,12 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 			<input type="hidden" name="<?php echo $settings_attribute;?>" value="">
 			<?php
 
-			foreach($field['options'] as $option_value => $option_label)
+			foreach($field['options'] as $option_value => $options)
 			{
-				$real_value = ($option_value !== $option_label && !is_numeric($option_value) ? $option_value : $option_label);
+				$options_label = (is_array($options)) ? $options['label'] : $options;
+				$block_icon = (is_array($options) && $options['icon']) ? $options['icon'] : '';
+				$block_description = (is_array($options) && $options['description']) ? $options['description'] : '';
+				$real_value = ($option_value !== $options_label && !is_numeric($option_value) ? $option_value : $options_label);
 
 				if(isset($field['value']) && is_array($field['value']))
 				{
@@ -462,7 +467,16 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 					$checked = '';
 				}
 				?>
-				<label><input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>><?php echo ucfirst($option_label); ?></label>
+				<span class="grav-option-wrapper">
+					<label>
+						<input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>>
+						<span <?php if($block_icon){ echo 'class="'.esc_attr($block_icon).'"'; } ?>><?php echo ucfirst($options_label); ?></span>
+					</label>
+					<?php if($block_description){ ?>
+						<a class="grav-inline" href="#<?php echo $option_value; ?>">?</a>
+						<div style="display:none;"><div id="<?php echo $option_value; ?>"><?php echo $block_description; ?></div></div>
+					<?php } ?>
+				</span>
 				<?php
 			}
 		}
@@ -470,6 +484,9 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 		{
 			?><input type="text" class="grav-blocks-colorpicker" name="<?php echo $settings_attribute;?>" id="<?php echo $meta_key;?>"<?php echo (isset($field['maxlength']) ? ' maxlength="'.$field['maxlength'].'"' : '');?> value="<?php echo esc_attr( (isset($field['value']) ? $field['value'] : '') );?>" class="regular-text" /><br /><?php
 		}
+		?>
+		</span>
+		<?php
 
 		if(!empty($field['description']))
 		{
