@@ -12,115 +12,6 @@ $gray-lightest : #F9F9F9;
 $wp-media-query : 783px;
 
 
-/*
-    Colorbox Core Style:
-    The following CSS is consistent between example themes and should not be altered.
-*/
-#colorbox, #cboxOverlay, #cboxWrapper{position:absolute; top:0; left:0; z-index:9999; overflow:hidden; -webkit-transform: translate3d(0,0,0);}
-#cboxWrapper {max-width:none;}
-#cboxOverlay{position:fixed; width:100%; height:100%;}
-#cboxMiddleLeft, #cboxBottomLeft{clear:left;}
-#cboxContent{position:relative;}
-#cboxLoadedContent{overflow:auto; -webkit-overflow-scrolling: touch;}
-#cboxTitle{margin:0;}
-#cboxLoadingOverlay, #cboxLoadingGraphic{position:absolute; top:0; left:0; width:100%; height:100%;}
-#cboxPrevious, #cboxNext, #cboxClose, #cboxSlideshow{cursor:pointer;}
-.cboxPhoto{float:left; margin:auto; border:0; display:block; max-width:none; -ms-interpolation-mode:bicubic;}
-.cboxIframe{width:100%; height:100%; display:block; border:0; padding:0; margin:0;}
-#colorbox, #cboxContent, #cboxLoadedContent{box-sizing:content-box; -moz-box-sizing:content-box; -webkit-box-sizing:content-box;}
-
-/*
-    User Style:
-    Change the following styles to modify the appearance of Colorbox.  They are
-    ordered & tabbed in a way that represents the nesting of the generated HTML.
-*/
-#cboxOverlay{background:#fff; opacity: 0.9; filter: alpha(opacity = 90);}
-#colorbox{outline:0;}
-    #cboxContent{margin-top:32px; overflow:visible; background:#000;}
-        .cboxIframe{background:#fff;}
-        #cboxError{padding:50px; border:1px solid #ccc;}
-        #cboxLoadedContent{background: white; padding: 2rem; border: 1px solid $gray-light; }
-        #cboxLoadingGraphic{background:url(../images/loading.gif) no-repeat center center;}
-        #cboxLoadingOverlay{background:#000;}
-        #cboxTitle{position:absolute; top:-22px; left:0; color:#000;}
-        #cboxCurrent{position:absolute; top:-22px; right:205px; text-indent:-9999px;}
-
-        /* these elements are buttons, and may need to have additional styles reset to avoid unwanted base styles */
-        #cboxPrevious, #cboxNext, #cboxSlideshow, #cboxClose {border:0; padding:0; margin:0; overflow:visible; text-indent:-9999px; width:20px; height:20px; position:absolute; top:-20px;
-        	//background:url(../images/controls.png) no-repeat 0 0;
-        	background: none;
-        }
-
-        /* avoid outlines on :active (mouseclick), but preserve outlines on :focus (tabbed navigating) */
-        #cboxPrevious:active, #cboxNext:active, #cboxSlideshow:active, #cboxClose:active {outline:0;}
-
-        #cboxPrevious{
-        	right:44px;
-        	&:after {
-        		@include transition(opacity .3s ease-in-out);
-        		content: '';
-        		opacity: .5;
-        		display: block;
-        		position: absolute;
-        		width: 0; height: 0;
-        		border-right: 10px solid #1B1714;
-        		border-top: 5px solid transparent;
-        		border-bottom: 5px solid transparent;
-        		top: 1px; bottom: 0; left: 0; right: 0;
-    			margin: auto;
-        	}
-        	&:hover {
-				&:after { opacity: 1; }
-        	}
-        }
-        #cboxNext{
-        	//background-position:-25px 0px; right:22px;
-        	right: 22px;
-        	&:after {
-        		@include transition(opacity .3s ease-in-out);
-        		content: '';
-        		opacity: .5;
-        		display: block;
-        		position: absolute;
-        		width: 0; height: 0;
-        		border-left: 10px solid #1B1714;
-        		border-top: 5px solid transparent;
-        		border-bottom: 5px solid transparent;
-        		top: 1px; bottom: 0; left: 0; right: 0;
-    			margin: auto;
-        	}
-        	&:hover {
-				&:after { opacity: 1; }
-        	}
-        }
-        #cboxClose{
-        	right:0;
-        	overflow: hidden;
-        	&:after,
-        	&:before {
-        		@include transition(opacity .3s ease-in-out);
-        		@include transform(rotate(45deg));
-        		content: 'X';
-        		opacity: .5;
-        		width: 14px; height: 2px;
-        		background: #1B1714;
-        		display: block;
-        		position: absolute;
-        		top: 1px; bottom: 0; left: 0; right: 0;
-    			margin: auto;
-    			border-radius: 5px;
-        	}
-        	&:before {
-				@include transform(rotate(-45deg));
-        	}
-        	&:hover {
-        		&:after,
-        		&:before {
-					opacity: 1;
-        		}
-        	}
-        }
-
 .settings_page_gravitate_blocks {
 	.wrap {
 		* {
@@ -168,11 +59,15 @@ $wp-media-query : 783px;
 			    font-weight: bold;
 			    border: 1px solid $gray-light;
 			    margin-left: 3px;
+			    background: transparent;
 			    color: $gray-light;
+			    opacity: .7;
 			    &:hover {
 			    	@include transform(scale(1.1,1.1));
 			    	border-color: $magenta;
 			    	color: $magenta;
+			    	opacity: 1;
+			    	background: $white;
 			    }
 			}
 			text-decoration: none;
@@ -238,7 +133,7 @@ $wp-media-query : 783px;
 		.settings-field-wrapper{
 			@include display-flex(flex);
 			@include flex-direction(row);
-			@include justify-content(space-between);
+			//@include justify-content(space-between);
 			@include align-content(space-between);
 			@include flex-wrap(wrap);
 		}
@@ -246,7 +141,7 @@ $wp-media-query : 783px;
 			display: block;
 			margin-bottom: .5rem;
 			width: 100%;
-			min-height: 25px;
+			min-height: 40px;
 			@include media-min($wp-media-query){
 				width: 33.3333%;
 			}
@@ -386,5 +281,29 @@ $wp-media-query : 783px;
 		td {
 			padding: .5rem 1rem;
 		}
+	}
+}
+.grav-modal-content {
+	img[src*=svg]{
+		width: 100%;
+		max-width: 100%;
+		margin-top: 1rem;
+	}
+	.row {
+		padding: 1rem 1rem 2rem;
+		&:after {
+			content: '';
+			display: table;
+			clear:both;
+		}
+	}
+	.columns {
+		float: left;
+		&.medium-6 {
+			width: calc( 50% - 1rem );
+		}
+		+ .columns {
+				margin-left: 1rem;
+			}
 	}
 }

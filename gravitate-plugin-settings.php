@@ -473,8 +473,12 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 						<span <?php if($block_icon){ echo 'class="'.esc_attr($block_icon).'"'; } ?>><?php echo ucfirst($options_label); ?></span>
 					</label>
 					<?php if($block_description){ ?>
-						<a class="grav-inline" href="#<?php echo $option_value; ?>">?</a>
-						<div style="display:none;"><div id="<?php echo $option_value; ?>"><?php echo $block_description; ?></div></div>
+						<a class="grav-inline thickbox" href="#TB_inline?width=600&height=550&inlineId=<?php echo $option_value; ?>" title="<?php echo ucfirst($options_label); ?>">?</a>
+						<div style="display:none;"><div id="<?php echo $option_value; ?>">
+							<div class="grav-modal-content">
+								<?php echo $block_description; ?>
+							</div>
+						</div></div>
 					<?php } ?>
 				</span>
 				<?php

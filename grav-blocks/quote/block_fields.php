@@ -57,7 +57,9 @@ return array (
 			'default_value' => 0,
 		),
 	),
-	'grav_blocks_settings' => array(),
+	'grav_blocks_settings' => array(
+		'icon' => 'gravicon-quote',
+	),
 );
 
 ?>

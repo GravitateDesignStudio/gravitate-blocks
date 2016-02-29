@@ -43,5 +43,7 @@ return array (
 		),
 		GRAV_BLOCKS::get_link_fields( 'link', '', false),
 	),
-	'grav_blocks_settings' => array(),
+	'grav_blocks_settings' => array(
+		'icon' => 'gravicon-media',
+	),
 );

@@ -13,6 +13,8 @@
 *
 */
 
+$plugins_url = plugins_url();
+
 return array (
 	'label' => 'Content',
 	'name' => $block,
@@ -48,6 +50,7 @@ return array (
 		),
 	),
 	'grav_blocks_settings' => array(
-		'icon' => 'gravicon-chrome_reader_mode'
+		'icon' => 'gravicon-content-1col',
+		'description' => '<div class="row"><div class="columns medium-6"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_1.svg"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_2.svg"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_3.svg"></div><div class="columns medium-6"><p>Integer sollicitudin sapien eget tristique sodales. Fusce pellentesque tincidunt nisi vitae mattis. Donec placerat enim sit amet tempor semper. Proin vel gravida odio. Quisque mollis augue eu nisi cursus, eget imperdiet lectus lobortis. Nulla ut ultrices velit, eu pretium eros. Quisque in turpis scelerisque, tempus nulla id, consequat dui.</p><p>Fusce vel consectetur enim. Phasellus nisl enim, tincidunt sed dui vel, dictum ullamcorper arcu. Quisque ex est, tincidunt id quam vitae, viverra laoreet est. Donec venenatis ornare condimentum. Aliquam erat volutpat. Aenean turpis arcu, tincidunt vel malesuada eu, fringilla ac metus. In non lectus sed augue ullamcorper sagittis.</p></div></div>'
 	),
 );

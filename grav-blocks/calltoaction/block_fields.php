@@ -72,7 +72,7 @@ return array (
 		),
 	),
 	'grav_blocks_settings' => array(
-		'icon' => 'gravicon-view_week',
+		'icon' => 'gravicon-cta',
 		'description' => '<p>Integer sollicitudin sapien eget tristique sodales. Fusce pellentesque tincidunt nisi vitae mattis. Donec placerat enim sit amet tempor semper. Proin vel gravida odio. Quisque mollis augue eu nisi cursus, eget imperdiet lectus lobortis. Nulla ut ultrices velit, eu pretium eros. Quisque in turpis scelerisque, tempus nulla id, consequat dui.</p><p>Fusce vel consectetur enim. Phasellus nisl enim, tincidunt sed dui vel, dictum ullamcorper arcu. Quisque ex est, tincidunt id quam vitae, viverra laoreet est. Donec venenatis ornare condimentum. Aliquam erat volutpat. Aenean turpis arcu, tincidunt vel malesuada eu, fringilla ac metus. In non lectus sed augue ullamcorper sagittis.</p>'
 	),
 );

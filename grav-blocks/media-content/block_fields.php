@@ -88,5 +88,7 @@ return array (
 	),
 	'min' => '',
 	'max' => '',
-	'grav_blocks_settings' => array(),
+	'grav_blocks_settings' => array(
+		'icon' => 'gravicon-content-media',
+	),
 );

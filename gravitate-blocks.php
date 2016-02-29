@@ -14,7 +14,7 @@ add_action( 'admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
 add_action( 'admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action( 'init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
-add_action( 'in_admin_footer', array('GRAV_BLOCKS', 'add_footer_js' ));
+//add_action( 'in_admin_footer', array('GRAV_BLOCKS', 'add_footer_js' ));
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
 add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link' ));
 
@@ -404,18 +404,22 @@ class GRAV_BLOCKS {
 	 */
 	public static function display($section='grav_blocks')
 	{
+		$term = ( ($query = get_queried_object()) && !empty($query->term_id) ) ? $query : '';
+
 		if(self::is_viewable())
 		{
+
 			$handler_file = self::get_path('handler.php');
 
-			if($handler_file && get_field($section))
+			if($handler_file && get_field($section, $term))
 			{
-				while(the_flexible_field($section))
+
+				while(the_flexible_field($section, $term))
 				{
 					$block_class_prefix = 'block';
 					$block_name = strtolower(str_replace('_', '-', get_row_layout()));
 
-					$block_background = get_sub_field('block_background');
+					$block_background = get_sub_field('block_background', $term);
 
 					if(!empty(self::$settings['background_colors']))
 					{
@@ -423,16 +427,16 @@ class GRAV_BLOCKS {
 						{
 							$use_css_variable = (!empty($color_params['class']) && GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'add_custom_color_class'));
 
-							if($block_background === 'block-bg-'.$color_params['_repeater_id'] && $use_css_variable)
+							if(!empty($color_params['_repeater_id']) && $block_background === 'block-bg-'.$color_params['_repeater_id'] && $use_css_variable)
 							{
 								$block_background.= ' '.$color_params['class'];
 							}
 						}
 					}
 
-					$block_background_image = get_sub_field('block_background_image');
+					$block_background_image = get_sub_field('block_background_image', $term);
 
-					$block_background_style = (get_sub_field('block_background') == 'block-bg-image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['sizes']['large'].'\');" ' : '');
+					$block_background_style = (get_sub_field('block_background', $term) == 'block-bg-image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['sizes']['large'].'\');" ' : '');
 
 					include $handler_file;
 				}
@@ -844,7 +848,7 @@ class GRAV_BLOCKS {
 		}
 
 		?>
-
+		<?php add_thickbox(); ?>
 		<div class="wrap grav-blocks">
 			<header>
 				<h1><img itemprop="logo" src="http://www.gravitatedesign.com/wp-content/themes/gravtheme/library/images/grav_logo.png" alt="Gravitate"> Blocks</h1>
@@ -1169,26 +1173,29 @@ function your_function($fields)
 	 * @return boolean
 	 */
 	public static function is_viewable(){
-
-		if($id = get_the_ID())
+		$is_viewable = false;
+		$post_id = ( ($query = get_queried_object()) && !empty($query->ID) ) ? $query->ID : false;
+		if( $post_id )
 		{
+
 			$locations = self::get_locations('viewable');
 
 			if(!empty($locations['post_types']))
 			{
-				if(in_array(get_post_type(), $locations['post_types'])){
-					return true;
+				if(is_singular() && in_array(get_post_type(), $locations['post_types'])){
+					$is_viewable = true;
 				}
 			}
 			if(!empty($locations['templates']))
 			{
-				$is_default = (get_page_template_slug($id) == '' && in_array('default', $locations['templates']));
-				if($is_default || in_array(get_page_template_slug($id), $locations['templates'])){
-					return true;
+				$is_default = (get_page_template_slug($post_id) == '' && in_array('default', $locations['templates']));
+				if($is_default || in_array(get_page_template_slug($post_id), $locations['templates'])){
+					$is_viewable = true;
 				}
 			}
 		}
-		return false;
+		$is_viewable = apply_filters( 'grav_is_viewable', $is_viewable );
+		return $is_viewable;
 	}
 
 	/**
