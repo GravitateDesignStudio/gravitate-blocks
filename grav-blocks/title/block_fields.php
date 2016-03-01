@@ -60,5 +60,20 @@ return array (
 	),
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-title',
+		'description' => '<div class="row">
+				<div class="columns medium-6">
+					<img src="'.plugins_url().'/gravitate-blocks/grav-blocks/title/title.svg">
+				</div>
+				<div class="columns medium-6">
+					<p>When you want to make a statement with your content and break it apart for ease of digestion this block allows you to put a title and subtitle above that content to help differentiate it.</p>
+					<p><strong>Available Fields:</strong></p>
+					<ul>
+						<li>Background</li>
+						<li>Title</li>
+						<li>Sub Title</li>
+						<li>Ability to center text <em>( default is left-aligned )</em></li>
+					</ul>
+				</div>
+			</div>'
 	),
 );

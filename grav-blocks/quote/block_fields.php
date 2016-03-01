@@ -59,6 +59,21 @@ return array (
 	),
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-quote',
+		'description' => '<div class="row">
+				<div class="columns medium-6">
+					<img src="'.plugins_url().'/gravitate-blocks/grav-blocks/quote/quote.svg">
+				</div>
+				<div class="columns medium-6">
+					<p>When you have those amazing quotes from die hard customers, make sure you display them with the importance they deserve. This block allows for the quote, attribution and ability to center the text.</p>
+					<p><strong>Available Fields:</strong></p>
+					<ul>
+						<li>Background</li>
+						<li>Quoted Text</li>
+						<li>Attribution</li>
+						<li>Ability to center text <em>( default is left-aligned )</em></li>
+					</ul>
+				</div>
+			</div>'
 	),
 );
 

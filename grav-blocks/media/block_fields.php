@@ -45,5 +45,21 @@ return array (
 	),
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-media',
+		'description' => '<div class="row">
+				<div class="columns medium-6">
+					<img src="'.plugins_url().'/gravitate-blocks/grav-blocks/media/media.svg">
+					<img src="'.plugins_url().'/gravitate-blocks/grav-blocks/media/media-alt.svg">
+				</div>
+				<div class="columns medium-6">
+					<p>This block that allows for a full width image, or an image that is contained within the content width. This image also has the ability to link to a page, URL, file download or even play a video in a modal.</p>
+					<p><strong>Available Fields:</strong></p>
+					<ul>
+						<li>Background<em> ( for a two layered image effect )</em></li>
+						<li>Image</li>
+						<li>Add Padding <em>( constrains image to width of content instead of full screen )</em></li>
+						<li>Link <em>( Page, URL, File, Video )</em></li>
+					</ul>
+				</div>
+			</div>'
 	),
 );

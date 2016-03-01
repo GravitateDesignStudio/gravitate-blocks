@@ -13,6 +13,7 @@
 *
 */
 
+
 return array (
 	'label' => 'Call to Action',
 	'name' => $block,
@@ -73,7 +74,21 @@ return array (
 	),
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-cta',
-		'description' => '<p>Integer sollicitudin sapien eget tristique sodales. Fusce pellentesque tincidunt nisi vitae mattis. Donec placerat enim sit amet tempor semper. Proin vel gravida odio. Quisque mollis augue eu nisi cursus, eget imperdiet lectus lobortis. Nulla ut ultrices velit, eu pretium eros. Quisque in turpis scelerisque, tempus nulla id, consequat dui.</p><p>Fusce vel consectetur enim. Phasellus nisl enim, tincidunt sed dui vel, dictum ullamcorper arcu. Quisque ex est, tincidunt id quam vitae, viverra laoreet est. Donec venenatis ornare condimentum. Aliquam erat volutpat. Aenean turpis arcu, tincidunt vel malesuada eu, fringilla ac metus. In non lectus sed augue ullamcorper sagittis.</p>'
+		'description' => '<div class="row">
+				<div class="columns medium-6">
+					<img src="'.plugins_url().'/gravitate-blocks/grav-blocks/calltoaction/cta.svg">
+				</div>
+				<div class="columns medium-6">
+					<p>With this block, you can create buttons&nbsp;for any needed conversion. Whether it’s to direct the user to the contact page or download a white-paper, this block will allow multiple buttons, each with the ability to link to a current page on the site, a specified URL, a file to download, or video to play in a modal.</p>
+					<p><strong>Available Fields:</strong></p>
+					<ul>
+						<li>Title</li>
+						<li>Description</li>
+						<li>Background</li>
+						<li>Buttons <em>( Multiple )</em></li>
+					</ul>
+				</div>
+			</div>'
 	),
 );
 ?>

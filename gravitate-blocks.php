@@ -14,7 +14,6 @@ add_action( 'admin_menu', array( 'GRAV_BLOCKS', 'admin_menu' ));
 add_action( 'admin_init', array( 'GRAV_BLOCKS', 'admin_init' ));
 add_action( 'init', array( 'GRAV_BLOCKS', 'init' ));
 add_action( 'admin_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_admin_files' ));
-//add_action( 'in_admin_footer', array('GRAV_BLOCKS', 'add_footer_js' ));
 add_action( 'wp_enqueue_scripts', array('GRAV_BLOCKS', 'enqueue_files' ));
 add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS', 'plugin_settings_link' ));
 
@@ -1606,7 +1605,7 @@ function your_function($fields)
 				{
 					$url = self::get_video_url($url);
 				}
-				return $url;
+				return esc_url($url);
 			}
 		}
 		return '';
