@@ -38,6 +38,10 @@ class GRAV_BLOCKS_CSS {
 		{
 			$this->class[] = 'col-xs-'.$small.' small-'.$small;
 		}
+		else
+		{
+			$this->class[] = 'small-12';
+		}
 
 		if($med && $med < 12)
 		{

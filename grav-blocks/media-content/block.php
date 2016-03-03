@@ -8,8 +8,8 @@
 	$bottom_classes = '';
 	$top_classes = '';
 	if($placement == 'right'){
-		$top_classes = GRAV_BLOCKS::css()->col_push(0, $col_content_width)->get();
-		$bottom_classes = GRAV_BLOCKS::css()->col_pull(0, $col_width)->get();
+		$top_classes = GRAV_BLOCKS::css()->col_push(0, $col_content_width)->get().' medium-order-2';
+		$bottom_classes = GRAV_BLOCKS::css()->col_pull(0, $col_width)->get().' medium-order-1';
 	}
 ?>
 <div class="block-inner">
