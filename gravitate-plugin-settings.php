@@ -116,7 +116,24 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	}
 
 	/**
-	 * Saved the Settings to the Database when the form was seubmitted
+	 * Returns setting if value is set
+	 *
+	 * @param string $setting_type - The type of setting you want to check such as 'advanced_options'
+	 * @param string $setting_position - The key position for the array you want to check
+	 *
+	 * @return boolean
+	 */
+	public static function get_setting_value($setting_type = '', $setting_key = ''){
+		self::get_settings(true);
+		$setting = (!empty(self::$settings[$setting_type])) ? self::$settings[$setting_type] : false;
+		if($setting_key !== ''){
+			$setting = (!empty(self::$settings[$setting_type])) ? self::$settings[$setting_type][$setting_key] : false;
+		}
+		return $setting;
+	}
+
+	/**
+	 * Saved the Settings to the Database when the form was submitted
 	 *
 	 * @return array
 	 */
@@ -470,6 +487,52 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 				<span class="grav-option-wrapper">
 					<label>
 						<input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>>
+						<span <?php if($block_icon){ echo 'class="'.esc_attr($block_icon).'"'; } ?>><?php echo ucfirst($options_label); ?></span>
+					</label>
+					<?php if($block_description){ ?>
+						<a class="grav-inline thickbox" href="#TB_inline?width=600&height=550&inlineId=<?php echo $option_value; ?>" title="<?php echo ucfirst($options_label); ?>">?</a>
+						<div style="display:none;"><div id="<?php echo $option_value; ?>">
+							<div class="grav-modal-content">
+								<?php echo $block_description; ?>
+							</div>
+						</div></div>
+					<?php } ?>
+				</span>
+				<?php
+			}
+		}
+		else if(!empty($field['type']) && $field['type'] == 'radio')
+		{
+			if(is_string($field['options']))
+			{
+				$field['options'] = explode(',', $field['options']);
+				$field['options'] = array_combine($field['options'], $field['options']);
+			}
+
+			?>
+			<input type="hidden" name="<?php echo $settings_attribute;?>" value="">
+			<?php
+
+			foreach($field['options'] as $option_value => $options)
+			{
+
+				$options_label = (is_array($options)) ? $options['label'] : $options;
+				$block_icon = (is_array($options) && $options['icon']) ? $options['icon'] : '';
+				$block_description = (is_array($options) && $options['description']) ? $options['description'] : '';
+				$real_value = ($option_value !== $options_label && !is_numeric($option_value) ? $option_value : $options_label);
+
+				if(isset($field['value']) && is_array($field['value']))
+				{
+					$checked = (in_array($real_value, $field['value'])) ? 'checked' : '';
+				}
+				else
+				{
+					$checked = '';
+				}
+				?>
+				<span class="grav-option-wrapper">
+					<label>
+						<input type="radio" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>>
 						<span <?php if($block_icon){ echo 'class="'.esc_attr($block_icon).'"'; } ?>><?php echo ucfirst($options_label); ?></span>
 					</label>
 					<?php if($block_description){ ?>

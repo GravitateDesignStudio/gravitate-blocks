@@ -296,6 +296,7 @@ class GRAV_BLOCKS {
 											array('name' => 'Light Gray', 'value' => '#eeeeee'),
 											array('name' => 'Dark Gray', 'value' => '#555555')
 										),
+				'foundation' => array('f5'),
 			);
 			$blocks_groups = self::get_available_block_groups();
 			foreach($blocks_groups as $group_name => $group_info){
@@ -750,6 +751,8 @@ class GRAV_BLOCKS {
      */
 	private static function get_settings_fields($location = 'general')
 	{
+		self::dump(GRAV_BLOCKS_PLUGIN_SETTINGS::get_setting_value('foundation', 0));
+		self::dump(self::$settings);
 		switch ($location)
 		{
 
@@ -763,7 +766,12 @@ class GRAV_BLOCKS {
 					'disable_colorpicker' => 'Disable color picker ( Use this to force your own css class names ).',
 					'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
 					'use_default' => 'Use the default Gravitate Blocks CSS. <span class="extra-info">( Affects padding and some basic styling. )</span>',
-					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/v/5.5.3/index.html">Foundation 5</a> CSS grid.',
+					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/">Foundation</a> CSS grid.',
+				);
+				$foundation_options = array(
+					'f5' => '<a href="http://foundation.zurb.com/sites/docs/v/5.5.3/" target="_blank">5.5.3</a>',
+					'f6' => '<a href="http://foundation.zurb.com/sites/docs/grid.html" target="_blank">6.2.0</a>',
+					'f6flex' => '<a href="http://foundation.zurb.com/sites/docs/flex-grid.html" target="_blank">6.2.0</a> <span class="extra-info">( flex grid )</span>',
 				);
 
 				$search_options = array(
@@ -773,6 +781,7 @@ class GRAV_BLOCKS {
 				$fields = array();
 				$fields['advanced_options'] = array('type' => 'checkbox', 'label' => 'Advanced Options', 'options' => $advanced_options, 'description' => '');
 				$fields['css_options'] = array('type' => 'checkbox', 'label' => 'CSS Settings', 'options' => $css_options, 'description' => '');
+				$fields['foundation'] = array('type' => 'radio', 'label' => 'Foundation Version', 'options' => $foundation_options, 'description' => 'If you are using the foundation grid, this will determine which version of the grid to use.');
 				$fields['search_options'] = array('type' => 'checkbox', 'label' => 'Search Settings', 'options' => $search_options, 'description' => '');
 
 			break;
@@ -824,6 +833,47 @@ class GRAV_BLOCKS {
 
 		return $fields;
 	}
+
+
+	/**
+	 * Gets current version of foundation
+	 *
+	 *
+	 * @return
+	 */
+	function get_foundation_version()
+	{
+		$foundation_version = GRAV_BLOCKS_PLUGIN_SETTINGS::get_setting_value('foundation', 0);
+		return $foundation_version;
+	}
+
+	/**
+	 * Gets current version of foundation
+	 *
+	 *
+	 * @return
+	 */
+	function get_foundation_file_name()
+	{
+		$foundation_version = self::get_foundation_version();
+		switch ($foundation_version){
+			case 'f5':
+				$foundation_file_name = 'foundation5';
+				break;
+
+			case 'f6':
+				$foundation_file_name = 'foundation6';
+				break;
+
+			default:
+			case 'f6flex':
+				$foundation_file_name = 'foundation6flex';
+				break;
+
+		}
+		return $foundation_file_name;
+	}
+
 
 	/**
 	 * Runs the Admin Page and outputs the HTML
@@ -1084,6 +1134,22 @@ function your_function($fields)
 				<br><em>* Keep in mind you will still need to update the markup to accept the new settings</em>
 				</blockquote>
 			</li>
+			<li><h3>grav_is_viewable</h3>
+				This filters the viewable areas for all blocks.
+				<blockquote>
+				<label>Example 1: Adding blocks to a taxonomy term page.</label>
+				<textarea class="grav-code-block">
+add_filter('grav_is_viewable', 'your_function');
+function your_function($is_viewable){
+    if(is_tax('product_categories')){
+        return true;
+    }
+    return $is_viewable;
+}
+				</textarea>
+				<br><em>* Keep in mind you will still need to update the markup to accept the new settings</em>
+				</blockquote>
+			</li>
 			</ul>
 		</div>
 		<?php
@@ -1135,7 +1201,8 @@ function your_function($fields)
 		}
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'use_foundation') && self::is_viewable())
 		{
-			wp_enqueue_style( 'foundation_css', plugin_dir_url( __FILE__ ) . 'library/css/foundation.css' , array(), '6.0.0');
+			$foundation_file = self::get_foundation_file_name();
+			wp_enqueue_style( 'foundation_css', plugin_dir_url( __FILE__ ) . 'library/css/'.$foundation_file.'.css' , array(), '6.0.0');
 		}
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'use_default') && self::is_viewable())
 		{

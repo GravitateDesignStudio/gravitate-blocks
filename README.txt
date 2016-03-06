@@ -2,7 +2,7 @@
 Contributors: Gravitate, bferdinand
 Tags: Gravitate, Content Blocks, ACF, Advanced Custom Fields
 Requires at least: 3.5
-Tested up to: 4.3
+Tested up to: 4.4.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -11,7 +11,7 @@ Easily manage Content Blocks.
 
 == Description ==
 
-**Warning:** If you have been using version 1.1.0 or below the update to 1.2.0 may break the current blocks. We recommend copying the "grav-blocks" folder from the plugin to your theme folder before updating.
+**Warning:** If you have been using version 1.1.0 or below updating may break the current blocks. We recommend copying the "grav-blocks" folder from the plugin to your theme folder before updating.
 
 **Description:** Welcome to Gravitate Blocks: A content solution using WordPress and Advanced Custom Fields that allows clients to build an extremely flexible and stylish webpage without worrying about the code, layout or design. Clients select the type of content, add the content, and the system does the rest.
 
@@ -30,6 +30,12 @@ Easily manage Content Blocks.
 
 
 == Changelog ==
+
+= 1.3.0 =
+* Added filter for grav_is_viewable
+* Added ability for block icon and description
+* Added foundation 6 grid and flex grid option
+* Bug Fix - Media Block `add padding` checkbox did reverse of what it said
 
 = 1.2.1 =
 * Bug Fix - Memory Leak issue
