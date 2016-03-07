@@ -70,6 +70,9 @@ img {
   height: auto;
   -ms-interpolation-mode: bicubic;
 }
+.block-container .columns img {
+  width: 100%;
+}
 
 .is-visible {
   display: block !important; }

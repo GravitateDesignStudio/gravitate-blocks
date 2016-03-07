@@ -127,7 +127,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 		self::get_settings(true);
 		$setting = (!empty(self::$settings[$setting_type])) ? self::$settings[$setting_type] : false;
 		if($setting_key !== ''){
-			$setting = (!empty(self::$settings[$setting_type])) ? self::$settings[$setting_type][$setting_key] : false;
+			$setting = (!empty(self::$settings[$setting_type][$setting_key])) ? self::$settings[$setting_type][$setting_key] : false;
 		}
 		return $setting;
 	}

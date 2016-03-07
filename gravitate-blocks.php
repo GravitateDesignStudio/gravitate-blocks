@@ -751,8 +751,6 @@ class GRAV_BLOCKS {
      */
 	private static function get_settings_fields($location = 'general')
 	{
-		self::dump(GRAV_BLOCKS_PLUGIN_SETTINGS::get_setting_value('foundation', 0));
-		self::dump(self::$settings);
 		switch ($location)
 		{
 
