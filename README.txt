@@ -31,6 +31,9 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.3.1 =
+* Bug Fix - Fixed a display issue for the block background images
+
 = 1.3.0 =
 * Added filter for grav_is_viewable
 * Added ability for block icon and description

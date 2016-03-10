@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.2.1
+Version: 1.3.1
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -25,7 +25,7 @@ add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS
 class GRAV_BLOCKS {
 
 
-	private static $version = '1.2.1';
+	private static $version = '1.3.1';
 	private static $page = 'options-general.php?page=gravitate_blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
@@ -419,7 +419,7 @@ class GRAV_BLOCKS {
 					$block_class_prefix = 'block';
 					$block_name = strtolower(str_replace('_', '-', get_row_layout()));
 
-					$block_background = get_sub_field('block_background', $term);
+					$block_background = get_sub_field('block_background');
 
 					if(!empty(self::$settings['background_colors']))
 					{
@@ -434,9 +434,9 @@ class GRAV_BLOCKS {
 						}
 					}
 
-					$block_background_image = get_sub_field('block_background_image', $term);
+					$block_background_image = get_sub_field('block_background_image');
 
-					$block_background_style = (get_sub_field('block_background', $term) == 'block-bg-image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['sizes']['large'].'\');" ' : '');
+					$block_background_style = (get_sub_field('block_background') == 'block-bg-image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['sizes']['large'].'\');" ' : '');
 
 					include $handler_file;
 				}
