@@ -39,6 +39,7 @@ Easily manage Content Blocks.
 * Bug Fix - Fixed description display issue on call to action block
 * Bug Fix - Correct discrepancy between displays of testimonal and quote block (with update you no longer need to add quotes for either block)
 * Bug Fix - Resolved PHP Warnings
+* Bug Fix - Resolved order issue with block "Media with Content"
 
 = 1.3.1 =
 * Bug Fix - Fixed a display issue for the block background images

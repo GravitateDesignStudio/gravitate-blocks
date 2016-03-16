@@ -1,4 +1,7 @@
 <?php
+	$foundation_version = GRAV_BLOCKS::get_foundation_version();
+	$f6flex = (strpos($foundation_version, 'f6flex') === false) ? false: true;
+
 	$placement = get_sub_field('image_placement');
 	$col_width = get_sub_field('image_size');
 	$content = get_sub_field('content');
@@ -8,8 +11,8 @@
 	$bottom_classes = '';
 	$top_classes = '';
 	if($placement == 'right'){
-		$top_classes = GRAV_BLOCKS::css()->col_push(0, $col_content_width)->get().' medium-order-2';
-		$bottom_classes = GRAV_BLOCKS::css()->col_pull(0, $col_width)->get().' medium-order-1';
+		$top_classes = ($f6flex) ? ' medium-order-2' : GRAV_BLOCKS::css()->col_push(0, $col_content_width)->get();
+		$bottom_classes = ($f6flex) ? ' medium-order-1' : GRAV_BLOCKS::css()->col_pull(0, $col_width)->get();
 	}
 ?>
 <div class="block-inner">
