@@ -31,6 +31,14 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.4.0 =
+* Added filter for grav_get_css
+* Added filter for grav_block_content_columns
+* Added public variable for current block GRAV_BLOCKS::$current_block_name
+* Added classes for flexgrid ordering for media with content block
+* Bug Fix - Fixed description display issue on call to action block
+* Bug Fix - Correct discrepancy between displays of testimonal and quote block (with update you no longer need to add quotes for either block)
+
 = 1.3.1 =
 * Bug Fix - Fixed a display issue for the block background images
 

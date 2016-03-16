@@ -4,7 +4,7 @@ if($cols = get_sub_field('content_column'))
 {
 	$cols_count = count($cols);
 	$cols_span = (12/$cols_count);
-
+	$cols_span = apply_filters('grav_block_content_columns', $cols_span);
 	?>
 
 	<div class="block-inner">

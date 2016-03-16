@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.3.1
+Version: 1.4.0
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -25,11 +25,12 @@ add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS
 class GRAV_BLOCKS {
 
 
-	private static $version = '1.3.1';
+	private static $version = '1.4.0';
 	private static $page = 'options-general.php?page=gravitate_blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
 	private static $posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
+	public static $current_block_name = '';
 
 
 	public static function dump($var){
@@ -417,9 +418,10 @@ class GRAV_BLOCKS {
 				while(the_flexible_field($section, $term))
 				{
 					$block_class_prefix = 'block';
-					$block_name = strtolower(str_replace('_', '-', get_row_layout()));
+					self::$current_block_name = strtolower(str_replace('_', '-', get_row_layout()));
 
 					$block_background = get_sub_field('block_background');
+
 
 					if(!empty(self::$settings['background_colors']))
 					{
@@ -429,6 +431,10 @@ class GRAV_BLOCKS {
 
 							if(!empty($color_params['_repeater_id']) && $block_background === 'block-bg-'.$color_params['_repeater_id'] && $use_css_variable)
 							{
+								if(!GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'enqueue_css'))
+								{
+									$block_background = '';
+								}
 								$block_background.= ' '.$color_params['class'];
 							}
 						}
@@ -839,7 +845,7 @@ class GRAV_BLOCKS {
 	 *
 	 * @return
 	 */
-	function get_foundation_version()
+	public static function get_foundation_version()
 	{
 		$foundation_version = GRAV_BLOCKS_PLUGIN_SETTINGS::get_setting_value('foundation', 0);
 		return $foundation_version;
@@ -851,7 +857,7 @@ class GRAV_BLOCKS {
 	 *
 	 * @return
 	 */
-	function get_foundation_file_name()
+	public static function get_foundation_file_name()
 	{
 		$foundation_version = self::get_foundation_version();
 		switch ($foundation_version){
@@ -1146,6 +1152,41 @@ function your_function($is_viewable){
 }
 				</textarea>
 				<br><em>* Keep in mind you will still need to update the markup to accept the new settings</em>
+				</blockquote>
+			</li>
+			<li><h3>grav_get_css</h3>
+				This filters the css classes for each block.
+				<blockquote>
+				<label>Example 1: Adding a class only on the row of a certain block.</label>
+				<textarea class="grav-code-block">
+add_filter('grav_css_row', 'your_function', 10, 2);
+function your_function($css, $block_name){
+	if($block_name == 'content' && in_array('row', $css)){
+		$css[] = 'align-center';
+	}
+	return $css;
+}
+				</textarea>
+				</blockquote>
+			</li>
+			<li><h3>grav_block_content_columns</h3>
+				This filters the number of columns for the block "Content".
+				<blockquote>
+				<label>Example 1: Changing one column block to only take up 10 columns of the grid and two column block to only take up a total of 10 columns.</label>
+				<textarea class="grav-code-block">
+add_filter('grav_block_content_columns', 'your_function');
+function your_function($cols_span){
+	switch ($cols_span){
+		case 12:
+			$cols_span = 10;
+			break;
+		case 6:
+			$cols_span = 5;
+			break;
+	}
+	return $cols_span;
+}
+				</textarea>
 				</blockquote>
 			</li>
 			</ul>

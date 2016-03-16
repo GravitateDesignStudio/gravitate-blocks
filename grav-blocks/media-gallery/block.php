@@ -1,6 +1,8 @@
 <?php
 $foundation_version = GRAV_BLOCKS::get_foundation_version();
 $f6 = (strpos($foundation_version, 'f6') === false) ? false: true;
+$alt_title_location = get_sub_field('move_title');
+
 if($gallery_items = get_sub_field('gallery_items')){ ?>
 	<div class="block-inner">
 		<?php if($block_title = get_sub_field('gallery_title')){ ?>
@@ -20,10 +22,11 @@ if($gallery_items = get_sub_field('gallery_items')){ ?>
 					{
 						while(has_sub_field('gallery_items'))
 						{
-							$image = get_sub_field('item_image')
+							$image = get_sub_field('item_image');
+							$title = get_sub_field('item_title')
 							?>
 							<?php if($f6){ ?><div class="columns"><?php } else { ?><li><?php } ?>
-								<?php if($title = get_sub_field('item_title')){ ?>
+								<?php if($title && !$alt_title_location){ ?>
 									<h3><?php echo $title; ?></h3>
 								<?php } ?>
 								<?php if($link = GRAV_BLOCKS::get_link_url('link')){ ?>
@@ -34,6 +37,9 @@ if($gallery_items = get_sub_field('gallery_items')){ ?>
 									<?php } ?>
 								<?php if($link){ ?>
 									</a>
+								<?php } ?>
+								<?php if($title && $alt_title_location){ ?>
+									<h3><?php echo $title; ?></h3>
 								<?php } ?>
 								<?php if($content = get_sub_field('item_content')){ ?>
 									<p><?php echo $content; ?></p>

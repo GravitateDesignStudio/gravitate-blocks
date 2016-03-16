@@ -27,8 +27,11 @@ if(get_sub_field('testimonials'))
 									<?php } ?>
 								</div>
 								<div class="<?php echo GRAV_BLOCKS::css()->col(12, 10)->get();?>">
-									<p class="testimonial">“<?php the_sub_field('testimonial');?>”</p>
-									<span class="attribution"><?php the_sub_field('attribution');?></span>
+									<blockquote class="testimonial">&ldquo;<?php the_sub_field('testimonial');?>&rdquo;
+									<footer>
+										<cite><?php the_sub_field('attribution');?></cite>
+									<footer>
+									</blockquote>
 								</div>
 							</div>
 						</div>

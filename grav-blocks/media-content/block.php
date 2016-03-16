@@ -14,7 +14,7 @@
 ?>
 <div class="block-inner">
 	<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
-		<div class="<?php echo GRAV_BLOCKS::css()->col(0, $col_width)->get(); ?> <?php echo $top_classes; ?>">
+		<div class="col-image <?php echo GRAV_BLOCKS::css()->col(0, $col_width)->get(); ?> <?php echo $top_classes; ?>">
 			<?php if($link = GRAV_BLOCKS::get_link_url('link')){ ?>
 				<a class="block-link-<?php echo esc_attr(get_sub_field('link_type'));?>" href="<?php echo esc_url($link); ?>">
 			<?php } ?>
@@ -30,4 +30,3 @@
 		</div>
 	</div>
 </div>
-

@@ -221,7 +221,10 @@ class GRAV_BLOCKS_CSS {
 
 	public function get()
 	{
-		return implode(' ', $this->class);
+		$blocks_name = GRAV_BLOCKS::$current_block_name;
+		$classes = $this->class;
+		$classes = apply_filters('grav_get_css', $classes, $blocks_name);
+		return implode(' ', $classes);
 	}
 
 

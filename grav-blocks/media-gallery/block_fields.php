@@ -36,6 +36,15 @@ return array (
 			'maxlength' => '',
 		),
 		array (
+			'key' => 'field_'.$block.'_11',
+			'label' => 'Place Item Titles Below Image',
+			'name' => 'move_title',
+			'type' => 'true_false',
+			'instructions' => 'By default, individual gallery item titles show above their respective images.',
+			'message' => '',
+			'default_value' => 0,
+		),
+		array (
 			'key' => 'field_'.$block.'_2',
 			'label' => 'Gallery Items',
 			'name' => 'gallery_items',
