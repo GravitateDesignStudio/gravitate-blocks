@@ -7,7 +7,7 @@ if($cols = get_sub_field('content_column'))
 	$cols_span = apply_filters('grav_block_content_columns', $cols_span);
 	?>
 
-	<div class="block-inner">
+	<div class="block-inner num-col-<?php echo $cols_count; ?>">
 		<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 			<?php
 				if(have_rows('content_column'))
