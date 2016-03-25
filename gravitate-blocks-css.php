@@ -36,7 +36,8 @@ class GRAV_BLOCKS_CSS {
 
 		if($small && $small < 12)
 		{
-			$this->class[] = 'col-xs-'.$small.' small-'.$small;
+			$this->class[] = 'col-xs-'.$small;
+			$this->class[] = 'small-'.$small;
 		}
 		else
 		{
@@ -45,17 +46,20 @@ class GRAV_BLOCKS_CSS {
 
 		if($med && $med < 12)
 		{
-			$this->class[] = 'col-sm-'.$med.' medium-'.$med;
+			$this->class[] = 'col-sm-'.$med;
+			$this->class[] = 'medium-'.$med;
 		}
 
 		if($large && $large < 12)
 		{
-			$this->class[] = 'col-md-'.$large.' large-'.$large;
+			$this->class[] = 'col-md-'.$large;
+			$this->class[] = 'large-'.$large;
 		}
 
 		if($xlarge && $xlarge < 12)
 		{
-			$this->class[] = 'col-lg-'.$xlarge.' xlarge-'.$xlarge;
+			$this->class[] = 'col-lg-'.$xlarge;
+			$this->class[] = 'xlarge-'.$xlarge;
 		}
 
 		return $this;
@@ -65,22 +69,26 @@ class GRAV_BLOCKS_CSS {
 	{
 		if($small && $small < 12)
 		{
-			$this->class[] = 'col-xs-offset-'.$small.' small-offset-'.$small;
+			$this->class[] = 'col-xs-offset-'.$small;
+			$this->class[] = 'small-offset-'.$small;
 		}
 
 		if($med && $med < 12)
 		{
-			$this->class[] = 'col-sm-offset-'.$med.' medium-offset-'.$med;
+			$this->class[] = 'col-sm-offset-'.$med;
+			$this->class[] = 'medium-offset-'.$med;
 		}
 
 		if($large && $large < 12)
 		{
-			$this->class[] = 'col-md-offset-'.$large.' large-offset-'.$large;
+			$this->class[] = 'col-md-offset-'.$large;
+			$this->class[] = 'large-offset-'.$large;
 		}
 
 		if($xlarge && $xlarge < 12)
 		{
-			$this->class[] = 'col-lg-offset-'.$xlarge.' xlarge-offset-'.$xlarge;
+			$this->class[] = 'col-lg-offset-'.$xlarge;
+			$this->class[] = 'xlarge-offset-'.$xlarge;
 		}
 
 		return $this;
@@ -90,22 +98,26 @@ class GRAV_BLOCKS_CSS {
 	{
 		if($small && $small < 12)
 		{
-			$this->class[] = 'col-xs-push-'.$small.' small-push-'.$small;
+			$this->class[] = 'col-xs-push-'.$small;
+			$this->class[] = 'small-push-'.$small;
 		}
 
 		if($med && $med < 12)
 		{
-			$this->class[] = 'col-sm-push-'.$med.' medium-push-'.$med;
+			$this->class[] = 'col-sm-push-'.$med;
+			$this->class[] = 'medium-push-'.$med;
 		}
 
 		if($large && $large < 12)
 		{
-			$this->class[] = 'col-md-push-'.$large.' large-push-'.$large;
+			$this->class[] = 'col-md-push-'.$large;
+			$this->class[] = 'large-push-'.$large;
 		}
 
 		if($xlarge && $xlarge < 12)
 		{
-			$this->class[] = 'col-lg-push-'.$xlarge.' xlarge-push-'.$xlarge;
+			$this->class[] = 'col-lg-push-'.$xlarge;
+			$this->class[] = 'xlarge-push-'.$xlarge;
 		}
 
 		return $this;
@@ -115,22 +127,26 @@ class GRAV_BLOCKS_CSS {
 	{
 		if($small && $small < 12)
 		{
-			$this->class[] = 'col-xs-pull-'.$small.' small-pull-'.$small;
+			$this->class[] = 'col-xs-pull-'.$small;
+			$this->class[] = 'small-pull-'.$small;
 		}
 
 		if($med && $med < 12)
 		{
-			$this->class[] = 'col-sm-pull-'.$med.' medium-pull-'.$med;
+			$this->class[] = 'col-sm-pull-'.$med;
+			$this->class[] = 'medium-pull-'.$med;
 		}
 
 		if($large && $large < 12)
 		{
-			$this->class[] = 'col-md-pull-'.$large.' large-pull-'.$large;
+			$this->class[] = 'col-md-pull-'.$large;
+			$this->class[] = 'large-pull-'.$large;
 		}
 
 		if($xlarge && $xlarge < 12)
 		{
-			$this->class[] = 'col-lg-pull-'.$xlarge.' xlarge-pull-'.$xlarge;
+			$this->class[] = 'col-lg-pull-'.$xlarge;
+			$this->class[] = 'xlarge-pull-'.$xlarge;
 		}
 
 		return $this;
@@ -141,17 +157,20 @@ class GRAV_BLOCKS_CSS {
 
 		if($small && $small <= 4)
 		{
-			$this->class[] = 'small-block-grid-'.$small.' small-up-'.$small;
+			$this->class[] = 'small-block-grid-'.$small;
+			$this->class[] = 'small-up-'.$small;
 		}
 
 		if($med && $med <= 4)
 		{
-			$this->class[] = 'medium-block-grid-'.$med.' medium-up-'.$med;
+			$this->class[] = 'medium-block-grid-'.$med;
+			$this->class[] = 'medium-up-'.$med;
 		}
 
 		if($large && $large <= 4)
 		{
-			$this->class[] = 'large-block-grid-'.$large.' large-up-'.$large;
+			$this->class[] = 'large-block-grid-'.$large;
+			$this->class[] = 'large-up-'.$large;
 		}
 
 		// if($xlarge && $xlarge <= 4)
@@ -189,7 +208,8 @@ class GRAV_BLOCKS_CSS {
 		{
 			if($size['value'])
 			{
-				$this->class[] = 'center-block '.$size['name'].'-centered';
+				$this->class[] = 'center-block';
+				$this->class[] = $size['name'].'-centered';
 			}
 		}
 
@@ -209,7 +229,8 @@ class GRAV_BLOCKS_CSS {
 		{
 			if($size['value'])
 			{
-				$this->class[] = 'center-block '.$size['name'].'-uncentered';
+				$this->class[] = 'center-block';
+				$this->class[] = $size['name'].'-uncentered';
 			}
 		}
 
