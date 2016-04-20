@@ -31,13 +31,22 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.5.0 =
+* Added filter grav_block_background_colors
+* Added filter grav_hide_on_screen
+* Added filter grav_column_widths
+* Added filter grav_block_mediacontent_columns
+* Link fields now required after choosing a link type.
+* Added ability to remove the WordPress Content box from Gravitate Block enabled areas
+* Bug Fix - Display issue for custom blocks with a description
+
 = 1.4.0 =
 * Added filter for grav_get_css
 * Added filter for grav_block_content_columns
 * Added public variable for current block GRAV_BLOCKS::$current_block_name
 * Added classes for flexgrid ordering for media with content block
 * Bug Fix - Fixed description display issue on call to action block
-* Bug Fix - Correct discrepancy between displays of testimonal and quote block (with update you no longer need to add quotes for either block)
+* Bug Fix - Correct discrepancy between displays of testimonial and quote block (with update you no longer need to add quotes for either block)
 * Bug Fix - Resolved PHP Warnings
 * Bug Fix - Resolved order issue with block "Media with Content"
 

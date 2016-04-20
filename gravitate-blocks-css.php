@@ -237,7 +237,14 @@ class GRAV_BLOCKS_CSS {
 		return $this;
 	}
 
+	public function add($classes){
+		$classes = (!is_array($classes)) ? explode(',', str_replace(' ', '', trim($classes))) : $classes;
+		foreach($classes as $class){
+			$this->class[] = $class;
+		}
 
+		return $this;
+	}
 
 
 	public function get()

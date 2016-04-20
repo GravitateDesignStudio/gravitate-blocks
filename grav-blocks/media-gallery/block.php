@@ -3,8 +3,10 @@ $foundation_version = GRAV_BLOCKS::get_foundation_version();
 $f6 = (strpos($foundation_version, 'f6') === false) ? false: true;
 $alt_title_location = get_sub_field('move_title');
 
+$unique_id = ($uid = get_sub_field('unique_id')) ? 'id='.sanitize_title($uid).'' : '';
+
 if($gallery_items = get_sub_field('gallery_items')){ ?>
-	<div class="block-inner">
+	<div <?php echo esc_attr($unique_id); ?> class="block-inner">
 		<?php if($block_title = get_sub_field('gallery_title')){ ?>
 			<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 				<div class="<?php echo GRAV_BLOCKS::css()->col()->get();?>">

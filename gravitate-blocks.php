@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.4.0
+Version: 1.5.0
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -105,7 +105,7 @@ class GRAV_BLOCKS {
 			}
 		}
 		$block_background_colors['block-bg-image'] = 'Image';
-
+		$block_background_colors = apply_filters( 'grav_block_background_colors', $block_background_colors );
 
 		/**
 		 *  Include Blocks in Flexible Content
@@ -168,6 +168,8 @@ class GRAV_BLOCKS {
 			// Filter the Fields from developers
 			$layouts = apply_filters( 'grav_block_fields', $layouts );
 
+			$placement = (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'after_title')) ? 'acf_after_title' : 'normal';
+
 			acf_add_local_field_group(array (
 				'key' => 'group_grav_blocks',
 				'title' => 'Grav Blocks',
@@ -185,16 +187,25 @@ class GRAV_BLOCKS {
 				),
 				'location' => self::get_locations(),
 				'menu_order' => 100,
-				'position' => 'normal',
+				'position' => $placement,
 				'style' => 'no_box',
 				'label_placement' => 'top',
 				'instruction_placement' => 'label',
-				'hide_on_screen' => '',
+				'hide_on_screen' => self::hide_on_screen(),
 				'active' => 1,
 				'description' => '',
 			));
 		}
 
+	}
+
+	public static function hide_on_screen(){
+		$hidden = array();
+		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'hide_content')){
+			$hidden[0] = 'the_content';
+		}
+		$hidden = apply_filters( 'grav_hide_on_screen', $hidden );
+		return $hidden;
 	}
 
 	public static function css()
@@ -650,7 +661,7 @@ class GRAV_BLOCKS {
 			    {
 			    	$fields = include($dir.'/block_fields.php');
 			    	$label = (!empty($fields['label'])) ? $fields['label'] : $block;
-					$blocks[$block] = array('label' => $label . ' <span class="extra-info">( Custom )</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'));
+					$blocks[$block] = array('label' => $label . ' <span class="extra-info" title="Custom Block" alt="custom">*</span>', 'path' => $dir, 'group' => (!empty($fields['grav_blocks_settings']['group']) ? $fields['grav_blocks_settings']['group'] : 'theme'));
 				}
 			}
 		}
@@ -764,13 +775,15 @@ class GRAV_BLOCKS {
 				$advanced_options = array(
 					'filter_content' => 'Gravitate Blocks will be added to the end of your content. <span class="extra-info">( Using "the_content" filter )</span>',
 					'enqueue_scripts' => 'Add necessary jQuery plugins. <span class="extra-info">( adds Cycle2 and Colorbox scripts for sliders and lightbox )</span>',
+					'after_title' => 'Place Gravitate Blocks directly after the title in the WordPress admin. <span class="extra-info">( changes position using acf_after_title )</span>',
+					'hide_content' => 'Remove the WordPress content box from Gravitate Blocks enabled pages. <span class="extra-info">( if content has already been entered it may still show on the front end of the website. )</span>',
 				);
 				$css_options = array(
 					'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
 					'disable_colorpicker' => 'Disable color picker ( Use this to force your own css class names ).',
 					'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
 					'use_default' => 'Use the default Gravitate Blocks CSS. <span class="extra-info">( Affects padding and some basic styling. )</span>',
-					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/">Foundation</a> CSS grid.',
+					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/">Foundation</a> CSS grid. <span class="extra-info">( This will add the foundation CSS file to your site. )</span>',
 				);
 				$foundation_options = array(
 					'f5' => '<a href="http://foundation.zurb.com/sites/docs/v/5.5.3/" target="_blank">5.5.3</a>',
@@ -982,217 +995,7 @@ class GRAV_BLOCKS {
 
 	private static function developers()
 	{
-		?>
-		<div class="grav-blocks-developers">
-			<h2>Placing the blocks in your theme</h2>
-			<h4>There are 2 ways to include Gravitate Blocks in your theme:</h4>
-				<ul>
-					<li>By default the blocks will be filtered into "the_content()".  However, you can disable that in the <a href="options-general.php?page=gravitate_blocks&section=advanced">Advanced Tab</a>.</li>
-					<li>
-						You can use the function to manually include them in your theme.
-						<br><span class="grav-code-block"> &lt;?php GRAV_BLOCKS::display(); ?&gt;</span>
-					</li>
-				</ul>
-
-			<h2>Modifying Blocks</h2>
-			<h4>There are a few options to modify an existing block.</h4>
-				<ul>
-					<li>You can copy the block from:
-						<br><span class="grav-code-block">wp-content/plugins/gravitate-blocks/grav-blocks</span>
-						<br>and paste it in:
-						<br><span class="grav-code-block">wp-content/themes/your-theme-folder/grav-blocks</span>
-						<br><em>* This is not ideal as updates will not be applied to those blocks</em>
-					</li>
-					<li>You can Modify the Block by using the Hooks and Filters below (Recommended)</li>
-				</ul>
-
-			<h2>Adding your own blocks</h2>
-			<h4>There are a few options for adding your own blocks.</h4>
-				<ul>
-					<li>You can create your own WP plugin to include your own blocks—this feature uses the "grav_blocks" filter below.</li>
-					<li>You can create a block folder in:
-						<br><span class="grav-code-block">wp-content/themes/your-theme-folder/grav-blocks</span>
-					</li>
-					<li>You can use the "grav_blocks" filter below in your functions.php file.</li>
-				</ul>
-
-			<h2>Hooks and Filters</h2>
-			<ul>
-			<li>
-				<h3>grav_blocks</h3>
-				This filters through the available blocks.
-				<blockquote>
-				<label>Example 1: Adding Your Own</label>
-				<textarea class="grav-code-block">
-add_filter( 'grav_blocks', 'your_function' );
-function your_function($blocks)
-{
-	$blocks['my_block'] = array('label' => 'My Block', 'path' => 'path/to/your/block/folder/my_block', 'group' => 'Custom');
-	return $blocks;
-}
-				</textarea>
-				</blockquote>
-				<blockquote>
-				<label>Example 2: Removing A Block</label>
-				<textarea class="grav-code-block">
-add_filter( 'grav_blocks', 'your_function' );
-function your_function($blocks)
-{
-	unset($blocks['html']);
-	return $blocks;
-}
-				</textarea>
-				</blockquote>
-			</li>
-			<li><h3>grav_block_locations</h3>
-				This filters through the locations to allow Gravitate Blocks.
-				<blockquote>
-				<label>Example 1: Adding a Location to Events where the ID is not 14</label>
-				<textarea class="grav-code-block">
-add_filter( 'grav_block_locations', 'your_function' );
-function your_function($locations)
-{
-	$locations[] = array(
-						array(
-							'param' => 'post_type',
-                    		'operator' => '==',
-                    		'value' => 'events'
-                    	),
-                    	array(
-							'param' => 'post',
-                    		'operator' => '!=',
-                    		'value' => '14'
-                    	)
-					);
-
-	return $locations;
-}
-				</textarea>
-				</blockquote>
-				<blockquote>
-				<label>Example 2: Adding a Location to the Category Taxonomy</label>
-				<textarea class="grav-code-block">
-add_filter( 'grav_block_locations', 'your_function' );
-function your_function($locations)
-{
-	$locations[] = array(
-						array(
-							'param' => 'taxonomy',
-                    		'operator' => '==',
-                    		'value' => 'category'
-                    	)
-					);
-
-	return $locations;
-}
-				</textarea>
-				</blockquote>
-			</li>
-			<li><h3>grav_block_fields</h3>
-				This filters through the fields for each block.
-				<blockquote>
-				<label>Example 1: Removing the Attribution option for the Quote Block </label>
-				<textarea class="grav-code-block">
-add_filter( 'grav_block_fields', 'your_function' );
-function your_function($fields)
-{
-	if(!empty($fields['quote']['sub_fields']))
-	{
-		foreach ($fields['quote']['sub_fields'] as $key => $field)
-		{
-			if($field['name'] === 'attribution')
-			{
-				unset($fields['quote']['sub_fields'][$key]);
-			}
-		}
-	}
-
-	return $fields;
-}
-				</textarea>
-				</blockquote>
-				<blockquote>
-				<label>Example 2: Adding an Image to the Quote Block </label>
-				<textarea class="grav-code-block">
-add_filter( 'grav_block_fields', 'your_function' );
-function your_function($fields)
-{
-	if(!empty($fields['quote']['sub_fields']))
-	{
-		$fields['quote']['sub_fields'][] = array(
-			'key' => 'field_quote_image',
-			'label' => 'Image',
-			'name' => 'quote_image',
-			'instructions' => 'Image should be 120x120px',
-			'type' => 'image',
-			'column_width' => '',
-			'save_format' => 'object',		// url | object | id
-			'library' => 'all',				// all | uploadedTo
-			'preview_size' => 'medium',
-		);
-	}
-
-	return $fields;
-}
-				</textarea>
-				<br><em>* Keep in mind you will still need to update the markup to accept the new settings</em>
-				</blockquote>
-			</li>
-			<li><h3>grav_is_viewable</h3>
-				This filters the viewable areas for all blocks.
-				<blockquote>
-				<label>Example 1: Adding blocks to a taxonomy term page.</label>
-				<textarea class="grav-code-block">
-add_filter('grav_is_viewable', 'your_function');
-function your_function($is_viewable){
-    if(is_tax('product_categories')){
-        return true;
-    }
-    return $is_viewable;
-}
-				</textarea>
-				<br><em>* Keep in mind you will still need to update the markup to accept the new settings</em>
-				</blockquote>
-			</li>
-			<li><h3>grav_get_css</h3>
-				This filters the css classes for each block.
-				<blockquote>
-				<label>Example 1: Adding a class only on the row of a certain block.</label>
-				<textarea class="grav-code-block">
-add_filter('grav_css_row', 'your_function', 10, 2);
-function your_function($css, $block_name){
-	if($block_name == 'content' && in_array('row', $css)){
-		$css[] = 'align-center';
-	}
-	return $css;
-}
-				</textarea>
-				</blockquote>
-			</li>
-			<li><h3>grav_block_content_columns</h3>
-				This filters the number of columns for the block "Content".
-				<blockquote>
-				<label>Example 1: Changing one column block to only take up 10 columns of the grid and two column block to only take up a total of 10 columns.</label>
-				<textarea class="grav-code-block">
-add_filter('grav_block_content_columns', 'your_function');
-function your_function($cols_span){
-	switch ($cols_span){
-		case 12:
-			$cols_span = 10;
-			break;
-		case 6:
-			$cols_span = 5;
-			break;
-	}
-	return $cols_span;
-}
-				</textarea>
-				</blockquote>
-			</li>
-			</ul>
-		</div>
-		<?php
-
+		include_once('library/includes/developer.php');
 	}
 
 	/**
@@ -1568,6 +1371,7 @@ function your_function($cols_span){
 				'label' => $label_title.' Text',
 				'name' => $label_sanitized.'_text',
 				'type' => 'text',
+				'required' => 1,
 				'conditional_logic' => array (
 					'status' => 1,
 					'rules' => array (
@@ -1596,6 +1400,7 @@ function your_function($cols_span){
 				'label' => $allowed_fields['url'],
 				'name' => $label_sanitized.'_url',
 				'type' => 'text',
+				'required' => 1,
 				'conditional_logic' => array (
 					'status' => 1,
 					'rules' => array (
@@ -1624,6 +1429,7 @@ function your_function($cols_span){
 				'label' => $allowed_fields['page'],
 				'name' => $label_sanitized.'_page',
 				'type' => 'page_link',
+				'required' => 1,
 				'conditional_logic' => array (
 					'status' => 1,
 					'rules' => array (
@@ -1651,6 +1457,7 @@ function your_function($cols_span){
 				'label' => $allowed_fields['file'],
 				'name' => $label_sanitized.'_file',
 				'type' => 'file',
+				'required' => 1,
 				'conditional_logic' => array (
 					'status' => 1,
 					'rules' => array (
@@ -1675,6 +1482,7 @@ function your_function($cols_span){
 				'label' => $allowed_fields['video'],
 				'name' => $label_sanitized.'_video',
 				'type' => 'text',
+				'required' => 1,
 				'instructions' => 'This works for Vimeo or Youtube. Just paste in the url to the video you want to show.',
 				'conditional_logic' => array (
 					'status' => 1,
