@@ -7,12 +7,21 @@ GRAV_BLOCKS::$current_block_name
 $block_class_prefix
 $block_background
 $block_background_style
+$block_index
+$unique_id = if activated
 
 */
+$classes = array(
+	$block_class_prefix.'-container',
+	$block_class_prefix.'-'.GRAV_BLOCKS::$current_block_name,
+	$block_background,
+	'block-index-'.$block_index,
+);
+$block_style_attr = apply_filters( 'grav_block_background_style', $block_background_style );
 ?>
 
 
-<section class="<?php echo $block_class_prefix;?>-container <?php echo $block_class_prefix;?>-<?php echo GRAV_BLOCKS::$current_block_name;?> <?php echo $block_background;?>" <?php echo $block_background_style;?>>
+<section <?php echo esc_attr($unique_id); ?> class="<?php echo GRAV_BLOCKS::css()->add($classes)->get(); ?>" <?php if($block_style_attr){ echo ' style="'.$block_style_attr.'"'; }?>>
 
 	<?php GRAV_BLOCKS::get_block(GRAV_BLOCKS::$current_block_name); ?>
 

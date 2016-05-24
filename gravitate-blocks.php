@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.5.0
+Version: 1.6.0
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -25,7 +25,7 @@ add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS
 class GRAV_BLOCKS {
 
 
-	private static $version = '1.4.0';
+	private static $version = '1.6.0';
 	private static $page = 'options-general.php?page=gravitate_blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
@@ -197,6 +197,29 @@ class GRAV_BLOCKS {
 			));
 		}
 
+	}
+
+	public static function get_additional_fields(){
+		global $block;
+		$additional_fields = array();
+		$unique_id_field = array (
+			'key' => 'field_'.$block.'_unique_id',
+			'label' => 'Unique ID',
+			'name' => 'unique_id',
+			'type' => 'text',
+			'column_width' => '',
+			'default_value' => '',
+			'instructions' => '',
+			'placeholder' => '',
+			'prepend' => '',
+			'append' => '',
+			'formatting' => 'none', 		// none | html
+			'maxlength' => '',
+		);
+		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_unique_id')){
+			$additional_fields[] = $unique_id_field;
+		}
+		return $additional_fields;
 	}
 
 	public static function hide_on_screen(){
@@ -422,13 +445,15 @@ class GRAV_BLOCKS {
 		{
 
 			$handler_file = self::get_path('handler.php');
-
+			$block_index = 0;
 			if($handler_file && get_field($section, $term))
 			{
 
 				while(the_flexible_field($section, $term))
 				{
+					$block_index++;
 					$block_class_prefix = 'block';
+					$unique_id = (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_unique_id') && $uid = get_sub_field('unique_id')) ? 'id='.sanitize_title($uid).'' : '';
 					self::$current_block_name = strtolower(str_replace('_', '-', get_row_layout()));
 
 					$block_background = get_sub_field('block_background');
@@ -453,7 +478,7 @@ class GRAV_BLOCKS {
 
 					$block_background_image = get_sub_field('block_background_image');
 
-					$block_background_style = (get_sub_field('block_background') == 'block-bg-image' && $block_background_image ? ' style="background-image: url(\''.$block_background_image['sizes']['large'].'\');" ' : '');
+					$block_background_style = (get_sub_field('block_background') == 'block-bg-image' && $block_background_image ? ' background-image: url(\''.$block_background_image['url'].'\'); ' : '');
 
 					include $handler_file;
 				}
@@ -777,6 +802,7 @@ class GRAV_BLOCKS {
 					'enqueue_scripts' => 'Add necessary jQuery plugins. <span class="extra-info">( adds Cycle2 and Colorbox scripts for sliders and lightbox )</span>',
 					'after_title' => 'Place Gravitate Blocks directly after the title in the WordPress admin. <span class="extra-info">( changes position using acf_after_title )</span>',
 					'hide_content' => 'Remove the WordPress content box from Gravitate Blocks enabled pages. <span class="extra-info">( if content has already been entered it may still show on the front end of the website. )</span>',
+					'add_unique_id' => 'Add a field for a unique id for each block. <span class="extra-info">( This allows you to use the #unique-id in a url to anchor to a specific spot on a page. )</span>',
 				);
 				$css_options = array(
 					'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
@@ -917,7 +943,7 @@ class GRAV_BLOCKS {
 		<?php add_thickbox(); ?>
 		<div class="wrap grav-blocks">
 			<header>
-				<h1><img itemprop="logo" src="http://www.gravitatedesign.com/wp-content/themes/gravtheme/library/images/grav_logo.png" alt="Gravitate"> Blocks</h1>
+				<h1><img itemprop="logo" src="//uploads.gravitatedesign.com/2016/03/27080812/grav_logo.png" alt="Gravitate"> Blocks</h1>
 			</header>
 			<main>
 			<h4 class="blocks-version">Version <?php echo self::$version;?></h4>
@@ -1322,7 +1348,7 @@ class GRAV_BLOCKS {
 	 * @author GG & BF
 	 *
 	 **/
-	public static function get_link_fields($label = 'link', $includes = array(), $show_text = true)
+	public static function get_link_fields($label = 'link', $includes = array(), $show_text = true, $post_types = array(0 => 'all'))
 	{
 		global $block;
 
@@ -1442,9 +1468,7 @@ class GRAV_BLOCKS {
 					'allorany' => 'all',
 				),
 				'column_width' => '',
-				'post_type' => array (
-					0 => 'all',
-				),
+				'post_type' => $post_types,
 				'allow_null' => 0,
 				'multiple' => 0,
 			);

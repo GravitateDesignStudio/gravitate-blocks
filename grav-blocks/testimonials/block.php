@@ -1,9 +1,8 @@
 <?php
 if(get_sub_field('testimonials'))
 {
-	$unique_id = ($uid = get_sub_field('unique_id')) ? 'id='.sanitize_title($uid).'' : '';
 	?>
-	<div <?php echo esc_attr($unique_id); ?> class="block-inner">
+	<div class="block-inner">
 		<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 			<div class="<?php echo GRAV_BLOCKS::css()->col()->get();?>">
 				<div class="cycle-slideshow"
@@ -30,7 +29,7 @@ if(get_sub_field('testimonials'))
 									<blockquote class="testimonial">&ldquo;<?php the_sub_field('testimonial');?>&rdquo;
 									<footer>
 										<cite><?php the_sub_field('attribution');?></cite>
-									<footer>
+									</footer>
 									</blockquote>
 								</div>
 							</div>

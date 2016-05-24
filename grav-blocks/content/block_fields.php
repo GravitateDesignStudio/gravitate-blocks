@@ -14,41 +14,42 @@
 */
 
 $plugins_url = plugins_url();
-
+$block_fields = array(
+	$block_backgrounds,
+	$block_background_image,
+	array (
+		'key' => 'field_'.$block.'_1',
+		'label' => 'Content Columns',
+		'name' => 'content_column',
+		'type' => 'repeater',
+		'column_width' => '',
+		'sub_fields' => array (
+			array (
+				'key' => 'field_'.$block.'_2',
+				'label' => 'Column',
+				'name' => 'column',
+				'type' => 'wysiwyg',
+				'column_width' => '',
+				'default_value' => '',
+				'tabs' => 'all',
+				'toolbar' => 'full',
+				'media_upload' => 'yes',
+			),
+		),
+		'min' => '',
+		'max' => '3',
+		'layout' => 'block',
+		'button_label' => 'Add Column',
+	),
+);
+$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 return array (
 	'label' => 'Content',
 	'name' => $block,
 	'display' => 'block',
 	'min' => '',
 	'max' => '',
-	'sub_fields' => array (
-		$block_backgrounds,
-		$block_background_image,
-		array (
-			'key' => 'field_'.$block.'_1',
-			'label' => 'Content Columns',
-			'name' => 'content_column',
-			'type' => 'repeater',
-			'column_width' => '',
-			'sub_fields' => array (
-				array (
-					'key' => 'field_'.$block.'_2',
-					'label' => 'Column',
-					'name' => 'column',
-					'type' => 'wysiwyg',
-					'column_width' => '',
-					'default_value' => '',
-					'tabs' => 'all',
-					'toolbar' => 'full',
-					'media_upload' => 'yes',
-				),
-			),
-			'min' => '',
-			'max' => '3',
-			'layout' => 'block',
-			'button_label' => 'Add Column',
-		),
-	),
+	'sub_fields' => $sub_fields,
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-content-1col',
 		'description' => '<div class="row"><div class="columns medium-6"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_1.svg"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_2.svg"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_3.svg"></div><div class="columns medium-6"><p>Our most basic block. This block allows for the use of one, two or three columns of WordPress WYSIWYGs ( What You See Is What You Get ). The WYSIWYG allows you to add most of the basic types of content from images, to paragraph text as well as H1 – H6 headings. You can also create ordered and unordered lists as well as do type treatments like <strong>bold</strong> and <em>italic</em>.</p>

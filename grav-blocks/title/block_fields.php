@@ -13,6 +13,45 @@
 *
 */
 
+$block_fields = array(
+	$block_backgrounds,
+	$block_background_image,
+	array (
+		'key' => 'field_'.$block.'_1',
+		'label' => 'Title',
+		'name' => 'title',
+		'type' => 'text',
+		'column_width' => '',
+		'default_value' => '',
+		'placeholder' => '',
+		'prepend' => '',
+		'append' => '',
+		'formatting' => 'none',
+		'maxlength' => '',
+	),
+	array (
+		'key' => 'field_'.$block.'_2',
+		'label' => 'Sub Title',
+		'name' => 'sub-title',
+		'type' => 'text',
+		'column_width' => '',
+		'default_value' => '',
+		'placeholder' => '',
+		'prepend' => '',
+		'append' => '',
+		'formatting' => 'none',
+		'maxlength' => '',
+	),
+	array (
+		'key' => 'field_'.$block.'_3',
+		'label' => 'Center Text',
+		'name' => 'center',
+		'type' => 'true_false',
+		'message' => '',
+		'default_value' => 0,
+	),
+);
+$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 
 return array (
 	'label' => 'Title',
@@ -20,44 +59,7 @@ return array (
 	'display' => 'row',
 	'min' => '',
 	'max' => '',
-	'sub_fields' => array (
-		$block_backgrounds,
-		$block_background_image,
-		array (
-			'key' => 'field_'.$block.'_1',
-			'label' => 'Title',
-			'name' => 'title',
-			'type' => 'text',
-			'column_width' => '',
-			'default_value' => '',
-			'placeholder' => '',
-			'prepend' => '',
-			'append' => '',
-			'formatting' => 'none',
-			'maxlength' => '',
-		),
-		array (
-			'key' => 'field_'.$block.'_2',
-			'label' => 'Sub Title',
-			'name' => 'sub-title',
-			'type' => 'text',
-			'column_width' => '',
-			'default_value' => '',
-			'placeholder' => '',
-			'prepend' => '',
-			'append' => '',
-			'formatting' => 'none',
-			'maxlength' => '',
-		),
-		array (
-			'key' => 'field_'.$block.'_3',
-			'label' => 'Center Text',
-			'name' => 'center',
-			'type' => 'true_false',
-			'message' => '',
-			'default_value' => 0,
-		),
-	),
+	'sub_fields' => $sub_fields,
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-title',
 		'description' => '<div class="row">

@@ -266,5 +266,34 @@ function your_function($col_total, $col_width, $placement){
         </textarea>
         </blockquote>
     </li>
+    <li><h3>grav_block_background_colors</h3>
+        This filters options for the block background colors.
+        <blockquote>
+        <label>Example 1: Remove the option for a background of none.</label>
+        <textarea class="grav-code-block">
+add_filter('grav_block_background_colors', 'your_function');
+function your_function($block_background_colors){
+    unset($block_background_colors['block-bg-none']);
+    return $block_background_colors;
+}
+        </textarea>
+        </blockquote>
+    </li>
+    <li><h3>grav_block_background_style</h3>
+        This filters options for the block background style.
+        <blockquote>
+        <label>Example 1: Adding a color picker option for background colors.</label>
+        <textarea class="grav-code-block">
+add_filter('grav_block_background_style', 'your_function');
+function your_function($block_background_style){
+    $bg_option = get_sub_field('block_background');
+    if($bg_option == 'picker' &amp;&amp; $color = get_sub_field('block_color_picker')){
+        $block_background_style = $block_background_style.'background-color:'.$color.';';
+    }
+    return $block_background_style;
+}
+        </textarea>
+        </blockquote>
+    </li>
     </ul>
 </div>

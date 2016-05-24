@@ -2,7 +2,7 @@
 Contributors: Gravitate, bferdinand
 Tags: Gravitate, Content Blocks, ACF, Advanced Custom Fields
 Requires at least: 3.5
-Tested up to: 4.4.2
+Tested up to: 4.5.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,6 +30,13 @@ Easily manage Content Blocks.
 
 
 == Changelog ==
+
+= 1.6.0 =
+* Added filter grav_block_background_colors
+* Added filter grav_block_background_style
+* Added option for unique IDs for each block
+* Updated sub field setup for blocks
+* Updated block handler to use CSS method which is filterable
 
 = 1.5.0 =
 * Added filter grav_block_background_colors
