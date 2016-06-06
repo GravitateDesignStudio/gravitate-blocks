@@ -15,7 +15,7 @@ $classes = array(
 	$block_class_prefix.'-container',
 	$block_class_prefix.'-'.GRAV_BLOCKS::$current_block_name,
 	$block_background,
-	'block-index-'.$block_index,
+	'block-index-'.GRAV_BLOCKS::$block_index,
 );
 $block_style_attr = apply_filters( 'grav_block_background_style', $block_background_style );
 ?>

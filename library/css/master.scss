@@ -11,7 +11,8 @@ $gray-lighter : #dedede;
 $gray-lightest : #F9F9F9;
 $wp-media-query : 783px;
 
-.settings_page_gravitate_blocks {
+.settings_page_gravitate_blocks,
+.toplevel_page_gravitate-blocks {
 	.wrap {
 		* {
 			-webkit-font-smoothing: antialiased;

@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.6.0
+Version: 1.6.1
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -25,12 +25,14 @@ add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS
 class GRAV_BLOCKS {
 
 
-	private static $version = '1.6.0';
-	private static $page = 'options-general.php?page=gravitate_blocks';
+	private static $version = '1.6.1';
+	private static $page = 'admin.php?page=gravitate-blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
 	private static $posts_to_exclude = array('attachment', 'revision', 'nav_menu_item', 'acf-field-group', 'acf-field');
 	public static $current_block_name = '';
+	public static $block_index = 0;
+	private static $registered_sections = array(array());
 
 
 	public static function dump($var){
@@ -170,7 +172,7 @@ class GRAV_BLOCKS {
 
 			$placement = (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'after_title')) ? 'acf_after_title' : 'normal';
 
-			acf_add_local_field_group(array (
+			$sections = array (
 				'key' => 'group_grav_blocks',
 				'title' => 'Grav Blocks',
 				'fields' => array (
@@ -194,7 +196,9 @@ class GRAV_BLOCKS {
 				'hide_on_screen' => self::hide_on_screen(),
 				'active' => 1,
 				'description' => '',
-			));
+			);
+			$sections = apply_filters('grav_default_section', $sections);
+			acf_add_local_field_group($sections);
 		}
 
 	}
@@ -216,7 +220,7 @@ class GRAV_BLOCKS {
 			'formatting' => 'none', 		// none | html
 			'maxlength' => '',
 		);
-		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_unique_id')){
+		if(class_exists('GRAV_BLOCKS_PLUGIN_SETTINGS') && GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_unique_id')){
 			$additional_fields[] = $unique_id_field;
 		}
 		return $additional_fields;
@@ -377,7 +381,8 @@ class GRAV_BLOCKS {
 	 */
 	public static function admin_menu()
 	{
-		add_submenu_page( 'options-general.php', 'Gravitate Blocks', 'Gravitate Blocks', 'manage_options', 'gravitate_blocks', array( __CLASS__, 'admin' ));
+		$icon = file_get_contents(plugin_dir_path( __FILE__ ) . 'grav-blocks/content/content_2.svg');
+		add_menu_page( 'Gravitate Blocks', 'Gravitate Blocks', 'manage_options', 'gravitate-blocks', array( __CLASS__, 'admin' ), 'dashicons-admin-generic', 9999);
 	}
 
 	public static function plugin_settings_link($links)
@@ -445,13 +450,13 @@ class GRAV_BLOCKS {
 		{
 
 			$handler_file = self::get_path('handler.php');
-			$block_index = 0;
+			self::$block_index = 0;
 			if($handler_file && get_field($section, $term))
 			{
 
 				while(the_flexible_field($section, $term))
 				{
-					$block_index++;
+					self::$block_index++;
 					$block_class_prefix = 'block';
 					$unique_id = (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_unique_id') && $uid = get_sub_field('unique_id')) ? 'id='.sanitize_title($uid).'' : '';
 					self::$current_block_name = strtolower(str_replace('_', '-', get_row_layout()));
@@ -1045,7 +1050,7 @@ class GRAV_BLOCKS {
 	 */
 	public static function enqueue_admin_files($hook){
 
-		if ( 'settings_page_gravitate_blocks' != $hook ) {
+		if ( 'toplevel_page_gravitate-blocks' != $hook ) {
 	        return;
 	    }
     	wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );

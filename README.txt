@@ -31,6 +31,11 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.6.1 =
+* Updated $block_index to be a public variable
+* Bug fix - Found intermittent class error on activation
+* Moved Gravitate Blocks out of settings
+
 = 1.6.0 =
 * Added filter grav_block_background_colors
 * Added filter grav_block_background_style
