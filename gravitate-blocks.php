@@ -1734,7 +1734,7 @@ class GRAV_BLOCKS {
 
 		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_responsive_img'))
 		{
-			$additional_attributes['src'] = '#';
+			$additional_attributes['src'] = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
 
 			if(!empty($additional_attributes['class']))
 			{
