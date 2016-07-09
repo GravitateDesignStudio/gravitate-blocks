@@ -488,17 +488,17 @@ class GRAV_BLOCKS {
 
 					$block_section_attributes = '';
 
+					$block_background_style = ($block_background === 'block-bg-image' && $block_background_image ? ' background-image: url(\''.$block_background_image_url.'\'); ' : '');
+
 					if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_responsive_img'))
 					{
 						if($block_background === 'block-bg-image')
 						{
 							$block_section_attributes = GRAV_BLOCKS::image_sources($block_background_image);
-							$block_background_image_url = $block_background_image['medium'];
+							$block_background_style = '';
 						}
 					}
-
-					$block_background_style = ($block_background === 'block-bg-image' && $block_background_image ? ' background-image: url(\''.$block_background_image_url.'\'); ' : '');
-
+					
 					include $handler_file;
 				}
 			}
@@ -1734,25 +1734,7 @@ class GRAV_BLOCKS {
 
 		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_responsive_img'))
 		{
-			if($tag_type === 'img' && !isset($additional_attributes['src']))
-			{
-				if(!empty($image['sizes']['small']))
-				{
-					$additional_attributes['src'] = $image['sizes']['small'];
-				}
-				else if(!empty($image['sizes']['medium']))
-				{
-					$additional_attributes['src'] = $image['sizes']['medium'];
-				}
-				else if(!empty($image['sizes']['large']))
-				{
-					$additional_attributes['src'] = $image['sizes']['large'];
-				}
-				else if(!empty($image['url']))
-				{
-					$additional_attributes['src'] = $image['sizes']['url'];
-				}
-			}
+			$additional_attributes['src'] = '#';
 
 			if(!empty($additional_attributes['class']))
 			{
@@ -1766,8 +1748,7 @@ class GRAV_BLOCKS {
 
 			$image_sources = self::image_sources($image, true);
 		}
-
-		if($tag_type === 'img' && !isset($additional_attributes['src']))
+		else if($tag_type === 'img' && !isset($additional_attributes['src']))
 		{
 			if(!empty($image['sizes']['large']))
 			{
