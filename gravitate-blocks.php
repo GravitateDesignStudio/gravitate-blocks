@@ -1145,6 +1145,8 @@ class GRAV_BLOCKS {
 						{
 							$image_sizes_array[] = array('name' => $name, 'size' => $width);
 						}
+						
+						$image_sizes_array[] = array('name' => 'full', 'size' => 99999);
 
 						$responsive_image_settings = array(
 							'throttle' => 100,
