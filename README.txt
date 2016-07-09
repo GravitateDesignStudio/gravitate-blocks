@@ -31,10 +31,16 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.7.0 =
+* Added Responsive image functionality
+* Added function to return image tag
+* Added fruntion to return wp image sizes
+* Added fruntion to return responsive image sizes
+
 = 1.6.1 =
 * Updated $block_index to be a public variable
 * Bug fix - Found intermittent class error on activation
-* Moved Gravitate Blocks out of settings
+* Moved - Gravitate Blocks out of settings
 
 = 1.6.0 =
 * Added filter grav_block_background_colors

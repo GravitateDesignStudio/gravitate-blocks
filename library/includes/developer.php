@@ -295,5 +295,20 @@ function your_function($block_background_style){
         </textarea>
         </blockquote>
     </li>
+    <li><h3>grav_blocks_responsive_image_settings</h3>
+        This filters the settings for the responsive images.
+        <blockquote>
+        <label>Example 1: Adding a custom size and enabling downscale.</label>
+        <textarea class="grav-code-block">
+add_filter( 'grav_blocks_responsive_image_settings', 'custom_responsive_image_settings' );
+function custom_responsive_image_settings($settings)
+{
+    $settings['downscale'] = true;
+    $settings['sizes'][] = array('name' => 'custom_size', 'size' => 1900);
+    return $settings;
+}
+        </textarea>
+        </blockquote>
+    </li>
     </ul>
 </div>

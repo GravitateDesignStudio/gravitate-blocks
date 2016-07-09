@@ -19,15 +19,24 @@
 		$bottom_classes = ($f6flex) ? GRAV_BLOCKS::css()->col(0, $col_content_width)->add('medium-order-1, '.$col_class)->get() : GRAV_BLOCKS::css()->col_pull(0, $col_width)->add($col_class)->get();
 	}
 ?>
+
+<style>
+	div.rimg {
+		padding: 30%;
+	}
+	img.rimg {
+		width: 100%;
+	}
+</style>
 <div class="block-inner <?php echo $placement.'-'.sanitize_title($col_array[$col_width]); ?>">
 	<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 		<div class="<?php echo $top_classes; ?>">
 			<?php if($link = GRAV_BLOCKS::get_link_url('link')){ ?>
 				<a class="block-link-<?php echo esc_attr(get_sub_field('link_type'));?>" href="<?php echo esc_url($link); ?>">
 			<?php } ?>
-			<?php if($image = get_sub_field('image')){ ?>
-				<img src="<?php echo esc_attr($image['sizes']['large']); ?>" alt="<?php echo esc_attr($image['alt']); ?>" />
-			<?php } ?>
+
+			<?php echo GRAV_BLOCKS::image(get_sub_field('image'));?>
+
 			<?php if($link){ ?>
 				</a>
 			<?php } ?>
@@ -37,3 +46,5 @@
 		</div>
 	</div>
 </div>
+
+
