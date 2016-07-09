@@ -1152,6 +1152,7 @@ class GRAV_BLOCKS {
 							'throttle' => 100,
 							'downscale' => false,
 							'onload' => true,
+							'lazyload' => true,
 							'sizes' => $image_sizes_array
 						);
 
