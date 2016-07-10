@@ -1149,6 +1149,7 @@ class GRAV_BLOCKS {
 						$image_sizes_array[] = array('name' => 'full', 'size' => 99999);
 
 						$responsive_image_settings = array(
+							'watch' => 'tag',
 							'throttle' => 100,
 							'downscale' => false,
 							'downsize' => false,
