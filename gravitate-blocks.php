@@ -1151,8 +1151,10 @@ class GRAV_BLOCKS {
 						$responsive_image_settings = array(
 							'throttle' => 100,
 							'downscale' => false,
+							'downsize' => false,
 							'onload' => true,
 							'lazyload' => true,
+							'lazyload_threshold' => 100,
 							'sizes' => $image_sizes_array
 						);
 
@@ -1736,16 +1738,6 @@ class GRAV_BLOCKS {
 		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_responsive_img'))
 		{
 			$additional_attributes['src'] = 'data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw==';
-
-			if(!empty($additional_attributes['class']))
-			{
-				$additional_attributes['class'].= ' rimg';
-			}
-
-			if(!isset($additional_attributes['class']))
-			{
-				$additional_attributes['class'] = 'rimg';
-			}
 
 			$image_sources = self::image_sources($image, true);
 		}
