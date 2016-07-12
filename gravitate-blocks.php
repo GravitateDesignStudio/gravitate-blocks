@@ -1690,19 +1690,41 @@ class GRAV_BLOCKS {
 
 
 
-	public static function image_sources($image, $return_as_array=false)
+	public static function image_sources($image=null, $return_as_array=false)
 	{
 		$sources = array();
 
-		if(!empty($image['sizes']))
+		if(empty($image))
+		{
+			$image = get_post_thumbnail_id();
+		}
+
+		if(is_numeric($image) || !empty($image['sizes']))
 		{
 			$image_sizes = self::get_image_sizes();
 
-			foreach ($image['sizes'] as $size => $url)
+			if(is_numeric($image))
 			{
-				if(!preg_match('/\-width|\-height/i', $size) && isset($image_sizes[$size]['crop']) && empty($image_sizes[$size]['crop']))
+				foreach ($image_sizes as $size => $image_size)
 				{
-					$sources['data-rimg-'.$size] = '"'.$url.'"';
+					// Only include sizes that are not cropped.
+					if(empty($image_size['crop']) && $image_size['width'])
+					{
+						if($url = wp_get_attachment_image_src( $image, $size ))
+						{
+							$sources['data-rimg-'.$size] = '"'.$url[0].'"';
+						}
+					}
+				}
+			}
+			else
+			{
+				foreach ($image['sizes'] as $size => $url)
+				{
+					if(!preg_match('/\-width|\-height/i', $size) && isset($image_sizes[$size]['crop']) && empty($image_sizes[$size]['crop']))
+					{
+						$sources['data-rimg-'.$size] = '"'.$url.'"';
+					}
 				}
 			}
 		}
@@ -1721,7 +1743,40 @@ class GRAV_BLOCKS {
 	{
 		if(empty($image))
 		{
-			return '';
+			if($attachment = get_post(get_post_thumbnail_id()))
+			{
+				$image = array(
+					'alt' => get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true ),
+					'caption' => $attachment->post_excerpt,
+					'description' => $attachment->post_content,
+					'href' => get_permalink( $attachment->ID ),
+					'src' => $attachment->guid,
+					'url' => $attachment->guid,
+					'title' => $attachment->post_title
+				);
+
+				if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_responsive_img'))
+				{
+					$image['sizes'] = array();
+
+					foreach (self::get_image_sizes() as $size => $image_size)
+					{
+						// Only include sizes that are not cropped.
+						if(empty($image_size['crop']) && $image_size['width'])
+						{
+							if($url = wp_get_attachment_image_src( $attachment->ID, $size ))
+							{
+								$image['sizes'][$size] = $url[0];
+							}
+						}
+					}
+
+				}
+			}
+			else
+			{
+				return '';
+			}
 		}
 
 		if($tag_type === 'img' && !isset($additional_attributes['alt']) && !empty($image['alt']))
