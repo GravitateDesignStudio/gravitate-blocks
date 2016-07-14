@@ -20,14 +20,6 @@
 	}
 ?>
 
-<style>
-	div.rimg {
-		padding: 30%;
-	}
-	img.rimg {
-		width: 100%;
-	}
-</style>
 <div class="block-inner <?php echo $placement.'-'.sanitize_title($col_array[$col_width]); ?>">
 	<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?>">
 		<div class="<?php echo $top_classes; ?>">
