@@ -1817,6 +1817,12 @@ class GRAV_BLOCKS {
 		}
 
 		$attributes_array = array_filter(array_merge($image_sources, $additional_attributes));
+		
+		// If not ALt then add an empty one for validation
+		if($tag_type === 'img' && empty($additional_attributes['alt']))
+		{
+			$attributes_array['alt'] = '""';
+		}
 
 		$attributes_str = trim(urldecode(http_build_query($attributes_array, '', ' ')));
 
