@@ -2,7 +2,7 @@
 Contributors: Gravitate, bferdinand
 Tags: Gravitate, Content Blocks, ACF, Advanced Custom Fields
 Requires at least: 3.5
-Tested up to: 4.5.2
+Tested up to: 4.5.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,6 +30,9 @@ Easily manage Content Blocks.
 
 
 == Changelog ==
+
+= 1.7.0 =
+* Bug fix - fixed an issue where not specifying an image with responsive images caused an empty img tag
 
 = 1.7.0 =
 * Added Responsive image functionality

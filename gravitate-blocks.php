@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.7.0
+Version: 1.7.1
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -25,7 +25,7 @@ add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS
 class GRAV_BLOCKS {
 
 
-	private static $version = '1.7.0';
+	private static $version = '1.7.1';
 	private static $page = 'admin.php?page=gravitate-blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
@@ -499,7 +499,7 @@ class GRAV_BLOCKS {
 							$block_background_style = '';
 						}
 					}
-					
+
 					include $handler_file;
 				}
 			}
@@ -1146,7 +1146,7 @@ class GRAV_BLOCKS {
 						{
 							$image_sizes_array[] = array('name' => $name, 'size' => $width);
 						}
-						
+
 						$image_sizes_array[] = array('name' => 'full', 'size' => 99999);
 
 						$responsive_image_settings = array(
@@ -1703,11 +1703,11 @@ class GRAV_BLOCKS {
 
 
 
-	public static function image_sources($image=null, $return_as_array=false)
+	public static function image_sources($image='featured', $return_as_array=false)
 	{
 		$sources = array();
 
-		if(empty($image))
+		if($image === 'featured')
 		{
 			$image = get_post_thumbnail_id();
 		}
@@ -1752,9 +1752,12 @@ class GRAV_BLOCKS {
 
 
 
-	public static function image($image, $additional_attributes=array(), $tag_type='img')
+	public static function image($image='featured', $additional_attributes=array(), $tag_type='img')
 	{
-		if(empty($image))
+		if(empty($image)){
+			return '';
+		}
+		if($image === 'featured')
 		{
 			if($attachment = get_post(get_post_thumbnail_id()))
 			{
@@ -1830,7 +1833,7 @@ class GRAV_BLOCKS {
 		}
 
 		$attributes_array = array_filter(array_merge($image_sources, $additional_attributes));
-		
+
 		// If not ALt then add an empty one for validation
 		if($tag_type === 'img' && empty($additional_attributes['alt']))
 		{
@@ -1856,7 +1859,3 @@ class GRAV_BLOCKS {
 	}
 
 }
-
-
-
-
