@@ -286,7 +286,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 
 										?>
 										<tr class="repeater-item<?php echo (!is_numeric($rep_i) ? ' repeater-placeholder' : '');?>" style="z-index:<?php echo (is_numeric($rep_i) ? $rep_i : 0);?>;">
-											<td class="handle"><input type="hidden" name="settings[<?php echo $meta_key;?>][<?php echo (is_numeric($rep_i) ? $rep_i : 0);?>][_repeater_id]" value="<?php echo (isset($rep_fields['_repeater_id']['value']) ? $rep_fields['_repeater_id']['value'] : (!is_numeric($rep_i) ? '_repeater_id' : '').(is_numeric($rep_i) ? $rep_i : 0));?>"></td>
+											<td class="handle"><input type="hidden" name="settings[<?php echo $meta_key;?>][<?php echo $repeater_num;?>][_repeater_id]" value="<?php echo (isset($rep_fields['_repeater_id']['value']) ? $rep_fields['_repeater_id']['value'] : (!is_numeric($rep_i) ? '_repeater_id' : '').(is_numeric($rep_i) ? $rep_i : 0));?>"></td>
 											<?php
 
 											foreach ($rep_fields as $rep_key => $rep_field)

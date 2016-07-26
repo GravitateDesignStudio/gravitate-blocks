@@ -32,9 +32,14 @@ Easily manage Content Blocks.
 == Changelog ==
 
 = 1.7.0 =
+* Added Responsive image functionality
+* Added function to return image tag
+* Added function to return WP image sizes
+* Added function to return responsive image sizes
 * added filter for grav_link_fields
 * changed "Content" block to always have at least 1 column
 * Bug fix - added https for vimeo
+* Bug fix - Resolved issue with background colors
 
 = 1.6.1 =
 * Updated $block_index to be a public variable

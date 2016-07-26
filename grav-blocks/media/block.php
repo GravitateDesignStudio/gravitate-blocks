@@ -8,7 +8,9 @@ $padding = get_sub_field('padding');
 				<?php if($link = GRAV_BLOCKS::get_link_url('link')){ ?>
 					<a class="block-link-<?php echo esc_attr(get_sub_field('link_type'));?>" href="<?php echo esc_url($link); ?>">
 				<?php } ?>
-					<img src="<?php echo esc_attr($image['url']); ?>" alt="<?php echo esc_attr($image['alt']); ?>" title="<?php echo esc_attr($image['title']); ?>" />
+
+					<?php echo GRAV_BLOCKS::image($image);?>
+
 				<?php if($link){ ?>
 					</a>
 				<?php } ?>
