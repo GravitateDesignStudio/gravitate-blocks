@@ -442,7 +442,7 @@ class GRAV_BLOCKS {
 	 *
 	 * @return type
 	 */
-	public static function display($args)
+	public static function display($args = array())
 	{
 		// Check $args array if it exists and what is set.
 		$section = (!empty($args) && isset($args['section'])) ? $args['section'] : 'grav_blocks';
