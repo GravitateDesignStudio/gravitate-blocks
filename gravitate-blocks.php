@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.6.1
+Version: 1.7.0
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -25,7 +25,7 @@ add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS
 class GRAV_BLOCKS {
 
 
-	private static $version = '1.6.1';
+	private static $version = '1.7.0';
 	private static $page = 'admin.php?page=gravitate-blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
@@ -437,32 +437,33 @@ class GRAV_BLOCKS {
 	/**
 	 * Outputs the Grav Blocks
 	 *
-	 * @param string $section - This is the Section of blocks to pull from.
-	 *                          For now there is just one.
+	 * @param string $args - Currently the two options for the array are 'section' and 'object'
 	 *
 	 * @return type
 	 */
-	public static function display($section='grav_blocks')
+	public static function display($args)
 	{
-		$term = ( ($query = get_queried_object()) && !empty($query->term_id) ) ? $query : '';
+		// Check $args array if it exists and what is set.
+		$section = (!empty($args) && isset($args['section'])) ? $args['section'] : 'grav_blocks';
+		$object = (!empty($args) && isset($args['object'])) ? $args['object'] : false;
+		$query_target = ($object) ? $object : ( ( ( $query = get_queried_object() ) && !empty($query->term_id ) ) ? $query : '');
 
 		if(self::is_viewable())
 		{
 
 			$handler_file = self::get_path('handler.php');
 			self::$block_index = 0;
-			if($handler_file && get_field($section, $term))
+			if($handler_file && get_field($section, $query_target))
 			{
 
-				while(the_flexible_field($section, $term))
+				while(the_flexible_field($section, $query_target))
 				{
 					self::$block_index++;
 					$block_class_prefix = 'block';
 					$unique_id = (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_unique_id') && $uid = get_sub_field('unique_id')) ? 'id='.sanitize_title($uid).'' : '';
 					self::$current_block_name = strtolower(str_replace('_', '-', get_row_layout()));
 
-					$block_background = get_sub_field('block_background');
-
+					$block_background = ($block_bg = get_sub_field('block_background')) ? $block_bg : 'block-bg-none';
 
 					if(!empty(self::$settings['background_colors']))
 					{
@@ -1315,7 +1316,7 @@ class GRAV_BLOCKS {
 			$id = self::get_vimeo_id($url);
 			if(is_numeric($id))
 			{
-				return 'http://player.vimeo.com/video/'.$id.'?autoplay='.$autoplay;
+				return 'https://player.vimeo.com/video/'.$id.'?autoplay='.$autoplay;
 			}
 			return $url;
 		}
@@ -1433,15 +1434,13 @@ class GRAV_BLOCKS {
 				'type' => 'text',
 				'required' => 1,
 				'conditional_logic' => array (
-					'status' => 1,
-					'rules' => array (
+					array (
 						array (
 							'field' => 'field_'.$block.'_'.$label_sanitized.'_type',
 							'operator' => '==',
 							'value' => 'url',
 						),
 					),
-					'allorany' => 'all',
 				),
 				'column_width' => '',
 				'default_value' => '',
@@ -1534,16 +1533,29 @@ class GRAV_BLOCKS {
 			);
 		}
 
-		return array('grav_link_fields' => $fields);
+		$filtered_fields = apply_filters('grav_block_link_fields', $fields);
+		return array('grav_link_fields' => $filtered_fields);
 	}
 
 	public static function get_link_url($field)
 	{
+		// TODO make this a public filterable array
+		$allowed_options = array(
+			'none' => 'None',
+			'page' => 'Page Link',
+			'url' => 'URL',
+			'file' => 'File Download',
+			'video' => 'Play Video',
+		);
 		if($type = get_sub_field($field.'_type'))
 		{
 			if($type != 'none')
 			{
 				$url = get_sub_field($field.'_'.$type);
+				if(!array_key_exists($type, $allowed_options))
+				{
+					$url = get_sub_field($field.'_url');
+				}
 				if($type == 'video')
 				{
 					$url = self::get_video_url($url);
@@ -1556,10 +1568,11 @@ class GRAV_BLOCKS {
 
 	public static function get_link_html($field, $class='')
 	{
-		if($url = self::get_link_url($field))
+		$url = ($type_url = self::get_link_url($field)) ? $type_url : '#';
+		if($text = get_sub_field($field.'_text'))
 		{
 			?>
-				<a class="block-link-<?php echo esc_attr(get_sub_field($field.'_type'));?><?php echo ($class ? ' '.$class : '');?>" href="<?php echo esc_url($url);?>"><?php echo esc_html(get_sub_field($field.'_text'));?></a>
+				<a class="block-link-<?php echo esc_attr(get_sub_field($field.'_type'));?><?php echo ($class ? ' '.$class : '');?>" href="<?php echo esc_url($url);?>"><?php echo esc_html($text);?></a>
 			<?php
 		}
 	}

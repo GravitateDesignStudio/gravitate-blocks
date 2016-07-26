@@ -36,7 +36,7 @@ $block_fields = array(
 				'media_upload' => 'yes',
 			),
 		),
-		'min' => '',
+		'min' => '1',
 		'max' => '3',
 		'layout' => 'block',
 		'button_label' => 'Add Column',
