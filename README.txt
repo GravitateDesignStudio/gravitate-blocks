@@ -31,7 +31,7 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
-= 1.7.0 =
+= 1.7.1 =
 * Bug fix - fixed an issue where not specifying an image with responsive images caused an empty img tag
 
 = 1.7.0 =
