@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.7.1
+Version: 1.7.2
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -25,7 +25,7 @@ add_filter( 'plugin_action_links_'.plugin_basename(__FILE__), array('GRAV_BLOCKS
 class GRAV_BLOCKS {
 
 
-	private static $version = '1.7.1';
+	private static $version = '1.7.2';
 	private static $page = 'admin.php?page=gravitate-blocks';
 	private static $settings = array();
 	private static $option_key = 'gravitate_blocks_settings';
@@ -1071,7 +1071,7 @@ class GRAV_BLOCKS {
 	    }
     	wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
     	wp_enqueue_style( 'grav_blocks_icons_css', 'https://i.icomoon.io/public/790bec4572/GravitateBlocks/style.css', true, '1.1.0' );
-    	wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/scripts.min.js', array('jquery'), self::$version, true );
+    	wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/blocks.min.js', array('jquery'), self::$version, true );
 	    wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
 	}
@@ -1086,7 +1086,11 @@ class GRAV_BLOCKS {
 	public static function enqueue_files($hook){
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_scripts') && self::is_viewable())
 		{
-			wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/scripts.min.js', array('jquery'), self::$version, true );
+			wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/blocks.min.js', array('jquery'), self::$version, true );
+		}
+		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'add_responsive_img'))
+		{
+			wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/responsive-images.min.js', array('jquery'), self::$version, true );
 		}
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'use_foundation') && self::is_viewable())
 		{

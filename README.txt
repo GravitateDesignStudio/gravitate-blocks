@@ -31,6 +31,9 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.7.2 =
+* Bug fix - responsive images causing js error on non block enabled pages
+
 = 1.7.1 =
 * Bug fix - fixed an issue where not specifying an image with responsive images caused an empty img tag
 
