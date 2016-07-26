@@ -2,14 +2,14 @@
 @import 'sass-includes/mixins';
 @import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900,300,200';
 
-$source-sans : 'Open Sans', sans-serif;
-$white : #ffffff;
-$magenta : #d61b51;
-$gray-dark : #333333;
-$gray-light : #999999;
-$gray-lighter : #dedede;
-$gray-lightest : #F9F9F9;
-$wp-media-query : 783px;
+$source-sans: 'Open Sans', sans-serif;
+$white: #ffffff;
+$magenta: #d61b51;
+$gray-dark: #333333;
+$gray-light: #999999;
+$gray-lighter: #dedede;
+$gray-lightest: #F9F9F9;
+$wp-media-query: 783px;
 
 .settings_page_gravitate_blocks,
 .toplevel_page_gravitate-blocks {
@@ -102,6 +102,9 @@ $wp-media-query : 783px;
 					cursor: default;
 				}
 			}
+			ul + h2 {
+				margin-top: 3rem;
+			}
 			tr:not([class^="grav-plugin-settings-blocks_enabled_"]) {
 				label {
 					display: inline-block;
@@ -187,11 +190,20 @@ $wp-media-query : 783px;
 	a {
 		text-decoration: none;
 	}
+	h2 {
+		font-family: $source-sans;
+		text-transform: uppercase;
+		font-weight: 700;
+		letter-spacing: -.025rem;
+		font-size: 20px;
+		border-bottom: 1px solid rgba($gray-dark,.15);
+		padding-bottom: .25rem;
+	}
 	h3 {
 		font-weight: 700;
     	font-family: $source-sans;
-    	font-size: 1.3rem;
-    	color: rgba($gray-dark, .7);
+    	font-size: 1.05rem;
+    	color: $gray-dark;
 	}
 	.grav-code-block {
 		display: inline-block;
@@ -219,6 +231,13 @@ $wp-media-query : 783px;
 		margin-left: 20px;
 		li {
 			list-style: disc;
+		}
+		&.grav-hooks {
+			li {
+				+ li {
+					margin-top: 2rem;
+				}
+			}
 		}
 	}
 }

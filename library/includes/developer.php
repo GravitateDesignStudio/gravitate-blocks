@@ -2,7 +2,7 @@
     <h2>Placing the blocks in your theme</h2>
     <h4>There are 2 ways to include Gravitate Blocks in your theme:</h4>
         <ul>
-            <li>By default the blocks will be filtered into "the_content()".  However, you can disable that in the <a href="options-general.php?page=gravitate_blocks&section=advanced">Advanced Tab</a>.</li>
+            <li>By default the blocks will be filtered into "the_content()".  However, you can disable that in the <a href="admin.php?page=gravitate-blocks&section=advanced">Advanced Tab</a>.</li>
             <li>
                 You can use the function to manually include them in your theme.
                 <br><span class="grav-code-block"> &lt;?php GRAV_BLOCKS::display(); ?&gt;</span>
@@ -31,8 +31,8 @@
             <li>You can use the "grav_blocks" filter below in your functions.php file.</li>
         </ul>
 
-    <h2>Hooks and Filters</h2>
-    <ul>
+    <h2>Hooks - Actions and Filters</h2>
+    <ul class="grav-hooks">
     <li>
         <h3>grav_blocks</h3>
         This filters through the available blocks.
@@ -306,6 +306,19 @@ function custom_responsive_image_settings($settings)
     $settings['downscale'] = true;
     $settings['sizes'][] = array('name' => 'custom_size', 'size' => 1900);
     return $settings;
+}
+        </textarea>
+        </blockquote>
+    </li>
+    <li><h3>grav_block_link_fields</h3>
+        This filters the fields for "GRAV_BLOCKS::get_link_fields" used to build button and links within the blocks.
+        <blockquote>
+        <label>Example 1: Adding a custom button type.</label>
+        <textarea class="grav-code-block">
+add_filter('grav_block_link_fields', 'your_function');
+function your_function($fields){
+    $fields[0]['choices']['chat'] = 'Chat';
+    return $fields;
 }
         </textarea>
         </blockquote>
