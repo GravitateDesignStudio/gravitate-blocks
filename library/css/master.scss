@@ -187,6 +187,7 @@ $wp-media-query: 783px;
 	}
 }
 .grav-blocks-developers {
+	margin: 0 20px 0 0;
 	a {
 		text-decoration: none;
 	}
@@ -197,7 +198,7 @@ $wp-media-query: 783px;
 		letter-spacing: -.025rem;
 		font-size: 20px;
 		border-bottom: 1px solid rgba($gray-dark,.15);
-		padding-bottom: .25rem;
+		padding-bottom: .5rem;
 	}
 	h3 {
 		font-weight: 700;
