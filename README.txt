@@ -31,6 +31,9 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.7.3 =
+* Bug fix - fixed a php error with the display function
+
 = 1.7.2 =
 * Bug fix - responsive images causing js error on non block enabled pages
 
