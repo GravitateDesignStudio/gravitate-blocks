@@ -383,7 +383,7 @@ class GRAV_BLOCKS {
 	public static function admin_menu()
 	{
 		$icon = file_get_contents(plugin_dir_path( __FILE__ ) . 'grav-blocks/content/content_2.svg');
-		add_menu_page( 'Gravitate Blocks', 'Gravitate Blocks', 'manage_options', 'gravitate-blocks', array( __CLASS__, 'admin' ), 'dashicons-admin-generic', 9999);
+		add_menu_page( 'Gravitate Blocks', 'Blocks', 'manage_options', 'gravitate-blocks', array( __CLASS__, 'admin' ), 'dashicons-gravitate', 9999);
 	}
 
 	public static function plugin_settings_link($links)
@@ -1066,11 +1066,11 @@ class GRAV_BLOCKS {
 	 */
 	public static function enqueue_admin_files($hook){
 
+		wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
+		wp_enqueue_style( 'grav_blocks_icons_css', 'https://i.icomoon.io/public/790bec4572/GravitateBlocks/style.css', true, '1.1.0' );
 		if ( 'toplevel_page_gravitate-blocks' != $hook ) {
 	        return;
 	    }
-    	wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
-    	wp_enqueue_style( 'grav_blocks_icons_css', 'https://i.icomoon.io/public/790bec4572/GravitateBlocks/style.css', true, '1.1.0' );
     	wp_enqueue_script( 'grav_blocks_scripts_js', plugin_dir_url( __FILE__ ) . 'library/js/blocks.min.js', array('jquery'), self::$version, true );
 	    wp_enqueue_style( 'wp-color-picker' );
 		wp_enqueue_script( 'wp-color-picker' );
