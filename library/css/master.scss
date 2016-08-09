@@ -326,3 +326,11 @@ $wp-media-query: 783px;
 		margin-left: 1rem;
 	}
 }
+.dashicons-gravitate {
+	&::before {
+		content: '\e90c';
+		font-family: 'grav-blocks';
+		font-size: 16px;
+		margin-top: 1px;
+	}
+}
