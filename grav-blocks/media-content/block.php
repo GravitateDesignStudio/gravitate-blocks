@@ -16,7 +16,7 @@
 	$top_classes = GRAV_BLOCKS::css()->col(0, $col_width)->add($col_class.', col-image')->get();
 	if($placement == 'right'){
 		$top_classes = ($f6flex) ? GRAV_BLOCKS::css()->col(0, $col_width)->add('medium-order-2, '.$col_class.', col-image')->get() : GRAV_BLOCKS::css()->col(0, $col_width)->col_push(0, $col_content_width)->add($col_class.', col-image')->get();
-		$bottom_classes = ($f6flex) ? GRAV_BLOCKS::css()->col(0, $col_content_width)->add('medium-order-1, '.$col_class)->get() : GRAV_BLOCKS::css()->col_pull(0, $col_width)->add($col_class)->get();
+		$bottom_classes = ($f6flex) ? GRAV_BLOCKS::css()->col(0, $col_content_width)->add('medium-order-1, '.$col_class)->get() : GRAV_BLOCKS::css()->col(0, $col_content_width)->col_pull(0, $col_width)->add($col_class)->get();
 	}
 ?>
 
@@ -38,5 +38,3 @@
 		</div>
 	</div>
 </div>
-
-
