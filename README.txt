@@ -31,6 +31,10 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.7.4 =
+* Bug fix - fixed an issue with columns on media content block
+* Styling change for WordPress dashboard menu
+
 = 1.7.3 =
 * Bug fix - fixed a php error with the display function
 
