@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.7.4
+Version: 1.7.5
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -1710,6 +1710,11 @@ class GRAV_BLOCKS {
 	public static function image_sources($image='featured', $return_as_array=false)
 	{
 		$sources = array();
+		
+		if(is_numeric($image) && get_post_type($image) !== 'attachment')
+		{
+			$image = get_post_thumbnail_id($image);
+		}
 
 		if($image === 'featured')
 		{
@@ -1763,7 +1768,16 @@ class GRAV_BLOCKS {
 		}
 		if($image === 'featured')
 		{
-			if($attachment = get_post(get_post_thumbnail_id()))
+			if(is_numeric($image) && get_post_type($image) !== 'attachment')
+			{
+				$attachment = get_post(get_post_thumbnail_id($image));
+			}
+			else
+			{
+				$attachment = get_post(get_post_thumbnail_id());
+			}
+			
+			if($attachment)
 			{
 				$image = array(
 					'alt' => get_post_meta( $attachment->ID, '_wp_attachment_image_alt', true ),
