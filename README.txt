@@ -31,6 +31,9 @@ Easily manage Content Blocks.
 
 == Changelog ==
 
+= 1.7.5 =
+* Bug fix - fixed issue with supplying post id instead of attachment id to image functions.
+
 = 1.7.4 =
 * Bug fix - fixed an issue with columns on media content block
 * Styling change for WordPress dashboard menu
