@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 1.7.5
+Version: 1.7.6
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
@@ -271,7 +271,14 @@ class GRAV_BLOCKS {
 		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('search_options', 'include_in_search') && !is_admin() && is_main_query())
 		{
 			self::add_hook('filter', 'posts_search', 'add_search_filtering');
-			self::add_hook('filter', 'get_the_excerpt', 'add_search_excerpt_filtering');
+		}
+
+		if(!is_admin())
+		{
+			if((!empty($_GET['s']) && GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('search_options', 'include_in_search')) || GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'filter_excerpt'))
+			{
+				self::add_hook('filter', 'get_the_excerpt', 'add_excerpt_filtering');
+			}
 		}
 
 		if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('advanced_options', 'enqueue_scripts') ||
@@ -393,19 +400,33 @@ class GRAV_BLOCKS {
 		return $links;
 	}
 
-	public static function add_search_excerpt_filtering( $output )
+	public static function add_excerpt_filtering( $output )
 	{
-		if(empty($output) && !has_excerpt() && !get_the_content() && get_search_query())
+		if(empty($output) && !has_excerpt() && !get_the_content())
 		{
 			global $wpdb;
 
-			if($results = $wpdb->get_var("SELECT meta_value FROM ".$wpdb->postmeta." WHERE meta_value LIKE '%".get_search_query()."%' AND post_id = ".get_the_ID()." ORDER BY CHAR_LENGTH(meta_value) DESC LIMIT 1"))
+			// If is Search, then first check to see if we can find results that matches the search
+			if(is_main_query() && get_search_query() && is_search() && GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('search_options', 'include_in_search'))
 			{
-			    if(!empty($results))
-		    	{
-		    		$output = $results;
-		    	}
+				$results = $wpdb->get_var("SELECT meta_value FROM ".$wpdb->postmeta." WHERE meta_value LIKE '%".get_search_query()."%' AND meta_key NOT LIKE '\_%' AND post_id = ".get_the_ID()." ORDER BY CHAR_LENGTH(meta_value) DESC LIMIT 1");
 			}
+
+			// If no matches are found or if not Search then check for any fields to show data
+			if(empty($results))
+			{
+				if(GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('search_options', 'include_in_search') || !is_search() || !is_main_query())
+				{
+					$results = $wpdb->get_var("SELECT meta_value FROM ".$wpdb->postmeta." WHERE meta_key NOT LIKE '\_%' AND post_id = ".get_the_ID()." ORDER BY CHAR_LENGTH(meta_value) DESC LIMIT 1");
+				}
+			}
+
+			// If Results then lets format it
+		    if(!empty($results))
+	    	{
+	    		$output = wp_trim_excerpt(strip_shortcodes(strip_tags($results)));
+	    	}
+
 		}
 		return $output;
 	}
@@ -819,6 +840,7 @@ class GRAV_BLOCKS {
 			case 'advanced':
 				$advanced_options = array(
 					'filter_content' => 'Gravitate Blocks will be added to the end of your content. <span class="extra-info">( Using "the_content" filter )</span>',
+					'filter_excerpt' => 'Filter the_excerpt() with Block Fields (all postmeta fields) when the_excerpt() or the_content() is empty.',
 					'enqueue_scripts' => 'Add necessary jQuery plugins. <span class="extra-info">( adds Cycle2 and Colorbox scripts for sliders and lightbox )</span>',
 					'after_title' => 'Place Gravitate Blocks directly after the title in the WordPress admin. <span class="extra-info">( changes position using acf_after_title )</span>',
 					'hide_content' => 'Remove the WordPress content box from Gravitate Blocks enabled pages. <span class="extra-info">( if content has already been entered it may still show on the front end of the website. )</span>',
@@ -1160,7 +1182,7 @@ class GRAV_BLOCKS {
 							'downsize' => false,
 							'onload' => true,
 							'lazyload' => true,
-							'lazyload_threshold' => 100,
+							'lazyload_threshold' => 400,
 							'sizes' => $image_sizes_array
 						);
 
@@ -1710,7 +1732,7 @@ class GRAV_BLOCKS {
 	public static function image_sources($image='featured', $return_as_array=false)
 	{
 		$sources = array();
-		
+
 		if(is_numeric($image) && get_post_type($image) !== 'attachment')
 		{
 			$image = get_post_thumbnail_id($image);
@@ -1776,7 +1798,7 @@ class GRAV_BLOCKS {
 			{
 				$attachment = get_post(get_post_thumbnail_id());
 			}
-			
+
 			if($attachment)
 			{
 				$image = array(
