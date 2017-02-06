@@ -402,7 +402,7 @@ class GRAV_BLOCKS {
 
 	public static function add_excerpt_filtering( $output )
 	{
-		if(empty($output) && !has_excerpt() && !get_the_content())
+		if(empty($output) && !has_excerpt() && !trim(strip_tags(get_the_content())))
 		{
 			global $wpdb;
 
