@@ -2,12 +2,12 @@
 Contributors: Gravitate, bferdinand
 Tags: Gravitate, Content Blocks, ACF, Advanced Custom Fields
 Requires at least: 3.5
-Tested up to: 4.5.3
+Tested up to: 4.7.2
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Easily manage Content Blocks.
+Easily add content to your site with Gravitate Blocks.
 
 == Description ==
 
@@ -17,7 +17,7 @@ Easily manage Content Blocks.
 
 ==Requirements==
 
-- ACF Pro
+- ACF Pro v5
 - jQuery
 - WordPress 3.5 or above
 
@@ -33,6 +33,7 @@ Easily manage Content Blocks.
 
 = 1.7.5 =
 * Bug fix - fixed issue with supplying post id instead of attachment id to image functions.
+* Added new excerpt filtering checkbox for all excerpts
 
 = 1.7.4 =
 * Bug fix - fixed an issue with columns on media content block
