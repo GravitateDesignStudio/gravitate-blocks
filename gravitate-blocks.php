@@ -763,8 +763,10 @@ class GRAV_BLOCKS {
 		{
 			self::add_hook('action', 'admin_notices', 'acf_notice');
 		}
-
-		self::add_hook('action', 'grav_blocks_display_before' , 'get_block_background_video_markup', 10, 2);
+		
+		// Add Hook doesn't work here as the parameters messes up the reference
+		// self::add_hook('action', 'grav_blocks_display_before' , 'get_block_background_video_markup', 10, 2);
+		add_action( 'grav_blocks_display_before' , array(__CLASS__, 'get_block_background_video_markup'), 10, 2);
 	}
 
 	/**
@@ -1436,7 +1438,7 @@ class GRAV_BLOCKS {
 	 * @return void
 	 */
 	public static function get_block_background_video_markup($block, $block_variables){
-		if(in_array($block, self::get_block_background_allowed_video())){
+		if(in_array($block, self::get_block_background_allowed_video($block))){
 			if(!empty($block_variables)){ extract($block_variables); }
 			$background = isset($block_background) ? $block_background : get_sub_field('block_background');
 			if($background === 'block-bg-video')
