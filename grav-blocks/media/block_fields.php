@@ -14,8 +14,6 @@
 */
 
 $block_fields = array(
-	$block_backgrounds,
-	$block_background_image,
 	array (
 		'key' => 'field_'.$block.'_1',
 		'label' => 'Full Width Image',
@@ -37,7 +35,6 @@ $block_fields = array(
 	),
 	GRAV_BLOCKS::get_link_fields( 'link', '', false),
 );
-$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 
 return array (
 	'label' => 'Media',
@@ -45,7 +42,7 @@ return array (
 	'display' => 'row',
 	'min' => '',
 	'max' => '',
-	'sub_fields' => $sub_fields,
+	'sub_fields' => $block_fields,
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-media',
 		'description' => '<div class="row">

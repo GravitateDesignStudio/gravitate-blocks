@@ -14,8 +14,6 @@
 */
 
 $block_fields = array(
-	$block_backgrounds,
-	$block_background_image,
 	array (
 		'key' => 'field_'.$block.'_01',
 		'label' => 'Quoted Text',
@@ -51,7 +49,6 @@ $block_fields = array(
 		'default_value' => 0,
 	),
 );
-$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 
 return array (
 	'label' => 'Quote',
@@ -59,7 +56,7 @@ return array (
 	'display' => 'row',
 	'min' => '',
 	'max' => '',
-	'sub_fields' => $sub_fields,
+	'sub_fields' => $block_fields,
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-quote',
 		'description' => '<div class="row">

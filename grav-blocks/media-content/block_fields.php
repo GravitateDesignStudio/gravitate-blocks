@@ -14,8 +14,178 @@
 */
 
 $block_fields = array(
-	$block_backgrounds,
-	$block_background_image,
+	array (
+	    'key' => 'field_'.$block.'_media_type',
+	    'label' => 'Media Type',
+	    'name' => 'media_type',
+	    'type' => 'radio',
+	    'instructions' => '',
+	    'required' => 0,
+	    'conditional_logic' => 0,
+	    'wrapper' => array (
+	        'width' => '',
+	        'class' => '',
+	        'id' => '',
+	    ),
+	    'choices' => array (
+	        '' => 'Image', // Leave this blank to allow for older versions to work.
+			'video' => 'MP4 Video',
+			'embed' => 'Embed'
+	    ),
+	    'other_choice' => 0,
+	    'save_other_choice' => 0,
+	    'default_value' => '',
+	    'layout' => 'horizontal',
+	),
+	array (
+		'key' => 'field_'.$block.'_video_type',
+		'label' => 'MP4 Video Type',
+		'name' => 'video_type',
+		'type' => 'radio',
+		'instructions' => 'It is best to use the URL as uploading videos can take up a lot of your hosting disk space and bandwidth.',
+		'required' => 0,
+		'conditional_logic' => array (
+			array (
+				array (
+		            'field' => 'field_'.$block.'_media_type',
+		            'operator' => '==',
+		            'value' => 'video',
+		        ),
+			),
+		),
+		'wrapper' => array (
+			'width' => '',
+			'class' => '',
+			'id' => '',
+		),
+		'choices' => array (
+			'url' => 'Url',
+			'file' => 'File'
+		),
+		'other_choice' => 0,
+		'save_other_choice' => 0,
+		'default_value' => 'url',
+		'layout' => 'horizontal',
+	),
+	array (
+		'key' => 'field_'.$block.'_video_url',
+		'label' => 'Video URL',
+		'name' => 'video_url',
+		'type' => 'text',
+		'instructions' => 'Video must be a MP4 Format. <br><br>Use the Background Image below for a Placeholder',
+		'conditional_logic' => array (
+			array (
+				array (
+					'field' => 'field_'.$block.'_video_type',
+					'operator' => '==',
+					'value' => 'url',
+				),
+				array (
+		            'field' => 'field_'.$block.'_media_type',
+		            'operator' => '==',
+		            'value' => 'video',
+		        ),
+			),
+		),
+		'column_width' => '',
+		'save_format' => 'object',
+		'preview_size' => 'medium',
+		'library' => 'all',
+	),
+	array (
+		'key' => 'field_'.$block.'_video_file',
+		'label' => 'Video File',
+		'name' => 'video_file',
+		'type' => 'file',
+		'instructions' => 'Uploads may not work if the file is too large.',
+		'required' => 0,
+		'conditional_logic' => array (
+			array (
+				array (
+					'field' => 'field_'.$block.'_video_type',
+					'operator' => '==',
+					'value' => 'file',
+				),
+				array (
+		            'field' => 'field_'.$block.'_media_type',
+		            'operator' => '==',
+		            'value' => 'video',
+		        ),
+			),
+		),
+		'wrapper' => array (
+			'width' => '',
+			'class' => '',
+			'id' => '',
+		),
+		'return_format' => 'url',      // array | url | id
+		'library' => 'all',              // all | uploadedTo
+		'min_size' => '',
+		'max_size' => '',
+		'mime_types' => '',
+	),
+	array (
+	    'key' => 'field_'.$block.'_video_attributes',
+	    'label' => 'Video Attributes',
+	    'name' => 'video_attributes',
+	    'type' => 'checkbox',
+	    'instructions' => '',
+	    'required' => 0,
+		'conditional_logic' => array (
+			array (
+				array (
+		            'field' => 'field_'.$block.'_media_type',
+		            'operator' => '==',
+		            'value' => 'video',
+		        ),
+			),
+		),
+	    'wrapper' => array (
+	        'width' => '',
+	        'class' => '',
+	        'id' => '',
+	    ),
+	    'choices' => array (
+	        'autoplay' => 'Autoplay',
+			'loop' => 'Loop',
+	        'controls' => 'Controls',
+	        'muted' => 'Muted',
+	    ),
+	    'default_value' => array (
+			'controls'
+	    ),
+	    'layout' => 'horizontal',
+	    'toggle' => 0,
+	),
+	array (
+	    'key' => 'field_'.$block.'_embed',
+	    'label' => 'Embed',
+	    'name' => 'embed',
+	    'type' => 'textarea',
+	    'instructions' => '',
+	    'required' => 0,
+		'conditional_logic' => array (
+			array (
+				array (
+		            'field' => 'field_'.$block.'_media_type',
+		            'operator' => '==',
+		            'value' => 'embed',
+		        ),
+			),
+		),
+	    'wrapper' => array (
+	        'width' => '',
+	        'class' => '',
+	        'id' => '',
+	    ),
+	    'default_value' => '',
+	    'placeholder' => '',
+	    'maxlength' => '',
+	    'rows' => '',
+	    'new_lines' => 'wpautop',        // wpautop | br | ''
+	    'readonly' => 0,
+	    'disabled' => 0,
+	),
 	array (
 		'key' => 'field_'.$block.'_4',
 		'label' => 'Image',
@@ -24,7 +194,15 @@ $block_fields = array(
 		'type' => 'image',
 		'instructions' => '',
 		'required' => 0,
-		'conditional_logic' => 0,
+		'conditional_logic' => array (
+		    array (
+		        array (
+		            'field' => 'field_'.$block.'_media_type',
+		            'operator' => '==',
+		            'value' => '',
+		        ),
+		    ),
+		),
 		'column_width' => '',
 		'return_format' => 'array',
 		'preview_size' => 'medium',
@@ -32,7 +210,7 @@ $block_fields = array(
 	),
 	array (
 		'key' => 'field_'.$block.'_1',
-		'label' => 'Image Placement',
+		'label' => 'Media Placement',
 		'name' => 'image_placement',
 		'prefix' => '',
 		'type' => 'radio',
@@ -46,12 +224,12 @@ $block_fields = array(
 		),
 		'other_choice' => 0,
 		'save_other_choice' => 0,
-		'default_value' => '',
+		'default_value' => 'left',
 		'layout' => 'horizontal',
 	),
 	array (
 		'key' => 'field_'.$block.'_2',
-		'label' => 'Image Size',
+		'label' => 'Media Size',
 		'name' => 'image_size',
 		'prefix' => '',
 		'type' => 'radio',
@@ -62,8 +240,9 @@ $block_fields = array(
 		'choices' => GRAV_BLOCKS::column_width_options(),
 		'other_choice' => 0,
 		'save_other_choice' => 0,
-		'default_value' => '',
+		'default_value' => '5',
 		'layout' => 'horizontal',
+		'block_options' => 1
 	),
 	GRAV_BLOCKS::get_link_fields( 'link', '', false ),
 	array (
@@ -82,13 +261,12 @@ $block_fields = array(
 		'media_upload' => 0,
 	),
 );
-$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 
 return array (
 	'name' => $block,
 	'label' => 'Media with Content',
 	'display' => 'row',
-	'sub_fields' => $sub_fields,
+	'sub_fields' => $block_fields,
 	'min' => '',
 	'max' => '',
 	'grav_blocks_settings' => array(

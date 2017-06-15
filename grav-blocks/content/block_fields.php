@@ -13,10 +13,8 @@
 *
 */
 
-$plugins_url = plugins_url();
+
 $block_fields = array(
-	$block_backgrounds,
-	$block_background_image,
 	array (
 		'key' => 'field_'.$block.'_1',
 		'label' => 'Content Columns',
@@ -42,17 +40,17 @@ $block_fields = array(
 		'button_label' => 'Add Column',
 	),
 );
-$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
+
 return array (
 	'label' => 'Content',
 	'name' => $block,
 	'display' => 'block',
 	'min' => '',
 	'max' => '',
-	'sub_fields' => $sub_fields,
+	'sub_fields' => $block_fields,
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-content-1col',
-		'description' => '<div class="row"><div class="columns medium-6"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_1.svg"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_2.svg"><img src="'.$plugins_url.'/gravitate-blocks/grav-blocks/content/content_3.svg"></div><div class="columns medium-6"><p>Our most basic block. This block allows for the use of one, two or three columns of WordPress WYSIWYGs ( What You See Is What You Get ). The WYSIWYG allows you to add most of the basic types of content from images, to paragraph text as well as H1 – H6 headings. You can also create ordered and unordered lists as well as do type treatments like <strong>bold</strong> and <em>italic</em>.</p>
+		'description' => '<div class="row"><div class="columns medium-6"><img src="'.plugins_url().'/gravitate-blocks/grav-blocks/content/content_1.svg"><img src="'.plugins_url().'/gravitate-blocks/grav-blocks/content/content_2.svg"><img src="'.plugins_url().'/gravitate-blocks/grav-blocks/content/content_3.svg"></div><div class="columns medium-6"><p>Our most basic block. This block allows for the use of one, two or three columns of WordPress WYSIWYGs ( What You See Is What You Get ). The WYSIWYG allows you to add most of the basic types of content from images, to paragraph text as well as H1 – H6 headings. You can also create ordered and unordered lists as well as do type treatments like <strong>bold</strong> and <em>italic</em>.</p>
 <p>While this block is very capable and can allow for a range of content types and layouts the control of the layout is not as precise. The tendency would be to try and use this block for much of your layouts, however with the research and strategy that has gone into each one of our blocks we highly suggest looking into them for their abilities to display your content in atheistically pleasing and user friendly way.</p></div></div>'
 	),
 );

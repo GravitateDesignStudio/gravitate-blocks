@@ -13,23 +13,57 @@
 *
 */
 
-$gforms = array(0 => '- None');
-
-foreach(GRAV_BLOCKS::get_gravity_forms() as $gform)
-{
-	$gforms[$gform['id']] = $gform['title'];
-}
-
-
 $block_fields = array(
 	array (
-		'key' => 'field_'.$block.'_1',
-		'label' => 'Title (optional)',
+	   'key' => 'field_'.$block.'_use_alternate_title',
+	   'label' => 'Use Alternate Title',
+	   'name' => 'use_alternate_title',
+	   'type' => 'true_false',
+	   'instructions' => 'Otherwise use the Title of the Page',
+	   'required' => 0,
+	   'conditional_logic' => 0,
+	   'wrapper' => array (
+	       'width' => '',
+	       'class' => '',
+	       'id' => '',
+	   ),
+	   'message' => '',
+	   'ui' => 1,
+	   'ui_on_text' => 'Yes',
+	   'ui_off_text' => 'No',
+	   'default_value' => 0,
+	),
+	array (
+		'key' => 'field_'.$block.'_title',
+		'label' => 'Alternate Title',
 		'name' => 'title',
 		'type' => 'text',
 		'column_width' => '',
 		'default_value' => '',
-		'instructions' => 'This is the title of the section.',
+		'instructions' => '',
+		'placeholder' => '',
+		'prepend' => '',
+		'append' => '',
+		'formatting' => 'none', 		// none | html
+		'maxlength' => '',
+		'conditional_logic' => array (
+		    array (
+		        array (
+		            'field' => 'field_'.$block.'_use_alternate_title',
+		            'operator' => '==',
+		            'value' => 1,
+		        ),
+		    ),
+		),
+	),
+	array (
+		'key' => 'field_'.$block.'_sub_title',
+		'label' => 'Sub Title',
+		'name' => 'sub_title',
+		'type' => 'text',
+		'column_width' => '',
+		'default_value' => '',
+		'instructions' => '(Optional)',
 		'placeholder' => '',
 		'prepend' => '',
 		'append' => '',
@@ -37,11 +71,11 @@ $block_fields = array(
 		'maxlength' => '',
 	),
 	array (
-		'key' => 'field_'.$block.'_2',
-		'label' => 'Description (optional)',
-		'name' => 'description',
+		'key' => 'field_'.$block.'_intro',
+		'label' => 'Intro Text',
+		'name' => 'intro',
 		'type' => 'textarea',
-		'instructions' => 'This is the description of the section.',
+		'instructions' => 'Short Description of the page. (Optional)',
 		'default_value' => '',
 		'placeholder' => '',
 		'maxlength' => '',
@@ -67,14 +101,14 @@ $block_fields = array(
 		'layout' => 'block',
 		'button_label' => 'Add Button',
 		'sub_fields' => array(
-			GRAV_BLOCKS::get_link_fields( 'button')
+			GRAV_BLOCKS::get_link_fields( 'button' )
 		),
 	),
 	array (
-	    'key' => 'field_'.$block.'_form',
-	    'label' => 'Form',
-	    'name' => 'form',
-	    'type' => 'select',
+	    'key' => 'field_'.$block.'_content_alignment',
+	    'label' => 'Content Alignment',
+	    'name' => 'content_alignment',
+	    'type' => 'radio',
 	    'instructions' => '',
 	    'required' => 0,
 	    'conditional_logic' => 0,
@@ -83,35 +117,29 @@ $block_fields = array(
 	        'class' => '',
 	        'id' => '',
 	    ),
-	    'choices' => $gforms,
-	    'default_value' => array (
+	    'choices' => array (
+	        'left' => 'Left',
+	        'center' => 'Center',
+	        'right' => 'Right',
 	    ),
-	    'allow_null' => 0,
-	    'multiple' => 0,         // allows for multi-select
-	    'ui' => 0,               // creates a more stylized UI
-	    'ajax' => 0,
-	    'placeholder' => '',
-	    'disabled' => 0,
-	    'readonly' => 0,
-	),
-	array (
-		'key' => 'field_'.$block.'_center_content',
-		'label' => 'Center Content',
-		'name' => 'center',
-		'type' => 'true_false',
-		'message' => '',
-		'default_value' => 0,
+	    'other_choice' => 0,
+	    'save_other_choice' => 0,
+	    'default_value' => 'center',
+	    'layout' => 'horizontal',
+		'block_options' => 1,
 	),
 );
 
 return array (
-	'label' => 'Call to Action',
+	'label' => 'Banner',
 	'name' => $block,
-	'display' => 'row',
+	'display' => 'block',
 	'min' => '',
 	'max' => '',
 	'sub_fields' => $block_fields,
 	'grav_blocks_settings' => array(
+		'repeater' => false,
+		'repeater_label' => '',
 		'icon' => 'gravicon-cta',
 		'description' => '<div class="row">
 				<div class="columns medium-6">

@@ -13,8 +13,6 @@
 */
 
 $block_fields = array(
-	$block_backgrounds,
-	$block_background_image,
 	array (
 		'key' => 'field_'.$block.'_1',
 		'label' => 'Testimonials',
@@ -47,7 +45,7 @@ $block_fields = array(
 			),
 			array (
 				'key' => 'field_'.$block.'_4',
-				'label' => 'Attribution',
+				'label' => 'Attribution Title',
 				'name' => 'attribution',
 				'type' => 'text',
 				'instructions' => '(Optional)',
@@ -59,14 +57,27 @@ $block_fields = array(
 				'formatting' => 'none',
 				'maxlength' => '',
 			),
+			array (
+				'key' => 'field_'.$block.'_attribution_sub_title',
+				'label' => 'Attribution Sub Title',
+				'name' => 'attribution_sub_title',
+				'type' => 'text',
+				'instructions' => '(Optional)',
+				'column_width' => '',
+				'default_value' => '',
+				'placeholder' => '',
+				'prepend' => '',
+				'append' => '',
+				'formatting' => 'none',
+				'maxlength' => '',
+			),
 		),
-		'min' => '',
+		'min' => '1',
 		'max' => '',
 		'layout' => 'row',
 		'button_label' => 'Add Testimonial',
 	),
 );
-$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 
 return array (
 	'label' => 'Testimonials',
@@ -74,7 +85,7 @@ return array (
 	'display' => 'row',
 	'min' => '',
 	'max' => '',
-	'sub_fields' => $sub_fields,
+	'sub_fields' => $block_fields,
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-testimonials',
 		'description' => '<div class="row">

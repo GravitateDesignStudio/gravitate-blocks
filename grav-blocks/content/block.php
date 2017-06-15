@@ -17,7 +17,7 @@ if($cols = get_sub_field('content_column'))
 				    	the_row();
 
 				    	?>
-						<div class="<?php echo GRAV_BLOCKS::css()->col(12, ($cols_count < 3 ? $cols_span : 12), ($cols_count >= 3 ? $cols_span : 12))->get();?>">
+						<div class="<?php echo GRAV_BLOCKS::css()->col(12, ($cols_count < 3 ? $cols_span : 12), ($cols_count >= 3 ? $cols_span : 12))->add('col-content')->get();?>">
 							<?php the_sub_field('column'); ?>
 						</div>
 						<?php

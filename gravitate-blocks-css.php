@@ -155,28 +155,29 @@ class GRAV_BLOCKS_CSS {
 	public function grid($small=1, $med=2, $large=3, $xlarge=4)
 	{
 
-		if($small && $small <= 4)
+		if($small && $small <= 6)
 		{
 			$this->class[] = 'small-block-grid-'.$small;
 			$this->class[] = 'small-up-'.$small;
 		}
 
-		if($med && $med <= 4)
+		if($med && $med <= 6)
 		{
 			$this->class[] = 'medium-block-grid-'.$med;
 			$this->class[] = 'medium-up-'.$med;
 		}
 
-		if($large && $large <= 4)
+		if($large && $large <= 6)
 		{
 			$this->class[] = 'large-block-grid-'.$large;
 			$this->class[] = 'large-up-'.$large;
 		}
 
-		// if($xlarge && $xlarge <= 4)
-		// {
-		// 	$this->class[] = 'xlarge-block-grid-'.$xlarge;
-		// }
+		if($xlarge && $xlarge <= 6)
+		{
+			$this->class[] = 'xlarge-block-grid-'.$xlarge;
+			$this->class[] = 'xlarge-up-'.$xlarge;
+		}
 
 		return $this;
 	}
@@ -209,6 +210,7 @@ class GRAV_BLOCKS_CSS {
 			if($size['value'])
 			{
 				$this->class[] = 'center-block';
+				$this->class[] = 'mx-auto';
 				$this->class[] = $size['name'].'-centered';
 			}
 		}
@@ -229,9 +231,55 @@ class GRAV_BLOCKS_CSS {
 		{
 			if($size['value'])
 			{
-				$this->class[] = 'center-block';
 				$this->class[] = $size['name'].'-uncentered';
 			}
+		}
+
+		return $this;
+	}
+
+	public function text_align($align='center')
+	{
+
+		$this->class[] = 'text-'.$align;
+		$this->class[] = 'text-xs-'.$align;
+
+		return $this;
+	}
+
+	public function align($align='center')
+	{
+
+		$this->class[] = 'align-'.$align;
+		$this->class[] = 'col-'.$align.'ed';
+
+		return $this;
+	}
+
+	public function hide($small=null, $medium=null, $large=null, $xlarge=null)
+	{
+		if($small)
+		{
+			$this->class[] = 'hide-for-small-only';
+			$this->class[] = 'hidden-xs';
+		}
+
+		if($medium)
+		{
+			$this->class[] = 'hide-for-medium-only';
+			$this->class[] = 'hidden-sm';
+		}
+
+		if($large)
+		{
+			$this->class[] = 'hide-for-large-only';
+			$this->class[] = 'hidden-md';
+		}
+
+		if($xlarge)
+		{
+			$this->class[] = 'hide-for-xlarge';
+			$this->class[] = 'hidden-lg';
 		}
 
 		return $this;
@@ -252,10 +300,8 @@ class GRAV_BLOCKS_CSS {
 		$blocks_name = GRAV_BLOCKS::$current_block_name;
 		$classes = $this->class;
 		$classes = apply_filters('grav_get_css', $classes, $blocks_name);
-		return implode(' ', $classes);
+		return implode(' ', array_unique($classes));
 	}
-
-
 
 
 	public function out()
