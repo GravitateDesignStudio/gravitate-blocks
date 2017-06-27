@@ -20,8 +20,12 @@ foreach(GRAV_BLOCKS::get_gravity_forms() as $gform)
 	$gforms[$gform['id']] = $gform['title'];
 }
 
+$calltoaction_column_choices = array();
+$block_fields = array();
+$num_columns = apply_filters('grav_blocks_content_columns_max', 3);
 
-$block_fields = array(
+
+$block_fields[] = array(
 	array (
 		'key' => 'field_'.$block.'_1',
 		'label' => 'Title (optional)',
@@ -29,7 +33,7 @@ $block_fields = array(
 		'type' => 'text',
 		'column_width' => '',
 		'default_value' => '',
-		'instructions' => 'This block is deprecated, please use the new version.',
+		'instructions' => 'This is the title of the section.',
 		'placeholder' => '',
 		'prepend' => '',
 		'append' => '',
@@ -105,16 +109,15 @@ $block_fields = array(
 );
 
 return array (
-	'label' => 'Call to Action',
+	'label' => 'Call to Action V2',
 	'name' => $block,
 	'display' => 'row',
 	'min' => '',
 	'max' => '',
 	'sub_fields' => $block_fields,
 	'grav_blocks_settings' => array(
-		'version' => '1.0',
+		'version' => '2.0',
 		'icon' => 'gravicon-cta',
-		'deprecated' => 1,
 		'description' => '<div class="row">
 				<div class="columns medium-6">
 					<img src="'.plugins_url().'/gravitate-blocks/grav-blocks/calltoaction/cta.svg">
