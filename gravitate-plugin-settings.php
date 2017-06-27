@@ -43,7 +43,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	public static function format_fields($fields)
 	{
 		self::get_settings();
-
+		
 		// Update Values in Form
 		if(!empty(self::$settings))
 		{
@@ -94,7 +94,6 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 		{
 			self::$settings = get_option(self::$option_key);
 		}
-
 		return self::$settings;
 	}
 
@@ -421,6 +420,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 
 		if($repeater_key && !empty($field['label']))
 		{
+
 			$settings_attribute = 'settings['.$repeater_key.']['.$rep_i.']['.$meta_key.']';
 
 			?><label for="<?php echo $meta_key;?>"><strong><?php echo $field['label'];?></strong></label><br><?php

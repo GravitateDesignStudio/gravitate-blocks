@@ -378,9 +378,9 @@ class GRAV_BLOCKS {
 	}
 
 
-	private static function get_block_background_allowed_video($block){
+	private static function get_block_background_allowed_video(){
 		$block_background_video_blocks =  array('banner');
-		return apply_filters( 'grav_blocks_background_video', $block_background_video_blocks, $block);
+		return apply_filters( 'grav_blocks_background_video', $block_background_video_blocks);
 	}
 
 	private static function get_background_fields($block='', $label='Background', $key='background')
@@ -1435,7 +1435,7 @@ class GRAV_BLOCKS {
 	 *
 	 * @return void
 	 */
-	public static function get_block_background_video_markup($block, $block_variables){
+	public static function get_block_background_video_markup($block, $block_variables = array()){
 		if(in_array($block, self::get_block_background_allowed_video())){
 			if(!empty($block_variables)){ extract($block_variables); }
 			$background = isset($block_background) ? $block_background : get_sub_field('block_background');
@@ -1850,7 +1850,7 @@ class GRAV_BLOCKS {
 	{
 		// Get Settings
 		self::get_settings(true);
-
+		
 		// Save Settings if POST
 		$response = GRAV_BLOCKS_PLUGIN_SETTINGS::save_settings();
 		if($response['error'])
@@ -1969,6 +1969,15 @@ class GRAV_BLOCKS {
 	public static function enqueue_admin_files($hook){
 
 		wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
+		wp_enqueue_script( 'grav_blocks_controls_js', plugin_dir_url( __FILE__ ) . 'library/js/block-admin.js', array('jquery'), self::$version, true );
+
+		$block_data = array(
+			'grid' => array(
+				'choices' => apply_filters('grav_blocks_grid_format_choices', array_reverse(GRAV_BLOCKS::get_grid_format_choices()))
+			)
+		);
+		wp_localize_script( 'grav_blocks_controls_js', 'gravBlockData', $block_data );
+
 		wp_enqueue_style( 'grav_blocks_icons_css', 'https://i.icomoon.io/public/790bec4572/GravitateBlocks/style.css', true, '1.1.0' );
 		if ( 'toplevel_page_gravitate-blocks' != $hook ) {
 	        return;
@@ -3045,5 +3054,36 @@ class GRAV_BLOCKS {
 		self::$cache['gravity_forms'] = $gravity_forms;
 
 		return $gravity_forms;
+	}
+
+
+
+
+	public static function get_radio_num_conditionals($field = '', $num = 0, $max = 4)
+	{
+		$conditional_array = array();
+		if($num){
+			for( $i = $max; $i >= $num; $i-- ) {
+				$conditional_array[] = array (
+					array (
+						'field' => $field,
+						'operator' => '==',
+						'value' => $i,
+					),
+				);
+			}
+		}
+
+		return $conditional_array;
+	}
+
+
+	public static function get_grid_format_choices() {
+		return array (
+			'' => 'Grid',
+			'gallery' => 'Image Gallery',
+			'logos' => 'Logos',
+			'slider' => 'Slider'
+		);
 	}
 }

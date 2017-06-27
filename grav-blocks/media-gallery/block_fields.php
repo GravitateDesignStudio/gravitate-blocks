@@ -14,6 +14,8 @@
 */
 
 $block_fields = array(
+	$block_backgrounds,
+	$block_background_image,
 	array (
 		'key' => 'field_'.$block.'_1',
 		'label' => 'Gallery Title',
@@ -29,30 +31,6 @@ $block_fields = array(
 		'maxlength' => '',
 	),
 	array (
-	    'key' => 'field_'.$block.'_format',
-	    'label' => 'Format',
-	    'name' => 'format',
-	    'type' => 'radio',
-	    'instructions' => '',
-	    'required' => 0,
-	    'conditional_logic' => 0,
-	    'wrapper' => array (
-	        'width' => '',
-	        'class' => '',
-	        'id' => '',
-	    ),
-	    'choices' => array (
-	        '' => 'Grid',
-	        'gallery' => 'Image Gallery',
-			'logos' => 'Logos',
-			'slider' => 'Slider'
-	    ),
-	    'other_choice' => 0,
-	    'save_other_choice' => 0,
-	    'default_value' => '',
-	    'layout' => 'horizontal',
-	),
-	array (
 		'key' => 'field_'.$block.'_11',
 		'label' => 'Place Item Titles Below Image',
 		'name' => 'move_title',
@@ -60,124 +38,6 @@ $block_fields = array(
 		'instructions' => 'By default, individual gallery item titles show above their respective images.',
 		'message' => '',
 		'default_value' => 0,
-		'block_options' => 1,
-		'conditional_logic' => array (
-		    array (
-		        array (
-		            'field' => 'field_'.$block.'_format',
-		            'operator' => '!=',
-		            'value' => 'logos',
-		        ),
-		    ),
-		),
-	),
-	array (
-	    'key' => 'field_'.$block.'_num_columns_small',
-	    'label' => 'Number of Columns on Small Screens',
-	    'name' => 'num_columns_small',
-	    'type' => 'radio',
-	    'instructions' => '',
-	    'required' => 0,
-	    'conditional_logic' => 0,
-	    'wrapper' => array (
-	        'width' => '',
-	        'class' => '',
-	        'id' => '',
-	    ),
-	    'choices' => array (
-	        '1' => '1',
-	        '2' => '2',
-	        '3' => '3',
-	        '4' => '4',
-	        '5' => '5',
-	        '6' => '6',
-	    ),
-	    'other_choice' => 0,
-	    'save_other_choice' => 0,
-	    'default_value' => '1',
-	    'layout' => 'horizontal',
-		'block_options' => 1,
-	),
-	array (
-	    'key' => 'field_'.$block.'_num_columns_medium',
-	    'label' => 'Number of Columns on Medium Screens',
-	    'name' => 'num_columns_medium',
-	    'type' => 'radio',
-	    'instructions' => '',
-	    'required' => 0,
-	    'conditional_logic' => 0,
-	    'wrapper' => array (
-	        'width' => '',
-	        'class' => '',
-	        'id' => '',
-	    ),
-	    'choices' => array (
-	        '1' => '1',
-	        '2' => '2',
-	        '3' => '3',
-	        '4' => '4',
-	        '5' => '5',
-	        '6' => '6',
-	    ),
-	    'other_choice' => 0,
-	    'save_other_choice' => 0,
-	    'default_value' => '2',
-	    'layout' => 'horizontal',
-		'block_options' => 1,
-	),
-	array (
-	    'key' => 'field_'.$block.'_num_columns_large',
-	    'label' => 'Number of Columns on Large Screens',
-	    'name' => 'num_columns_large',
-	    'type' => 'radio',
-	    'instructions' => '',
-	    'required' => 0,
-	    'conditional_logic' => 0,
-	    'wrapper' => array (
-	        'width' => '',
-	        'class' => '',
-	        'id' => '',
-	    ),
-	    'choices' => array (
-	        '1' => '1',
-	        '2' => '2',
-	        '3' => '3',
-	        '4' => '4',
-	        '5' => '5',
-	        '6' => '6',
-	    ),
-	    'other_choice' => 0,
-	    'save_other_choice' => 0,
-	    'default_value' => '4',
-	    'layout' => 'horizontal',
-		'block_options' => 1,
-	),
-	array (
-	    'key' => 'field_'.$block.'_num_columns_xlarge',
-	    'label' => 'Number of Columns on Extra Large Screens',
-	    'name' => 'num_columns_xlarge',
-	    'type' => 'radio',
-	    'instructions' => '',
-	    'required' => 0,
-	    'conditional_logic' => 0,
-	    'wrapper' => array (
-	        'width' => '',
-	        'class' => '',
-	        'id' => '',
-	    ),
-	    'choices' => array (
-	        '1' => '1',
-	        '2' => '2',
-	        '3' => '3',
-	        '4' => '4',
-	        '5' => '5',
-	        '6' => '6',
-	    ),
-	    'other_choice' => 0,
-	    'save_other_choice' => 0,
-	    'default_value' => '6',
-	    'layout' => 'horizontal',
-		'block_options' => 1,
 	),
 	array (
 		'key' => 'field_'.$block.'_2',
@@ -200,15 +60,6 @@ $block_fields = array(
 				'append' => '',
 				'formatting' => 'none',
 				'maxlength' => '',
-				'conditional_logic' => array (
-				    array (
-				        array (
-				            'field' => 'field_'.$block.'_format',
-				            'operator' => '!=',
-				            'value' => 'logos',
-				        ),
-				    ),
-				),
 			),
 			array (
 				'key' => 'field_'.$block.'_9',
@@ -221,7 +72,7 @@ $block_fields = array(
 				'library' => 'all',
 				'preview_size' => 'medium',
 			),
-			GRAV_BLOCKS::get_link_fields(array('name' => 'link', 'show_text' => false, 'conditional_logic' => array('field' => 'field_'.$block.'_format','operator' => '!=','value' => 'gallery'))),
+			GRAV_BLOCKS::get_link_fields( 'link', '', false ),
 			array (
 				'key' => 'field_'.$block.'_10',
 				'label' => 'Content',
@@ -229,15 +80,6 @@ $block_fields = array(
 				'type' => 'textarea',
 				'column_width' => '',
 				'default_value' => '',
-				'conditional_logic' => array (
-				    array (
-				        array (
-				            'field' => 'field_'.$block.'_format',
-				            'operator' => '!=',
-				            'value' => 'logos',
-				        ),
-				    ),
-				),
 			),
 		),
 		'min' => '1',
@@ -246,16 +88,18 @@ $block_fields = array(
 		'button_label' => 'Add Gallery Item',
 	),
 );
+$sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 
 return array (
 	'name' => $block,
 	'label' => 'Media Gallery',
 	'display' => 'block',
-	'sub_fields' => $block_fields,
+	'sub_fields' => $sub_fields,
 	'min' => '',
 	'max' => '',
 	'grav_blocks_settings' => array(
 		'icon' => 'gravicon-gallery',
+		'deprecated' => 1,
 		'description' => '<div class="row">
 				<div class="columns medium-6">
 					<img src="'.plugins_url().'/gravitate-blocks/grav-blocks/media-gallery/gallery.svg">
