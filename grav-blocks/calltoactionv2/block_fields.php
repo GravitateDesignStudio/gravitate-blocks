@@ -22,15 +22,39 @@ foreach(GRAV_BLOCKS::get_gravity_forms() as $gform)
 
 $calltoaction_column_choices = array();
 $block_fields = array();
-$num_columns = apply_filters('grav_blocks_content_columns_max', 3);
+$num_columns = apply_filters('grav_blocks_calltoaction_columns_max', 3);
 
+for( $i = 1; $i <= $num_columns; $i++ ) {
+	$calltoaction_column_choices[$i] = $i;
+}
 
-$block_fields[] = array(
-	array (
-		'key' => 'field_'.$block.'_1',
-		'label' => 'Title (optional)',
-		'name' => 'title',
+$block_fields[] = array (
+    'key' => 'field_'.$block.'_num_columns',
+    'label' => 'Number of Columns',
+    'name' => 'num_columns',
+    'type' => 'radio',
+    'instructions' => '',
+    'required' => 0,
+    'conditional_logic' => 0,
+    'wrapper' => array (
+        'width' => '',
+        'class' => '',
+        'id' => '',
+    ),
+    'choices' => $calltoaction_column_choices,
+    'other_choice' => 0,
+    'save_other_choice' => 0,
+    'default_value' => 1,
+    'layout' => 'horizontal',
+);
+
+for( $i = 1; $i <= $num_columns; $i++ ) {
+	$block_fields[] = array (
+		'key' => 'field_'.$block.'_title_'.$i,
+		'label' => 'Title (optional) '.$i,
+		'name' => 'title_'.$i,
 		'type' => 'text',
+		'conditional_logic' => GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns),
 		'column_width' => '',
 		'default_value' => '',
 		'instructions' => 'This is the title of the section.',
@@ -39,27 +63,28 @@ $block_fields[] = array(
 		'append' => '',
 		'formatting' => 'none', 		// none | html
 		'maxlength' => '',
-	),
-	array (
-		'key' => 'field_'.$block.'_2',
-		'label' => 'Description (optional)',
-		'name' => 'description',
+	);
+	$block_fields[] = array (
+		'key' => 'field_'.$block.'_description_'.$i,
+		'label' => 'Description (optional) '.$i,
+		'name' => 'description_'.$i,
 		'type' => 'textarea',
+		'conditional_logic' => GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns),
 		'instructions' => 'This is the description of the section.',
 		'default_value' => '',
 		'placeholder' => '',
 		'maxlength' => '',
 		'rows' => '',
 		'formatting' => 'html',
-	),
-	array (
-		'key' => 'field_'.$block.'_3',
-		'label' => 'Buttons',
-		'name' => 'buttons',
+	);
+	$block_fields[] = array (
+		'key' => 'field_'.$block.'_buttons_'.$i,
+		'label' => 'Buttons '.$i,
+		'name' => 'buttons_'.$i,
 		'type' => 'repeater',
 		'instructions' => '',
 		'required' => 0,
-		'conditional_logic' => 0,
+		'conditional_logic' => GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns),
 		'wrapper' => array (
 			'width' => '',
 			'class' => '',
@@ -73,15 +98,15 @@ $block_fields[] = array(
 		'sub_fields' => array(
 			GRAV_BLOCKS::get_link_fields( 'button')
 		),
-	),
-	array (
-	    'key' => 'field_'.$block.'_form',
-	    'label' => 'Form',
-	    'name' => 'form',
+	);
+	$block_fields[] = array (
+	    'key' => 'field_'.$block.'_form_'.$i,
+	    'label' => 'Form '.$i,
+	    'name' => 'form_'.$i,
 	    'type' => 'select',
 	    'instructions' => '',
 	    'required' => 0,
-	    'conditional_logic' => 0,
+	    'conditional_logic' => GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns),
 	    'wrapper' => array (
 	        'width' => '',
 	        'class' => '',
@@ -97,16 +122,17 @@ $block_fields[] = array(
 	    'placeholder' => '',
 	    'disabled' => 0,
 	    'readonly' => 0,
-	),
-	array (
-		'key' => 'field_'.$block.'_center_content',
-		'label' => 'Center Content',
-		'name' => 'center',
+	);
+	$block_fields[] = array (
+		'key' => 'field_'.$block.'_center_content_'.$i,
+		'label' => 'Center Content '.$i,
+		'name' => 'center_'.$i,
 		'type' => 'true_false',
+		'conditional_logic' => GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns),
 		'message' => '',
 		'default_value' => 0,
-	),
-);
+	);
+}
 
 return array (
 	'label' => 'Call to Action V2',
