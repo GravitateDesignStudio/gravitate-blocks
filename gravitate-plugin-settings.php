@@ -43,7 +43,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	public static function format_fields($fields)
 	{
 		self::get_settings();
-		
+
 		// Update Values in Form
 		if(!empty(self::$settings))
 		{
@@ -262,6 +262,7 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 								{
 									$repeater_num = 0;
 									$added_placeholder = 0;
+
 									foreach ($field['fields'] as $rep_i => $rep_fields)
 									{
 										/* Create Placeholer */
@@ -415,6 +416,8 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 	 */
 	public static function settings_field($meta_key, $field, $repeater_key='', $rep_i=0)
 	{
+		$deprecated = array();
+
 		?><span class="settings-field-wrapper"><?php
 		$settings_attribute = 'settings['.$meta_key.']';
 
@@ -458,6 +461,8 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 		}
 		else if(!empty($field['type']) && $field['type'] == 'checkbox')
 		{
+
+
 			if(is_string($field['options']))
 			{
 				$field['options'] = explode(',', $field['options']);
@@ -470,6 +475,10 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 
 			foreach($field['options'] as $option_value => $options)
 			{
+				if(isset($options['deprecated']) ){
+					$deprecated[$option_value] = $options;
+					continue;
+				}
 				$options_label = (is_array($options)) ? $options['label'] : $options;
 				$block_icon = (is_array($options) && $options['icon']) ? $options['icon'] : '';
 				$block_description = (is_array($options) && $options['description']) ? $options['description'] : '';
@@ -499,6 +508,41 @@ class GRAV_BLOCKS_PLUGIN_SETTINGS
 					<?php } ?>
 				</span>
 				<?php
+			}
+			if(!empty($deprecated)){
+				?> <h4 style="width:100%;margin-bottom:0">Deprecated Blocks</h4><span class="description" style="margin-bottom:30px;">These blocks are marked for deprecation and will no longer be updated or supported. Please use the replacing blocks.</span><?php
+				foreach($deprecated as $option_value => $options)
+				{
+					$options_label = (is_array($options)) ? $options['label'] : $options;
+					$block_icon = (is_array($options) && $options['icon']) ? $options['icon'] : '';
+					$block_description = (is_array($options) && $options['description']) ? $options['description'] : '';
+					$real_value = ($option_value !== $options_label && !is_numeric($option_value) ? $option_value : $options_label);
+
+					if(isset($field['value']) && is_array($field['value']))
+					{
+						$checked = (in_array($real_value, $field['value'])) ? 'checked' : '';
+					}
+					else
+					{
+						$checked = '';
+					}
+					?>
+					<span class="grav-option-wrapper">
+						<label>
+							<input type="checkbox" name="<?php echo $settings_attribute;?>[]" value="<?php echo $option_value; ?>" <?php echo $checked; ?>>
+							<span <?php if($block_icon){ echo 'class="'.esc_attr($block_icon).'"'; } ?>><?php echo ucfirst($options_label); ?></span>
+						</label>
+						<?php if($block_description){ ?>
+							<a class="grav-inline thickbox" href="#TB_inline?width=600&height=550&inlineId=<?php echo $option_value; ?>" title="<?php echo ucfirst($options_label); ?>">?</a>
+							<div style="display:none;"><div id="<?php echo $option_value; ?>">
+								<div class="grav-modal-content">
+									<?php echo $block_description; ?>
+								</div>
+							</div></div>
+						<?php } ?>
+					</span>
+					<?php
+				}
 			}
 		}
 		else if(!empty($field['type']) && $field['type'] == 'radio')
