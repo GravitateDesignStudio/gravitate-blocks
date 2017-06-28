@@ -2,7 +2,7 @@
 Contributors: Gravitate, bferdinand
 Tags: Gravitate, Content Blocks, ACF, Advanced Custom Fields
 Requires at least: 3.5
-Tested up to: 4.7.2
+Tested up to: 4.8
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -30,6 +30,9 @@ Easily add content to your site with Gravitate Blocks.
 
 
 == Changelog ==
+
+= 2.0.0 =
+
 
 = 1.7.5 =
 * Bug fix - fixed issue with supplying post id instead of attachment id to image functions.

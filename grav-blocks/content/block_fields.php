@@ -43,7 +43,7 @@ $block_fields = array(
 );
 
 return array (
-	'label' => 'Content',
+	'label' => 'Content (D)',
 	'name' => $block,
 	'display' => 'block',
 	'min' => '',

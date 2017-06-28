@@ -1890,6 +1890,7 @@ class GRAV_BLOCKS {
 			<a href="<?php echo self::$page;?>&section=general" class="<?php echo self::get_current_tab($_GET['section'], 'general'); ?>">General</a>
 			<a href="<?php echo self::$page;?>&section=advanced" class="<?php echo self::get_current_tab($_GET['section'], 'advanced'); ?>">Advanced</a>
 			<a href="<?php echo self::$page;?>&section=developers" class="<?php echo self::get_current_tab($_GET['section'], 'developers'); ?>">Developers</a>
+			<a href="<?php echo self::$page;?>&section=usage" class="<?php echo self::get_current_tab($_GET['section'], 'usage'); ?>">Block Usage</a>
 		</div>
 
 		<br>
@@ -1907,6 +1908,10 @@ class GRAV_BLOCKS {
 
 			case 'developers':
 				self::developers();
+			break;
+
+			case 'usage':
+				self::blocks_usage();
 			break;
 
 			default:
@@ -1949,6 +1954,10 @@ class GRAV_BLOCKS {
 		include_once('library/includes/developer.php');
 	}
 
+	private static function blocks_usage() {
+		include_once('library/includes/blocks-usage.php');
+	}
+
 	/**
 	 * Filters a string to be in a title format
 	 *
@@ -1970,7 +1979,7 @@ class GRAV_BLOCKS {
 	 */
 	public static function enqueue_admin_files($hook){
 
-		wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.css', true, '1.0.0' );
+		wp_enqueue_style( 'grav_blocks_admin_css', plugin_dir_url( __FILE__ ) . 'library/css/master.min.css', true, '1.0.0' );
 		wp_enqueue_script( 'grav_blocks_controls_js', plugin_dir_url( __FILE__ ) . 'library/js/block-admin.js', array('jquery'), self::$version, true );
 
 		$block_data = array(
@@ -3088,4 +3097,51 @@ class GRAV_BLOCKS {
 			'slider' => 'Slider'
 		);
 	}
+
+	public static function get_blocks_usage( $data ) {
+		// Do something with the $request
+		$response = '';
+		if ( $grav_blocks = self::get_available_blocks() )
+		{
+
+			if($data['name']){
+				$chosen_blocks[$data['name']] = $grav_blocks[$data['name']];
+			} else {
+				$chosen_blocks = $grav_blocks;
+			}
+			foreach ( $chosen_blocks as $block_name => $block )
+			{
+				$response .= '<div class="grav-blocks-row">';
+				$posts = get_posts(
+					array(
+						'numberposts' => -1,
+						'post_type' => get_post_types(),
+						'meta_query' => array(
+							array(
+								'key' => 'grav_blocks',
+								'value' => $block_name,
+								'compare' => 'LIKE'
+							),
+						),
+					)
+				);
+				$response .= '<div class="grav-blocks-column"><h4>' . $block['label'] . ' (' . count($posts) . ')</h4></div>';
+				if ( count($posts) > 0 )
+				{
+					$response .= '<div class="grav-blocks-column"><ul class="permalink block ' . $block_name . '">';
+					foreach ( $posts as $post )
+					{
+						// debug($post, true);
+						$response .= '<li><a class="permalink" target="_blank" href="' . get_the_permalink( $post->ID ) . '">' . get_the_title( $post->ID ) . '</a> (<a class="edit" href="' . admin_url() . 'post.php?post=' . $post->ID . '&action=edit" target="_blank">edit</a>)</li>';
+					}
+					$response .= '</ul></div>';
+				}
+				$response .= '</div>';
+			}
+
+		}
+
+		return $response;
+	}
+
 }
