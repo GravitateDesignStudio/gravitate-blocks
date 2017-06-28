@@ -49,6 +49,29 @@ $block_fields[] = array (
 );
 
 for( $i = 1; $i <= $num_columns; $i++ ) {
+	//Setup background fields
+	$background_fields = GRAV_BLOCKS::get_background_fields($block, 'Background ' . $i, 'background_' . $i);
+
+	//Rename background fields
+	foreach ($background_fields as $key => $field) {
+
+		$background_fields[$key]['name'] = $field['name'] . '_'. $i;
+	}
+
+	// Add conditional_logic to background color select field
+	foreach ($background_fields as $key => $field) {
+		if ($field['name'] == 'block_background_' . $i) {
+			if ($background_fields[$key]['conditional_logic'] == 0) {
+				$column_conditionals = GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns);
+
+				$background_fields[$key]['conditional_logic'] = $column_conditionals;
+			}
+		}
+	}
+
+	//Merge block_fields with background_fields
+	$block_fields = array_merge_recursive($block_fields, $background_fields);
+
 	$block_fields[] = array (
 		'key' => 'field_'.$block.'_title_'.$i,
 		'label' => 'Title (optional) '.$i,
@@ -124,13 +147,27 @@ for( $i = 1; $i <= $num_columns; $i++ ) {
 	    'readonly' => 0,
 	);
 	$block_fields[] = array (
-		'key' => 'field_'.$block.'_center_content_'.$i,
-		'label' => 'Center Content '.$i,
-		'name' => 'center_'.$i,
-		'type' => 'true_false',
-		'conditional_logic' => GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns),
-		'message' => '',
-		'default_value' => 0,
+	    'key' => 'field_'.$acf_group.'_alignment_' . $i,
+	    'label' => 'Alignment '.$i,
+	    'name' => 'alignment_' . $i,
+	    'type' => 'radio',
+	    'instructions' => '',
+	    'required' => 0,
+	    'conditional_logic' => GRAV_BLOCKS::get_radio_num_conditionals('field_'.$block.'_num_columns', $i, $num_columns),
+	    'wrapper' => array (
+	        'width' => '',
+	        'class' => '',
+	        'id' => '',
+	    ),
+	    'choices' => array (
+	        'left' => 'Left',
+	        'center' => 'Center',
+	        'right' => 'Right ',
+	    ),
+	    'other_choice' => 0,
+	    'save_other_choice' => 0,
+	    'default_value' => 'left',
+	    'layout' => 'horizontal',
 	);
 }
 
