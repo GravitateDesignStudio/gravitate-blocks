@@ -172,7 +172,7 @@ for( $i = 1; $i <= $num_columns; $i++ ) {
 }
 
 return array (
-	'label' => 'Call to Action V2',
+	'label' => 'Call to Action',
 	'name' => $block,
 	'display' => 'row',
 	'min' => '',
