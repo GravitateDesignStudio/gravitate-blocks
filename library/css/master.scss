@@ -1,4 +1,6 @@
-@import 'compass';
+// @import 'compass';
+@import 'sass-includes/compass/compass';
+@import 'sass-includes/compass/animation/core';
 @import 'sass-includes/mixins';
 @import 'https://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,900,300,200';
 
@@ -42,7 +44,8 @@ $wp-media-query: 783px;
 		a {
 			text-decoration: none;
 			&.grav-inline {
-				@include transition(all .3s ease-in-out);
+				-webkit-transition: all .3s ease-in-out;
+				transition: all .3s ease-in-out;
 				height: 16px;
 				width: 16px;
 			    display: inline-block;
@@ -60,7 +63,7 @@ $wp-media-query: 783px;
 			    color: $gray-light;
 			    opacity: .7;
 			    &:hover {
-			    	@include transform(scale(1.1,1.1));
+					transform: scale(1.1,1.1);
 			    	border-color: $magenta;
 			    	color: $magenta;
 			    	opacity: 1;
@@ -332,5 +335,24 @@ $wp-media-query: 783px;
 		font-family: 'grav-blocks';
 		font-size: 16px;
 		margin-top: 1px;
+	}
+}
+
+.grav-blocks-row {
+	box-sizing: border-box;
+	border-bottom: 1px solid rgba($gray-light, .3);
+	max-width: 840px;
+	&::after {
+		content: '';
+		display: table;
+  		clear: both;
+	}
+	* {
+		box-sizing: border-box;
+	}
+	.grav-blocks-column {
+		float: left;
+		width: 50%;
+		padding: 0 .9375rem;
 	}
 }
