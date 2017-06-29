@@ -105,7 +105,7 @@ $block_fields = array(
 );
 
 return array (
-	'label' => 'Call to Action',
+	'label' => 'Call to Action (D)',
 	'name' => $block,
 	'display' => 'row',
 	'min' => '',

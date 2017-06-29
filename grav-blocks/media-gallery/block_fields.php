@@ -92,7 +92,7 @@ $sub_fields = array_merge(GRAV_BLOCKS::get_additional_fields(), $block_fields);
 
 return array (
 	'name' => $block,
-	'label' => 'Media Gallery',
+	'label' => 'Media Gallery (D)',
 	'display' => 'block',
 	'sub_fields' => $sub_fields,
 	'min' => '',
