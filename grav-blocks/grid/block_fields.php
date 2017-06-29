@@ -183,6 +183,11 @@ $block_fields = array(
 				            'operator' => '!=',
 				            'value' => 'logos',
 				        ),
+						array (
+				            'field' => 'field_'.$block.'_format',
+				            'operator' => '!=',
+				            'value' => 'gallery',
+				        ),
 				    ),
 				),
 			),
@@ -211,6 +216,11 @@ $block_fields = array(
 				            'field' => 'field_'.$block.'_format',
 				            'operator' => '!=',
 				            'value' => 'logos',
+				        ),
+						array (
+				            'field' => 'field_'.$block.'_format',
+				            'operator' => '!=',
+				            'value' => 'gallery',
 				        ),
 				    ),
 				),
