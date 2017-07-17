@@ -1218,9 +1218,11 @@ class GRAV_BLOCKS {
 		$block_attributes['class'] = GRAV_BLOCKS::css()->add($block_attributes['class'])->get();
 		$block_attributes['class'] = explode(' ', $block_attributes['class']);
 
-		// Allow filtering all attributes
-		$block_attributes = array_filter(apply_filters('grav_blocks_container_attributes', $block_attributes, $block_name));
-
+		// Allow filtering all attributes - remove empty values, but leave 0
+		$block_attributes = array_filter(apply_filters('grav_blocks_container_attributes', $block_attributes, $block_name), function($value) {
+    		return ($value !== null && $value !== false && $value !== '');
+		});
+		
 		return $block_attributes;
 	}
 
