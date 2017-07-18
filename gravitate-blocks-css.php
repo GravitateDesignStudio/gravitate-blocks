@@ -30,11 +30,11 @@ class GRAV_BLOCKS_CSS {
 	 *
 	 * @return void
 	 */
-	public function col($small=12, $med=12, $large=12, $xlarge=12)
+	public function col($small=null, $med=null, $large=null, $xlarge=null)
 	{
 		$this->class[] = 'columns';
 
-		if($small && $small < 12)
+		if(is_numeric($small))
 		{
 			$this->class[] = 'col-xs-'.$small;
 			$this->class[] = 'small-'.$small;
@@ -44,19 +44,19 @@ class GRAV_BLOCKS_CSS {
 			$this->class[] = 'small-12';
 		}
 
-		if($med && $med < 12)
+		if(is_numeric($med))
 		{
 			$this->class[] = 'col-sm-'.$med;
 			$this->class[] = 'medium-'.$med;
 		}
 
-		if($large && $large < 12)
+		if(is_numeric($large))
 		{
 			$this->class[] = 'col-md-'.$large;
 			$this->class[] = 'large-'.$large;
 		}
 
-		if($xlarge && $xlarge < 12)
+		if(is_numeric($xlarge))
 		{
 			$this->class[] = 'col-lg-'.$xlarge;
 			$this->class[] = 'xlarge-'.$xlarge;
@@ -65,27 +65,27 @@ class GRAV_BLOCKS_CSS {
 		return $this;
 	}
 
-	public function col_offset($small=12, $med=12, $large=12, $xlarge=12)
+	public function col_offset($small=null, $med=null, $large=null, $xlarge=null)
 	{
-		if($small && $small < 12)
+		if(is_numeric($small))
 		{
 			$this->class[] = 'col-xs-offset-'.$small;
 			$this->class[] = 'small-offset-'.$small;
 		}
 
-		if($med && $med < 12)
+		if(is_numeric($med))
 		{
 			$this->class[] = 'col-sm-offset-'.$med;
 			$this->class[] = 'medium-offset-'.$med;
 		}
 
-		if($large && $large < 12)
+		if(is_numeric($large))
 		{
 			$this->class[] = 'col-md-offset-'.$large;
 			$this->class[] = 'large-offset-'.$large;
 		}
 
-		if($xlarge && $xlarge < 12)
+		if(is_numeric($xlarge))
 		{
 			$this->class[] = 'col-lg-offset-'.$xlarge;
 			$this->class[] = 'xlarge-offset-'.$xlarge;
@@ -94,27 +94,27 @@ class GRAV_BLOCKS_CSS {
 		return $this;
 	}
 
-	public function col_push($small=12, $med=12, $large=12, $xlarge=12)
+	public function col_push($small=null, $med=null, $large=null, $xlarge=null)
 	{
-		if($small && $small < 12)
+		if(is_numeric($small))
 		{
 			$this->class[] = 'col-xs-push-'.$small;
 			$this->class[] = 'small-push-'.$small;
 		}
 
-		if($med && $med < 12)
+		if(is_numeric($med))
 		{
 			$this->class[] = 'col-sm-push-'.$med;
 			$this->class[] = 'medium-push-'.$med;
 		}
 
-		if($large && $large < 12)
+		if(is_numeric($large))
 		{
 			$this->class[] = 'col-md-push-'.$large;
 			$this->class[] = 'large-push-'.$large;
 		}
 
-		if($xlarge && $xlarge < 12)
+		if(is_numeric($xlarge))
 		{
 			$this->class[] = 'col-lg-push-'.$xlarge;
 			$this->class[] = 'xlarge-push-'.$xlarge;
@@ -123,27 +123,27 @@ class GRAV_BLOCKS_CSS {
 		return $this;
 	}
 
-	public function col_pull($small=12, $med=12, $large=12, $xlarge=12)
+	public function col_pull($small=null, $med=null, $large=null, $xlarge=null)
 	{
-		if($small && $small < 12)
+		if(is_numeric($small))
 		{
 			$this->class[] = 'col-xs-pull-'.$small;
 			$this->class[] = 'small-pull-'.$small;
 		}
 
-		if($med && $med < 12)
+		if(is_numeric($med))
 		{
 			$this->class[] = 'col-sm-pull-'.$med;
 			$this->class[] = 'medium-pull-'.$med;
 		}
 
-		if($large && $large < 12)
+		if(is_numeric($large))
 		{
 			$this->class[] = 'col-md-pull-'.$large;
 			$this->class[] = 'large-pull-'.$large;
 		}
 
-		if($xlarge && $xlarge < 12)
+		if(is_numeric($xlarge))
 		{
 			$this->class[] = 'col-lg-pull-'.$xlarge;
 			$this->class[] = 'xlarge-pull-'.$xlarge;
