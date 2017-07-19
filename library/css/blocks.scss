@@ -1,0 +1,65 @@
+/*************************************
+Foundation Variables
+**************************************/
+$row-max-width-num: 1440;
+$row-max-width: #{$row-max-width-num}px;
+$outer-gutter-width-small: 0;
+$outer-gutter-width: 3.25rem;
+$gutter-width-small: 1.85rem;
+$gutter-width: 1.25rem;
+$medium: 641px;
+$large: 1025px;
+$xlarge: 1441px;
+$xxlarge: 1921px;
+
+
+/*************************************
+Colors
+**************************************/
+$white: #ffffff;
+$black: #000000;
+$gray: #777777;
+$transparent: rgba(0,0,0,0);
+
+$block_colors: 'bg-white', 'bg-black', 'bg-light', 'bg-dark', 'bg-red', 'bg-blue', 'bg-green', 'bg-none', 'bg-gray', 'bg-lightgray', 'bg-darkgray', 'bg-grey', 'bg-lightgrey', 'bg-darkgrey';
+
+
+@import 'sass-includes/compass/compass';
+@import 'sass-includes/compass/animation/core';
+@import 'sass-includes/mixins';
+@import 'sass-includes/swiper';
+@import 'sass-includes/slider';
+@import 'sass-includes/colorbox';
+
+@each $color in $block_colors {
+	.block-container.#{$color} + .block-container.#{$color} .block-inner { padding-top: 0; }
+}
+
+.block-container {
+	&:first-of-type {
+		.block-inner {
+			padding-top: 3rem;
+		}
+	}
+	.block-inner {
+		padding-bottom: 3rem;
+	}
+	+ .block-container {
+		.block-inner {
+			padding-top: 3rem;
+		}
+	}
+	&.block-media-gallery {
+		li {
+			list-style: none;
+		}
+		img + p,
+		a + p {
+			margin-top: .75rem;
+		}
+	}
+}
+
+.flex {
+    display: flex;
+}

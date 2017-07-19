@@ -1222,7 +1222,7 @@ class GRAV_BLOCKS {
 		$block_attributes = array_filter(apply_filters('grav_blocks_container_attributes', $block_attributes, $block_name), function($value) {
     		return ($value !== null && $value !== false && $value !== '');
 		});
-		
+
 		return $block_attributes;
 	}
 
@@ -2024,7 +2024,7 @@ class GRAV_BLOCKS {
 		}
 		if (GRAV_BLOCKS_PLUGIN_SETTINGS::is_setting_checked('css_options', 'use_default') && self::is_viewable())
 		{
-			wp_enqueue_style( 'default_css', plugin_dir_url( __FILE__ ) . 'library/css/default.css' , array(), self::$version);
+			wp_enqueue_style( 'default_css', plugin_dir_url( __FILE__ ) . 'library/css/blocks.min.css' , array(), self::$version);
 		}
 	}
 
