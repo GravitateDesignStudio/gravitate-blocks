@@ -16,7 +16,7 @@ jQuery(document).ready(function($)
                 }
             });
         });
-        $('.acf-field-flexible-content .tmpl-popup').html($gravpopup[0].outerHTML);
+        $('.acf-field-flexible-content .tmpl-popup').html($gravpopup[0] ? $gravpopup[0].outerHTML : '');
         gravBlocks.setClick();
     }
 
