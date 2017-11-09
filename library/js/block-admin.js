@@ -16,7 +16,13 @@ jQuery(document).ready(function($)
                 }
             });
         });
-        $('.acf-field-flexible-content .tmpl-popup').html($gravpopup[0] ? $gravpopup[0].outerHTML : '');
+        
+        try {
+            $('.acf-field-flexible-content .tmpl-popup').html($gravpopup[0].outerHTML);
+        } catch (e) {
+            // safety net to prevent an uncaught error if $gravpopup is undefined
+        }
+
         gravBlocks.setClick();
     }
 
