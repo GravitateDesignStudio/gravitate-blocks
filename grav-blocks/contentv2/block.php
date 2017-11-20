@@ -4,7 +4,7 @@ if($column_num = get_sub_field('num_columns')){
 	$cols_span = (12/$column_num);
 	$cols_span = apply_filters('grav_block_content_columns', $cols_span);
 	$medium_col = $column_num < 3 ? $cols_span : 12;
-	$large_col = $column_num >= 3 ? $cols_span : 12;
+	$large_col = $column_num >= 2 ? $cols_span : 12;
 
 	$sidebar = ($column_num == 2) ? get_sub_field('format') : '';
 
