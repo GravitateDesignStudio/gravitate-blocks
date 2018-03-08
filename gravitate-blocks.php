@@ -944,7 +944,9 @@ class GRAV_BLOCKS {
 	{
 		// Check $args array if it exists and what is set.
 		$section = (!empty($args['section'])) ? $args['section'] : 'grav_blocks';
-		$object = (isset($args['object']) || (isset($args['object']) && is_null($args['object']))) ? $args['object'] : false;
+		// $object = (isset($args['object']) || (isset($args['object']) && is_null($args['object']))) ? $args['object'] : false;
+		$object = (in_array('object', array_keys($args)) ? $args['object'] : false);
+
 
 		$block_only = !empty($args['block']) ? $args['block'] : '';
 		$block_only_id = !empty($args['block_id']) ? $args['block_id'] : '';
@@ -2468,13 +2470,16 @@ class GRAV_BLOCKS {
 		{
 			if($count = wp_count_posts($post_type)->publish)
 			{
-				$post_types[$count] = $post_type;
+				if ($count > 0) {
+					$post_types[$post_type] = $count;
+				}
 			}
 		}
 
 		if(!empty($post_types))
 		{
-			ksort($post_types);
+			asort($post_types);
+			$post_types = array_keys($post_types);
 		}
 
 		if(is_array($label))
