@@ -1705,12 +1705,12 @@ class GRAV_BLOCKS {
 					'after_title' => 'Place Gravitate Blocks directly after the title in the WordPress admin. <span class="extra-info">( changes position using acf_after_title )</span>',
 					'hide_content' => 'Remove the WordPress content box from Gravitate Blocks enabled pages. <span class="extra-info">( if content has already been entered it may still show on the front end of the website. )</span>',
 					//'add_unique_id' => 'Add a field for a unique id for each block. <span class="extra-info">( This allows you to use the #unique-id in a url to anchor to a specific spot on a page. )</span>',
-					'add_responsive_img' => 'Add "Responsive-Images" JS. This will also include data attributes for all image sizes.',
+					// 'add_responsive_img' => 'Add "Responsive-Images" JS. This will also include data attributes for all image sizes.',
 				);
 				$css_options = array(
-					'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
-					'disable_colorpicker' => 'Disable color picker ( Use this to force your own css class names ).',
-					'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
+					// 'add_custom_color_class' => 'Allow customization of CSS class names for the background color options.',
+					// 'disable_colorpicker' => 'Disable color picker ( Use this to force your own css class names ).',
+					// 'enqueue_css' => 'Background color CSS will be added to the website\'s header. <span class="extra-info">( Needed for custom background colors, images, etc. )</span>',
 					'use_default' => 'Use the default Gravitate Blocks CSS. <span class="extra-info">( Affects padding and some basic styling. )</span>',
 					'use_foundation' => 'Use the <a target="_blank" href="http://foundation.zurb.com/sites/docs/">Foundation</a> CSS grid. <span class="extra-info">( This will add the foundation CSS file to your site. )</span>',
 				);
@@ -1771,7 +1771,7 @@ class GRAV_BLOCKS {
 					$fields['blocks_enabled_'.$group] = array('type' => 'checkbox', 'label' => ucwords(str_replace('_', ' ', $group)).' Blocks', 'options' => $blocks, 'description' => $description);
 				}
 
-				$fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what Background Colors you want to have the Gravitate Blocks.');
+				// $fields['background_colors'] = array('type' => 'repeater', 'label' => 'Background Color Options', 'fields' => $background_colors_repeater, 'description' => 'Choose what Background Colors you want to have the Gravitate Blocks.');
 				$fields['post_types'] = array('type' => 'checkbox', 'label' => 'Post Types', 'options' => $post_types, 'description' => 'Determine the post types that Gravitate Blocks will appear on.');
 				$fields['templates'] = array('type' => 'checkbox', 'label' => 'Page Templates', 'options' => $template_options, 'description' => 'Determine the page templates that Gravitate Blocks will appear on.');
 
