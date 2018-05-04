@@ -3,6 +3,8 @@
 
 global $mapBlockApiKey;
 
+echo $mapBlockApiKey;
+
 if ($mapBlockApiKey) {
 	$format = get_sub_field('format');
 

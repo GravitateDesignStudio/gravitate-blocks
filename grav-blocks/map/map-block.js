@@ -1,5 +1,5 @@
 jQuery(document).ready(function($){
-    
+
     // Setup map_blocks array
     var map_blocks = [];
 
@@ -449,7 +449,7 @@ jQuery(document).ready(function($){
             var theZoom = this.getZoom();
 
             this.setZoom(theZoom - zoomOffest);
-
+    
             google.maps.event.removeListener(boundsListener);
 
         });
@@ -458,7 +458,6 @@ jQuery(document).ready(function($){
               map.fitBounds(bounds);
              //function to get current zoom and set map to zoom - 1
              var theZoom = map.getZoom();
-
              map.setZoom(theZoom - zoomOffest);
 
          });
