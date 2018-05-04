@@ -31,7 +31,7 @@ Easily add content to your site with Gravitate Blocks.
 
 == Changelog ==
 
-= 2.0.0 =
+= 3.0.0 =
 
 
 = 1.7.5 =
