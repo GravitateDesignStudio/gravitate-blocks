@@ -3058,7 +3058,7 @@ class GRAV_BLOCKS {
 		}
 		else
 		{
-			if(class_exists('GFAPI'))
+			if(class_exists('GFAPI') && method_exists('GFAPI', 'get_forms'))
 			{
 				self::$cache['gravity_forms'] = array();
 
