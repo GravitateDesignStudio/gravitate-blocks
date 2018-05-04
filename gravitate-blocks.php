@@ -2,7 +2,7 @@
 /*
 Plugin Name: Gravitate Blocks
 Description: Create Content Blocks.
-Version: 2.0.0
+Version: 3.0.0
 Plugin URI: http://www.gravitatedesign.com
 Author: Gravitate
 */
