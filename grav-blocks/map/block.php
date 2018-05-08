@@ -1,16 +1,13 @@
 <?php
-//if points exist
 
-global $mapBlockApiKey;
-
-echo $mapBlockApiKey;
-
-if ($mapBlockApiKey) {
+if ($mapBlockApiKey = GRAV_BLOCKS_PLUGIN_SETTINGS::get_setting_value('google_maps_api_key')) {
 	$format = get_sub_field('format');
 
 	$map_order = ' medium-order-1';
 
 	$map_col = 12;
+
+	$content_col = 12;
 
 	if ($format != 'map') {
 
@@ -29,7 +26,7 @@ if ($mapBlockApiKey) {
 		<div class="block-inner">
 			<div class="<?php echo GRAV_BLOCKS::css()->row()->get();?> align-center">
 				<!-- Map -->
-				<div class="<?php echo GRAV_BLOCKS::css()->col(12, 6, $map_col)->get() . $map_order;?> map">
+				<div class="<?php echo GRAV_BLOCKS::css()->col(12, $map_col)->get() . $map_order;?> map">
 					<?php
 					 	$location_data = '';
 						$infowindow_data = '';
@@ -68,7 +65,7 @@ if ($mapBlockApiKey) {
 				</div>
 				<!-- Content -->
 				<?php if ($format != 'map'): ?>
-					<div class="<?php echo GRAV_BLOCKS::css()->col(12, 6, $content_col)->get() . $content_order; ?> content">
+					<div class="<?php echo GRAV_BLOCKS::css()->col(12, $content_col)->get() . $content_order; ?> content">
 						<?php the_sub_field('content'); ?>
 					</div>
 				<?php endif; ?>
