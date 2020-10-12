@@ -3105,7 +3105,7 @@ class GRAV_BLOCKS {
 		);
 	}
 
-	public static function get_blocks_usage( $data ) {
+	public static function get_blocks_usage( $data = [] ) {
 		// Do something with the $request
 		$response = '';
 		if ( $grav_blocks = self::get_available_blocks() )
